@@ -1,0 +1,402 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\PL_Booth;
+use App\PL_Product;
+use App\PL_Stok;
+use App\PL_Detail;
+use App\Top_Product;
+use Illuminate\Http\Request;
+use Validator;  
+use Alert;
+use Illuminate\Support\Facades\DB;
+
+class AdminProduct extends Controller
+{
+    //product
+    public function index()
+    {
+        $booths = PL_Booth::all();
+    	return view('admin/product-booth',[
+            'booths' => $booths
+        ]);
+    }
+    public function ProductAdd()
+    {
+        $booths = PL_Booth::all();
+        return view('admin/product-add',[
+            'booths' => $booths
+        ]);
+    }
+    public function ProductSave(Request $request)
+    {
+        if($request->simpan != null){
+            $validator = Validator::make($request->all(), [
+                'id_booth' => 'required',
+                'nama_makanan' => 'required',
+                'reguler' => 'required',
+                'gojek' => 'required',
+                'grab' => 'required',
+                'gambar' => 'mimes:jpeg,jpg,png|max:1000'
+            ], [
+                
+                'id_booth.required' => 'Pilih terlebih dahulu nama booth.',
+                'nama_makanan.required' => 'Nama makanan tidak boleh kosong.',
+                'reguler.required' => 'Harga tidak boleh kosong.',
+                'gojek.required' => 'Harga tidak boleh kosong.',
+                'grab.required' => 'Harga tidak boleh kosong.',
+                'gambar.mimes' => 'Gambar harus berekstensi jpeg, jpg atau png.',
+                'gambar.max' => 'Ukuran gambar maksimum 1 MB'
+            ])->validate();
+
+            if(!isset($request->gambar)){
+                for ($i=0; $i < count($request->id_booth) ; $i++) { 
+                    PL_Product::create([
+                        'nama_makanan' => $request->nama_makanan,
+                        'kategori' => $request->kategori,
+                        'harga_reguler' => $request->reguler,
+                        'harga_gojek' => $request->gojek,
+                        'harga_grab' => $request->grab,
+                        'id_booth' => $request->id_booth[$i],
+                        'status' => 1
+                    ]);
+                }
+
+                Alert::success('Berhasil Tambah Data Produk', 'Berhasil');
+                return redirect()->back();
+            }
+            else{
+                $gambar = $request->gambar;
+                $ext = $gambar->getClientOriginalExtension();
+                $nama = date('dmYhis').'.'.$gambar->getClientOriginalExtension();
+                $path = 'assets/img/daftar-menu/';
+                $gambar->move($path,$nama);
+
+                for ($i=0; $i < count($request->id_booth) ; $i++) { 
+                    PL_Product::create([
+                        'nama_makanan' => $request->nama_makanan,
+                        'kategori' => $request->kategori,
+                        'harga_reguler' => $request->reguler,
+                        'harga_gojek' => $request->gojek,
+                        'harga_grab' => $request->grab,
+                        'id_booth' => $request->id_booth[$i],
+                        'gambar' => $path.$nama,
+                        'status' => 1
+                    ]);
+                }
+
+                Alert::success('Berhasil Tambah Data Produk', 'Berhasil');
+                return redirect()->back();
+            }
+
+        }
+    }
+
+    public function ProductBooth(Request $request)
+    {
+        $id = $request->id_booth;
+        $booth = PL_Booth::where('id_booth',$id)->first();
+        $menus = PL_Product::where('id_booth',$id)
+                            ->where('status',1)
+                            ->get();
+        $menus_d = PL_Product::where('id_booth',$id)
+                            ->where('status',0)
+                            ->get();
+        $jumlah = PL_Product::where('id_booth',$id)
+            ->where('status', 1)
+            ->count();
+        return view('admin/product-booth-menu',[
+            'booth' => $booth,
+            'menus' => $menus,
+            'menus_d' => $menus_d,
+            'jumlah' => $jumlah
+        ]);
+    }
+
+
+    public function ProductStats(Request $request)
+    {
+        $builder = Top_Product::query();
+
+        $builder->select(DB::raw('sum(jumlah) as jumlah, nama_makanan, id_booth'));
+
+        if(!empty($request->id_booth)){
+            $builder->where('id_booth',$request->id_booth);
+        }
+
+        else {
+            $builder->where('id_booth','like','%'.$request->id_booth.'%');
+        }
+
+        if($request->waktu == 'minggu'){
+            $ts = date('Y-m-d');
+            $tsp = date('Y-m-d', strtotime('-6 days', strtotime($ts)));
+            $jh = $builder ->whereDate('created_at','>=', $tsp)
+                            ->whereDate('created_at','<=', $ts)
+                            ->groupBy('nama_makanan')
+                            ->orderBy('jumlah','desc')
+                            ->limit(5)->get();
+
+            $jl = $builder ->whereDate('created_at','>=', $tsp)
+                            ->whereDate('created_at','<=', $ts)
+                            ->whereNotIn('nama_makanan',$jh->pluck('nama_makanan'))
+                            ->groupBy('nama_makanan')
+                            ->orderBy('jumlah','desc')
+                            ->get();
+
+        }elseif($request->waktu == 'bulan'){
+            $jh = $builder->whereMonth('created_at','>=', date('m'))
+                            ->groupBy('nama_makanan')
+                            ->orderBy('jumlah','desc')
+                            ->limit(5)->get();
+                            
+            $jl = $builder->whereDate('created_at',date('Y-m-d'))
+                            ->whereNotIn('nama_makanan',$jh->pluck('nama_makanan'))
+                            ->groupBy('nama_makanan')
+                            ->orderBy('jumlah','desc')
+                            ->get();
+        }
+        else{
+            $jh = $builder->whereDate('created_at',date('Y-m-d'))
+                            ->groupBy('nama_makanan')
+                            ->orderBy('jumlah','desc')
+                            ->limit(5)->get();
+
+            $jl = $builder->whereDate('created_at',date('Y-m-d'))
+                            ->whereNotIn('nama_makanan',$jh->pluck('nama_makanan'))
+                            ->groupBy('nama_makanan')
+                            ->orderBy('jumlah','desc')
+                            ->get();
+        }
+        
+
+        $booths = PL_Booth::where('status',1)->get();;
+
+        return view('admin/product-stats',[
+            'jh' => $jh->pluck('jumlah')->toArray(),
+            'label' => $jh->pluck('nama_makanan')->toArray(),
+            'jl' => $jl,
+            'booths' => $booths,
+            'waktu' => $request->waktu,
+            'id_booth' => $request->id_booth
+        ]);
+    }
+    public function ProductInfo(Request $request)
+    {
+        $id = $request->id_booth;
+        $id_m = $request->id;
+        $booth = PL_Booth::where('id_booth',$id)->first();
+        $menu = PL_Product::where('id',$id_m)->first();
+        $ph = ProdukTerjual($request->id,$request->id_booth,'produk');
+        $pl = ProdukTerjual($request->id,$request->id_booth,'label');
+
+        $pb = ProdukTerjualB($request->id,$request->id_booth);
+
+        return view('admin/product-booth-menu-info',[
+            'booth' => $booth,
+            'menu' => $menu,
+            'ph' => $ph,
+            'pl' => $pl,
+            'pb' => $pb
+        ]);
+    }
+    public function ProductEdit(Request $request)
+    {
+        $id = $request->id_booth;
+        $id_m = $request->id;
+        $booth = PL_Booth::where('id_booth',$id)->first();
+        $menu = PL_Product::where('id',$id_m)->first();
+        return view('admin/product-booth-menu-edit',[
+            'booth' => $booth,
+            'menu' => $menu
+        ]);
+    }
+    public function ProductUpdate(Request $request)
+    {
+        if($request->update != null){
+           $validator = Validator::make($request->all(), [
+                'id_booth' => 'required',
+                'nama_makanan' => 'required',
+                'reguler' => 'required',
+                'gojek' => 'required',
+                'grab' => 'required',
+                'gambar' => 'mimes:jpeg,jpg,png|max:1000'
+            ], [
+                
+                'id_booth.required' => 'Pilih terlebih dahulu nama booth.',
+                'nama_makanan.required' => 'Nama makanan tidak boleh kosong.',
+                'reguler.required' => 'Harga tidak boleh kosong.',
+                'gojek.required' => 'Harga tidak boleh kosong.',
+                'grab.required' => 'Harga tidak boleh kosong.',
+                'gambar.max' => 'Ukuran gambar maksimum 1 MB',
+                'gambar.mimes' => 'Gambar harus berekstensi jpeg, jpg atau png.'
+               
+            ])->validate();
+
+           if(!isset($request->gambar)){
+
+                PL_Product::where('id_booth',$request->id_booth)
+                        ->where('id',$request->id_makanan)
+                        ->update([
+                            'nama_makanan' => $request->nama_makanan,
+                            'kategori' => $request->kategori,
+                            'harga_reguler' => $request->reguler,
+                            'harga_gojek' => $request->gojek,
+                            'harga_grab' => $request->grab,
+                            'status' => 1
+                        ]);
+
+                Alert::success('Berhasil Update Data Produk', 'Berhasil');
+                return redirect()->back();
+            }
+            else{
+
+                $gambar = $request->gambar;
+                $ext = $gambar->getClientOriginalExtension();
+                $nama = date('dmYhis').'.'.$gambar->getClientOriginalExtension();
+                $path = 'assets/img/daftar-menu/';
+                $gambar->move($path,$nama);
+
+                PL_Product::where('id_booth',$request->id_booth)
+                        ->where('id',$request->id_makanan)
+                        ->update([
+                            'nama_makanan' => $request->nama_makanan,
+                            'kategori' => $request->kategori,
+                            'harga_reguler' => $request->reguler,
+                            'harga_gojek' => $request->gojek,
+                            'harga_grab' => $request->grab,
+                            'gambar' => $path.$nama,
+                            'status' => 1
+                        ]);
+
+                Alert::success('Berhasil Update Data Produk', 'Berhasil');
+                return redirect()->back();
+            }
+        }
+    }
+    public function ProductDelete(Request $request)
+    {
+        $id = $request->id;
+        $produk = PL_Product::find($id);
+        $produk->status = 0;
+        $produk->save();
+
+        Alert::success('Produk Berhasil Dinonaktifkan', 'Berhasil');
+        return redirect()->back();
+
+    }
+    public function ProductDeletePer($id)
+    {
+        $produk = PL_Product::find($id);
+        $produk->status = 3;
+        $produk->save();
+
+        Alert::success('Produk Berhasil Dihapus', 'Berhasil');
+        return redirect()->back();
+
+    }
+    
+    public function ProductBack(Request $request)
+    {
+        $id = $request->id;
+        $produk = PL_Product::find($id);
+        $produk->status = 1;
+        $produk->save();
+
+        Alert::success('Produk Berhasil Aktifkan', 'Berhasil');
+        return redirect()->back();
+
+    }
+    //stock-product
+    public function StockProduct()
+    {
+        $booths = PL_Booth::all();;
+    	return view('admin/product-stock', [
+            'booths' => $booths
+        ]);
+    }
+    public function StockProductBooth(Request $request)
+    {
+        $id = $request->id_booth;
+
+        $booth = PL_Booth::where('id_booth',$id)->first();
+        $products = PL_Product::where('id_booth',$id)
+                    ->where('status',1)
+                    ->get();
+        $stocks = PL_Stok::whereDate('created_at',date('Y-m-d'))
+                        ->where('id_booth',$id)
+                        ->get();
+        $terjual = PL_Detail::join('pl_produk', 'pl_produk.id', '=', 'pl_detail_transaksi.id_produk')
+                            ->join('pl_transaksi', 'pl_transaksi.id', '=', 'pl_detail_transaksi.id_transaksi')
+                            ->select(DB::raw('pl_detail_transaksi.id_produk, sum(pl_detail_transaksi.jumlah) as jumlah, pl_detail_transaksi.created_at, pl_produk.id_booth, pl_transaksi.status'))
+                            ->where('pl_produk.id_booth',$id)
+                            ->where('pl_transaksi.status',1)
+                            ->whereDate('pl_detail_transaksi.created_at', date('Y-m-d'))
+                            ->groupBy('id_produk')
+                            ->get();
+        return view('admin/product-stock-booth', [
+            'products' => $products,
+            'booth' => $booth,
+            'stocks' => $stocks,
+            'terjual' => $terjual
+        ]);
+    }
+    public function StockUpdate(Request $request)
+    {
+        if($request->update != null){
+            if(count(array_filter($request->update_stok)) < 1){
+                Alert::warning('Isi Kolom Update Stok Terlebih Dahulu', 'Gagal');
+                return redirect()->back();
+            }
+            else{
+                for ($i=0; $i < count($request->update_stok); $i++) { 
+                    $stok[] = PL_Stok::where('id_produk', $request->id_produk[$i])
+                            ->whereDate('created_at',date('Y-m-d'))
+                            ->where('id_booth', $request->id_booth)
+                            ->count();
+                    
+                    $val[] = intval($request->update_stok[$i]);
+      
+                    if($stok[$i] <= 0){
+                        PL_Stok::create([
+                            'total_stok' => $val[$i],
+                            'sisa_stok' => $val[$i], 
+                            'id_produk' => $request->id_produk[$i],
+                            'id_booth' => $request->id_booth
+                        ]);
+                    }
+                    else{
+                        PL_Stok::where('id_produk', $request->id_produk[$i])
+                            ->whereDate('created_at',date('Y-m-d'))
+                            ->where('id_booth', $request->id_booth)
+                            ->update([
+                                    'total_stok' => DB::raw('total_stok + '.$val[$i].''),
+                                    'sisa_stok' => DB::raw('sisa_stok + '.$val[$i].'')
+                            ]);
+                    }
+                }
+            }
+        }
+
+        Alert::success('Produk Berhasil Update Stok Produk', 'Berhasil');
+        return redirect()->back();
+        
+    }
+    public function StockProductHistory(Request $request)
+    {
+        $booth = PL_Booth::where('id_booth',$request->id_booth)->first();
+        $product = PL_Product::find($request->id);
+
+        $ph = StokProduct($request->id,'produk');
+        $pl = StokProduct($request->id,'label');
+
+        return view('admin/product-stock-history',[
+            'booth' => $booth,
+            'p' => $product,
+            'ph' => $ph,
+            'pl' => $pl
+
+        ]);
+    }
+}
