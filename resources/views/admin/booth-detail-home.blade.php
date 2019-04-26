@@ -55,7 +55,7 @@
 					</table>
 				</div>
 				<br>
-				<h4><b><span class="fas fa-chalkboard-teacher text-warning"></span>&nbsp; INFORMASI KASIR</b></h4>
+				<h4><b><span class="fas fa-chalkboard-teacher text-warning"></span>&nbsp; INFORMASI PEGAWAI</b></h4>
 				<div class="separator-solid"></div>
 				<div class="table-responsive">
 					@php
@@ -65,17 +65,17 @@
 						@foreach ($kasirs as $kasir)
 							<table class="table table-striped">
 								<tr>
-									<td width="20%">Nama Kasir {{$i++}}</td>
+									<td width="20%">Nama Pegawai {{$i++}}</td>
 									<td width="1%">:</td>
 									<td>{{$kasir->nama_kasir}}</td>
 								</tr>
 								<tr>
-									<td>Alamat Kasir</td>
+									<td>Alamat Pegawai</td>
 									<td>:</td>
 									<td>{{$kasir->alamat_kasir}}</td>
 								</tr>
 								<tr>
-									<td>Nomor Telp. Kasir</td>
+									<td>Nomor Telp. Pegawai</td>
 									<td>:</td>
 									<td>{{$kasir->telp_kasir}}</td>
 								</tr>

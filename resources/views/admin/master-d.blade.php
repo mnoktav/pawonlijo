@@ -226,12 +226,7 @@
 								<p>Produk</p>
 							</a>
 						</li>
-						<li class="nav-item {{Request::segment(2) === 'stock-product' ? 'active' : null}}">
-							<a href="{{ route('admin.stock-product') }}">
-								<i class="fas fa-dolly"></i>
-								<p>Stok Produk</p>
-							</a>
-						</li>
+						
 						<li class="nav-item {{Request::segment(2) === 'sales' ? 'active' : null}}">
 							<a href="{{ route('admin.sales') }}">
 								<i class="fas fa-sign-in-alt"></i>
@@ -242,6 +237,18 @@
 							<a href="{{ route('admin.report') }}">
 								<i class="fas fa-chart-bar"></i>
 								<p>Laporan</p>
+							</a>
+						</li>
+						<li class="nav-section">
+							<span class="sidebar-mini-icon">
+								<i class="fa fa-ellipsis-h"></i>
+							</span>
+							<h4 class="text-section">Stok</h4>
+						</li>
+						<li class="nav-item {{Request::segment(2) === 'stock-product' ? 'active' : null}}">
+							<a href="{{ route('admin.stock-product') }}">
+								<i class="fas fa-dolly"></i>
+								<p>Stok Produk</p>
 							</a>
 						</li>
 						<li class="nav-section">

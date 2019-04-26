@@ -23,27 +23,12 @@ class KasirDashboard extends Controller
     public function index()
     {
         $id = session('login')['id_booth'];
-        $ts = PL_Transaksi::whereDate('created_at',date('Y-m-d'))
-                                ->where('id_booth', $id)
-                                ->where('status',1)
-                                ->count();
-        $tb = PL_Transaksi::whereDate('created_at',date('Y-m-d'))
-                                ->where('id_booth', $id)
-                                ->where('status',0)
-                                ->count();
-        $total = PL_Transaksi::whereDate('created_at',date('Y-m-d'))
-                                ->where('id_booth', $id)
-                                ->where('status',1)
-                                ->sum('total');
         $notes = PL_Note::where('id_booth', $id)->get();
         $stok = PL_Stok::whereDate('created_at',date('Y-m-d'))
                         ->where('id_booth',$id)
                         ->count();
                         
     	return view('kasir/dashboard',[
-             'ts' => $ts,
-             'tb' => $tb,
-             'total' => $total,
              'notes' => $notes,
              'stok' => $stok
         ]);
@@ -82,6 +67,10 @@ class KasirDashboard extends Controller
 
                 Alert::warning('Stok Tidak Mencukupi', 'Gagal');
                 return redirect()->back();
+            }
+            elseif(isset(session('cart')[$request->id_product]['jumlah']) && $request->jumlah+session('cart')[$request->id_product]['jumlah'] > $request->sisa && $request->jenis != 'Pesanan'){
+                    Alert::warning('Stok Tidak Mencukupi Untuk Ditambahkan', 'Gagal');
+                    return redirect()->back();  
             }
             else{
                 $id = $request->id_product;
@@ -143,10 +132,15 @@ class KasirDashboard extends Controller
                     $stok[$i] = PL_Stok::whereDate('created_at',date('Y-m-d'))
                         ->where('id_produk',$request->id_product[$i])
                         ->sum('sisa_stok');
-                    if($request->jumlah[$i] > $stok[$i]){
+                    if($request->jenis == 'Pesanan'){
+                        $cart[$request->id_product[$i]]['jumlah'] = $request->jumlah[$i];
+                        session()->put('cart', $cart); 
+                    }
+                    elseif($request->jumlah[$i] > $stok[$i]){
                         Alert::warning('Stok Produk Tidak Mencukupi', 'Gagal');
                         return redirect()->back();
-                    }else{
+                    }
+                    else{
                         $cart[$request->id_product[$i]]['jumlah'] = $request->jumlah[$i];
                         session()->put('cart', $cart); 
                     }
@@ -181,6 +175,14 @@ class KasirDashboard extends Controller
         return redirect()->back();
     }
 
+    public function RemoveCartBack()
+    {
+        $cart = session()->get('cart');
+        session()->forget('cart');
+
+        return redirect()->route('kasir.dashboard');
+    }
+    
     //checkout
     public function Checkout(Request $request)
     {

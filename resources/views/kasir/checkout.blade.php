@@ -36,6 +36,7 @@
 							<div class="separator-solid"></div>
 							<form action="{{ route('kasir.product-update') }}" method="POST">
 							@csrf
+								<input type="hidden" name="jenis" value="{{$jenis}}">
 								<table class="table table-striped border">
 									{{-- order --}}
 									@php
@@ -93,26 +94,26 @@
 									<div class="col-md-6 col-6">
 										<div class="form-group">
 											<label for="">POTONGAN</label>
-											<input type="text" class="form-control potongan" name="potongan" value="" id="potongan">
+											<input type="text" class="form-control potongan numeric" name="potongan" value="" id="potongan">
 										</div>
 									</div>
 									<div class="col-md-6 col-6">
 										<div class="form-group">
 											<label for="">TOTAL</label>
-											<input type="hidden" name="subtotal" class="subtotal" id="subtotal" value="{{$subtotal}}">
-											<input type="text" class="form-control total" name="total" id="total" value="{{$subtotal}}" readonly style="background-color: white !important; color: black; border: 1px solid #aaaaaa !important;">
+											<input type="hidden" name="subtotal" class="subtotal numeric" id="subtotal" value="{{$subtotal}}">
+											<input type="text" class="form-control total numeric" name="total" id="total" value="{{$subtotal}}" readonly style="background-color: white !important; color: black; border: 1px solid #aaaaaa !important;">
 										</div>
 									</div>
 									<div class="col-md-6 col-6">
 										<div class="form-group">
 											<label for="">UANG BAYAR</label>
-											<input type="text" class="form-control bayar" id="bayar" name="bayar">
+											<input type="text" class="form-control bayar numeric" id="bayar" name="bayar">
 										</div>
 									</div>
 									<div class="col-md-6 col-6">
 										<div class="form-group">
 											<label for="">UANG KEMBALI</label>
-											<input type="text" class="form-control kembali" id="kembali" name="kembali" style="background-color: white !important; color: black; border: 1px solid #aaaaaa !important;" readonly >
+											<input type="text" class="form-control kembali numeric" id="kembali" name="kembali" style="background-color: white !important; color: black; border: 1px solid #aaaaaa !important;" readonly >
 										</div>
 									</div>
 									<div class="col-md-12">
@@ -185,34 +186,33 @@
 		});
 	</script>
 	<script>
+		$(document).ready(function() { 
+			$('.numeric').autoNumeric('init', {
+				aSep: '.', 
+	    		aDec: ',',
+	    		mDec: '0'
+			});
+		});
+	</script>
+	<script>
 	    $(document).ready(function(){
 
 	       $('#potongan').bind('keyup', function(e) {	
-	        var subtotal = $('#subtotal').val();
-	        var potongan = $('#potongan').val();
+	        var subtotal = $('#subtotal').autoNumeric('get');
+	        var potongan = $('#potongan').autoNumeric('get');
 
-	        var total = parseInt(subtotal)-parseInt(potongan);
-	       
-	        if(potongan.length<1){
-	        	$("#total").val(parseInt(subtotal));
-	        }else{
-	        	$("#total").val(parseInt(total));
-	        }
+	        var total = subtotal - potongan;
+
+	        $("#total").val(total);
 	      });
 
 	       $('#bayar').bind('keyup', function(e) {
-	        var total = $('#total').val();
-	        var bayar = $('#bayar').val();
+	        var total = $('#total').autoNumeric('get');
+	        var bayar = $('#bayar').autoNumeric('get');
 	        var kembali = bayar - total;
 	        $("#kembali").val(kembali);
 	      });
 	    });
 	</script>
-{{-- 	<script>
-		$('#potongan, #total, #subtotal, #bayar, #kembali').autoNumeric("init", {
-			aSep: '.', 
-    		aDec: ',',
-    		mDec: '0'
-		});
-	</script> --}}
+	
 @endsection

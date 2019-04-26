@@ -62,16 +62,16 @@
 						<li class="nav-item dropdown hidden-caret">
 							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
 								<div class="avatar-sm">
-									<img src="{{ asset('assets/atlantis/img/profile.jpg') }}" alt="..." class="avatar-img rounded-circle">
+									<img src="{{ asset('assets/img/user.png') }}" alt="..." class="avatar-img rounded-circle">
 								</div> 
 							</a>
 							<ul class="dropdown-menu dropdown-user animated fadeIn">
 								<div class="dropdown-user-scroll scrollbar-outer">
 									<li>
 										<div class="user-box">
-											<div class="avatar-lg"><img src="{{ asset('assets/atlantis/img/profile.jpg') }}" alt="image profile" class="avatar-img rounded"></div>
+											<div class="avatar-lg"><img src="{{ asset('assets/img/user.png') }}" alt="image profile" class="avatar-img rounded"></div>
 											<div class="u-text">
-												<h4>{{session('login')['id_booth']}}</h4>
+												<h4>{{session('login')['nama_booth']}}</h4>
 												<p class="text-muted">{{session('login')['username_booth']}}</p>
 											</div>
 										</div>
@@ -95,12 +95,12 @@
 				<div class="sidebar-content">
 					<div class="user">
 						<div class="avatar-sm float-left mr-2">
-							<img src="{{ asset('assets/atlantis/img/profile.jpg') }}" alt="..." class="avatar-img rounded-circle">
+							<img src="{{ asset('assets/img/user.png') }}" alt="..." class="avatar-img rounded-circle">
 						</div>
 						<div class="info">
 							<a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
 								<span>
-									{{session('login')['id_booth']}}
+									{{session('login')['nama_booth']}}
 									<span class="user-level">{{session('login')['username_booth']}}</span>
 								</span>
 							</a>
@@ -114,22 +114,34 @@
 							</span>
 							<h4 class="text-section">Menu</h4>
 						</li>
-						<li class="nav-item {{Request::segment(1) === 'kasir' && Request::segment(2) != 'transaksi' && Request::segment(2) != 'stok' && Request::segment(3) != 'pesanan' ? 'active' : null}}">
+						<li class="nav-item {{Request::segment(1) === 'kasir' && Request::segment(2) != 'transaksi' && Request::segment(2) != 'stok' && Request::segment(3) != 'pesanan' && Request::segment(2) != 'report' ? 'active' : null}}">
 							<a href="{{ route('kasir.dashboard') }}">
 								<i class="fas fa-laptop"></i>
 								<p>Kasir</p>
-							</a>
-						</li>
-						<li class="nav-item {{Request::segment(2) === 'stok'  ? 'active' : null}}">
-							<a href="{{ route('kasir.stok') }}">
-								<i class="fas fa-tags"></i>
-								<p>Stok Produk</p>
 							</a>
 						</li>
 						<li class="nav-item {{Request::segment(2) === 'transaksi' && Request::segment(3) != 'pesanan' ? 'active' : null}}">
 							<a href="{{ route('kasir.transaksi') }}">
 								<i class="fas fa-clipboard-list"></i>
 								<p>Transaksi</p>
+							</a>
+						</li>
+						<li class="nav-item {{Request::segment(2) === 'report' && Request::segment(3) != 'pesanan' ? 'active' : null}}">
+							<a href="{{ route('kasir.report') }}">
+								<i class="far fa-file"></i>
+								<p>Laporan Harian</p>
+							</a>
+						</li>
+						<li class="nav-section">
+							<span class="sidebar-mini-icon">
+								<i class="fa fa-ellipsis-h"></i>
+							</span>
+							<h4 class="text-section">Stok</h4>
+						</li>
+						<li class="nav-item {{Request::segment(2) === 'stok'  ? 'active' : null}}">
+							<a href="{{ route('kasir.stok') }}">
+								<i class="fas fa-tags"></i>
+								<p>Stok Produk</p>
 							</a>
 						</li>
 						<li class="nav-section">

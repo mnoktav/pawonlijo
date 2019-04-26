@@ -78,8 +78,9 @@
 												<p>{{$booth->alamat_booth}}</p>
 												<h6><b>Jam Operasional : </b></h6>
 												<p>{{date('H:i',strtotime($booth->jam_buka))}} - {{date('H:i',strtotime($booth->jam_tutup))}} WIB</p>
-												
-												<h6><b>Kasir : </b></h6>
+											</div>
+											<div class="col-lg-6">
+												<h6><b>Pegawai : </b></h6>
 												@php
 													$i = 1;
 												@endphp
@@ -88,14 +89,6 @@
 													<p class="nama_kasir">{{$i++.'.'.' '.$kasir->nama_kasir}}</p>
 												@endif
 												@endforeach
-											</div>
-											<div class="col-lg-6">
-												<h6><b>Trans. Sukses Hari Ini : </b></h6>
-												<p>{{$ts[$booth->id_booth]}} Transaksi Sukses</p>
-												<h6><b>Trans. Batal Hari Ini : </b></h6>
-												<p>{{$tb[$booth->id_booth]}} Transaksi Batal</p>
-												<h6><b>Pendapatan Hari Ini : </b></h6>
-												<p>Rp {{$total[$booth->id_booth]}}</p>
 											</div>
 										</div>
 										<div class="separator-solid"></div>

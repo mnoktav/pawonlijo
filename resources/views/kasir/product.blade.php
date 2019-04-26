@@ -29,14 +29,26 @@
 							</div>
 							<div class="col-md-4 mt-2">
 								<div class="text-right">
+									@if(session('cart') == null)
 									<a class="btn btn-sm btn-rounded btn-primary mr-2" href="{{ route('kasir.dashboard') }}">
 										<span class="btn-label">
 											<i class="fas fa-angle-left"></i>
 										</span>
 										Kembali
 									</a>
-									<a class="btn btn-sm btn-rounded btn-warning" href="{{ url('/kasir/checkout?jenis='.$jenis) }}">
+									@else
+									<a class="btn btn-sm btn-rounded btn-primary mr-2 reset" href="{{ route('kasir.product-reset-back') }}">
+										<span class="btn-label">
+											<i class="fas fa-angle-left"></i>
+										</span>
+										Kembali
+									</a>
+									@endif
+									<a class="btn btn-sm btn-rounded btn-success" href="{{ url('/kasir/checkout?jenis='.$jenis) }}">
 										<b>Checkout</b>
+										@if(session('cart') != null)
+											<span class="ml-2">{{count(session('cart'))}} item</span>
+										@endif
 									</a>
 								</div>
 							</div>
@@ -87,16 +99,18 @@
 													@endif
 												@endforeach
 											</div>
-											<div class="col-12">
+											<div class="col-8">
 												<div class="form-group p-0">	
-												    <input type="text" class="form-control border mr-6 ml-6" id="jumlah" name="jumlah" placeholder="Jumlah">
+												    <input type="number" class="form-control border mr-6 ml-6" id="jumlah" name="jumlah" placeholder="Jumlah" min="1">
+												</div>
+											</div>
+											<div class="col-4 mt-1">
+												<div class="button-submit text-center">
+													<input type="submit" name="pesan" value="Pesan" class="btn btn-primary btn-sm">
 												</div>
 											</div>
 										</div>
-										<div class="separator-solid" style="border-top: 1px solid #969696;"></div>
-										<div class="button-submit text-center">
-											<input type="submit" name="pesan" value="Pesan" class="btn btn-primary btn-rounded btn-sm">
-										</div>
+										
 									</div>
 									</form>
 								</div>
@@ -124,5 +138,30 @@
 		    }
 		  }
 		}
+	</script>
+	<script>
+		$(document).ready(function(){
+		    $('.reset').on('click', function(e){
+		        e.preventDefault(); //cancel default action
+
+		        //Recuperate href value
+		        var href = $(this).attr('href');
+		        var message = $(this).data('confirm');
+
+		        //pop up
+		        swal({
+		            title: "Transaksi Belum Selesai",
+		            text: "Item dihalaman checkout akan dihapus", 
+		            icon: "warning",
+		            buttons: true,
+		            dangerMode: true,
+		        })
+		        .then((willDelete) => {
+		          if (willDelete) {
+		            window.location.href = href;
+		          }
+		        });
+		    });
+		});
 	</script>
 @endsection

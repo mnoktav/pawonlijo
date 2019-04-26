@@ -63,8 +63,8 @@
 												<input type="date" class="form-control" name="akhir">
 											</div>
 										</div>
-										<div class="col-md-2 text-center" style="padding-top: 3.3%;">
-											<input type="submit" class="btn btn-primary" value="Cari" name="cari">
+										<div class="col-md-2 text-center mt-1 " style="padding-top: 3.5%;">
+											<input type="submit" class="btn btn-primary btn-sm pl-4 pr-4" value="Cari" name="cari">
 										</div>
 										<div class="col-md-3">
 											<p class="text-danger">* Catatan : untuk mencari data harian cukup isi tanggal awal saja</p>

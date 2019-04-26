@@ -30,44 +30,48 @@
 			</div>
 			@endif
 			<div class="col-md-3 col-6" >
-				<div class="card">
-					<div class="card-body" style="background-color: #efefef">
-						<div class="logo p-2 text-center">
-							<a href="{{ url('/kasir/product?jenis=Gojek') }}" style="font-size: 1.5rem;">Gojek</a>
-						</div>
+				<div class="card card-pricing border">
+					<div class="card-header">
+						<h4 class="card-title"><b>REGULER</b></h4>
+					</div>
+					<div class="card-footer">
+						<a href="{{ url('/kasir/product?jenis=Reguler') }}" class="btn btn-primary btn-block btn-lg">Pesan</a>
 					</div>
 				</div>
 			</div>
 			<div class="col-md-3 col-6">
-				<div class="card border">
-					<div class="card-body" style="background-color: #efefef">
-						<div class="logo p-2 text-center">
-							<a href="{{ url('/kasir/product?jenis=Grab') }}" style="font-size: 1.5rem;">Grab</a>
-						</div>
+				<div class="card card-pricing border">
+					<div class="card-header">
+						<h4 class="card-title"><b>GRAB</b></h4>
+					</div>
+					<div class="card-footer">
+						<a href="{{ url('/kasir/product?jenis=Grab') }}" class="btn btn-primary btn-block btn-lg">Pesan</a>
 					</div>
 				</div>
 			</div>
 			<div class="col-md-3 col-6">
-				<div class="card border">
-					<div class="card-body" style="background-color: #efefef">
-						<div class="logo p-2 text-center">
-							<a href="{{ url('/kasir/product?jenis=Reguler') }}" style="font-size: 1.5rem;">Reguler</a>
-						</div>
+				<div class="card card-pricing border">
+					<div class="card-header">
+						<h4 class="card-title"><b>GOJEK</b></h4>
+					</div>
+					<div class="card-footer">
+						<a href="{{ url('/kasir/product?jenis=Gojek') }}" class="btn btn-primary btn-block btn-lg">Pesan</a>
 					</div>
 				</div>
 			</div>
 			<div class="col-md-3 col-6">
-				<div class="card border">
-					<div class="card-body" style="background-color: #efefef">
-						<div class="logo p-2 text-center">
-							<a href="{{ url('/kasir/product?jenis=Pesanan') }}" style="font-size: 1.5rem;">Pesanan</a>
-						</div>
+				<div class="card card-pricing border">
+					<div class="card-header">
+						<h4 class="card-title"><b>PESANAN</b></h4>
+					</div>
+					<div class="card-footer">
+						<a href="{{ url('/kasir/product?jenis=Pesanan') }}" class="btn btn-primary btn-block btn-lg">Pesan</a>
 					</div>
 				</div>
 			</div> 
 		</div>
 		<div class="row">
-			<div class="col-md-4 mt-3">
+			{{-- <div class="col-md-4 mt-3">
 				<div class="card border">
 					<div class="card-body">
 						<h4><b>DATA HARIAN</b></h4>
@@ -91,8 +95,8 @@
 						</table>
 					</div>
 				</div>
-			</div>
-			<div class="col-md-8 mt-3">
+			</div> --}}
+			<div class="col-md-12">
 				<div class="card border">
 					<div class="card-body">
 						<h4><b>NOTE</b></h4>

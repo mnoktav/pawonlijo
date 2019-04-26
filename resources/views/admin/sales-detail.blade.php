@@ -68,6 +68,8 @@
 										@endif
 										@if($sale->status == 0)
 										<p><b>Alasan Pembatalan : </b> {{$sale->keterangan}}</p>
+										@elseif($sale->jenis == 'Pesanan')
+										<p><b>Keterangan : </b> {{$sale->keterangan}}</p>
 										@endif
 									</div>
 								</div>
@@ -114,7 +116,7 @@
 									</table>
 								</div>
 								<div class="text-center">
-									<button type="button" class="btn btn-sm btn-rounded btn-danger {{$sale->status == 0 || $sale->jenis == 'Pesanan' && $sale->status == 1 ? 'd-none' : null}}" data-toggle="modal" data-target=".bd-example-modal-sm ">Batalkan Transaksi</button>
+									<button type="button" class="btn btn-sm btn-rounded btn-danger {{$sale->status == 0 || $sale->jenis == 'Pesanan' || $sale->status == 1 ? 'd-none' : null}}" data-toggle="modal" data-target=".bd-example-modal-sm ">Batalkan Transaksi</button>
 									<a href="{{ route('kasir.transaksi-update-pesanan', $sale->id) }}" class="btn btn-sm btn-rounded btn-success {{$sale->status != 2 ? 'd-none' : null}}">Transaksi Selesai</a>
 								</div>
 							</div>

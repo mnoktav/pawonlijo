@@ -22,7 +22,7 @@ Route::get('/admin/booth/note-booth/delete/{judul}', 'AdminBooth@DeleteNote')->n
 Route::get('/admin/booth/booth-pawonlijo', 'AdminBooth@Booth')->name('admin.booth');
 Route::get('/admin/booth/booth-pawonlijo/{id_booth}', 'AdminBooth@DetailBoothHome')->name('admin.detail-booth');
 Route::get('/admin/booth/booth-pawonlijo/{id_booth}/transaksi', 'AdminBooth@DetailBoothTransaksi')->name('admin.detail-booth-transaksi');
-Route::get('/admin/booth/booth-pawonlijo/{id_booth}/daftar-menu', 'AdminBooth@DetailBoothMenu')->name('admin.detail-booth-menu');
+Route::get('/admin/booth/booth-pawonlijo/{id_booth}/pendapatan', 'AdminBooth@DetailBoothPendapatan')->name('admin.detail-booth-menu');
 Route::get('/admin/booth/booth-pawonlijo/{id_booth}/edit', 'AdminBooth@EditBooth')->name('admin.edit-booth');
 Route::post('/admin/booth/booth-pawonlijo/update', 'AdminBooth@UpdateBooth')->name('admin.update-booth');
 Route::get('/admin/booth/booth-pawonlijo/delete/{id}', 'AdminBooth@DeleteKasir')->name('admin.delete-kasir');
@@ -71,6 +71,7 @@ Route::post('/kasir/product/add', 'KasirDashboard@AddToCart')->name('kasir.produ
 Route::post('/kasir/product/update', 'KasirDashboard@UpdateCart')->name('kasir.product-update');
 Route::get('/kasir/product/remove/{id_product}', 'KasirDashboard@RemoveFromCart')->name('kasir.product-remove');
 Route::get('/kasir/product/reset', 'KasirDashboard@RemoveCart')->name('kasir.product-reset');
+Route::get('/kasir/product/reset-back', 'KasirDashboard@RemoveCartBack')->name('kasir.product-reset-back');
 Route::get('/kasir/checkout', 'KasirDashboard@Checkout')->name('kasir.checkout');
 Route::post('/kasir/checkout/save', 'KasirDashboard@SaveCheckout')->name('kasir.checkout-save');
 Route::get('/kasir/print-nota/{id}', 'KasirDashboard@PrintNota')->name('kasir.print-nota');
@@ -85,3 +86,4 @@ Route::post('/kasir/transaksi/batal', 'KasirSales@TransaksiBatal')->name('kasir.
 
 //kasir stok
 Route::get('/kasir/stok', 'KasirSales@StockProduct')->name('kasir.stok');
+Route::get('/kasir/report', 'KasirReport@index')->name('kasir.report');
