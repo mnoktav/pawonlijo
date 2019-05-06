@@ -33,7 +33,7 @@
 				{{-- expr --}}
 			
 			<div class="col-md-3 col-6" >
-				<div class="card card-pricing border">
+				<div class="card card-pricing border full-height">
 					<div class="card-header">
 						<h4 class="card-title" style="text-transform: uppercase;"><b>{{$j->jenis_transaksi}}</b></h4>
 					</div>

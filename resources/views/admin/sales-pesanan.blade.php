@@ -25,7 +25,7 @@
 								<th class="d-none d-sm-table-cell">Jenis</th>
 								<th class="d-none d-sm-table-cell">Kode</th>
 								<th class="d-none d-sm-table-cell">Subtotal</th>
-								<th class="d-none d-sm-table-cell">Potongan</th>
+								<th class="d-none d-sm-table-cell">Discount</th>
 								<th class="d-none d-sm-table-cell">Total</th>
 								<th class="d-none d-sm-table-cell">Status</th>
 								<th width="8%">Detail</th>
@@ -42,9 +42,9 @@
 								@else
 								<td class="d-none d-sm-table-cell">-</td>
 								@endif
-								<td class="d-none d-sm-table-cell">Rp {{$sale->subtotal}}</td>
-								<td class="d-none d-sm-table-cell">Rp {{$sale->potongan}}</td>
-								<td class="d-none d-sm-table-cell">Rp {{$sale->total}}</td>
+								<td class="d-none d-sm-table-cell">Rp {{Rupiahd($sale->subtotal)}}</td>
+								<td class="d-none d-sm-table-cell">Rp {{Rupiahd($sale->potongan)}}</td>
+								<td class="d-none d-sm-table-cell">Rp {{Rupiahd($sale->total_bersih)}}</td>
 								@if($sale->status == 2)
 								<td class="d-none d-sm-table-cell">Pending</td>
 								@elseif($sale->status == 1)

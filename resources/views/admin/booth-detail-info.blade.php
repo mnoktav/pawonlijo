@@ -37,9 +37,10 @@
 					</div>
 					<div class="separator-solid"></div>
 				</div>
-				<div class="col-md-2">
+				
+				<div class="col-md-2 mt-2">
 					<form action="" method="GET">
-						<select name="bulan" class="form-control" onchange="if(this.value != 0) { this.form.submit(); }">
+						<select name="bulan" class="form-control" onchange="if(this.value != 0) { this.form.submit(); }" style="border-color: grey">
 							@php
 								$i=1;
 							@endphp
@@ -49,6 +50,7 @@
 						</select>
 					</form>
 				</div>
+				@if(count($tb) != null && count($pj) != null)
 				<div class="col-md-12">
 					<h4 ><b> </b></h4>
 					<table class="table">
@@ -65,6 +67,9 @@
 							<th>Pajak</th>
 							<th>Total Bersih</th>
 						</tr>
+						@php
+							$t = 0; $p = 0; $b = 0;
+						@endphp
 						@foreach ($tb as $tb)
 						<tr>
 							<th style="background-color: #e9ecef">{{$tb->jenis}}</th>
@@ -73,7 +78,6 @@
 							<td>Rp {{Rupiah($tb->total_b)}}</td>
 						</tr>
 						@php
-							$t = 0; $p = 0; $b = 0;
 							$t += $tb->trans;
 							$p += $tb->t_pajak;
 							$b += $tb->total_b;
@@ -102,6 +106,11 @@
 						@endforeach
 					</table>
 				</div>
+				@else
+				<div class="col-md-12 text-center mt-4 mb-4">
+					<h4 class="border pt-4 pb-4">Belum Ada Transaksi</h4>
+				</div>
+				@endif
 			</div>
 		</div>
 	</div>

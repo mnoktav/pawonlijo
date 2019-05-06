@@ -37,7 +37,7 @@
 							<td>{{$sale->id}}</td>
 							<td>{{$sale->jenis}} ({{$sale->pajak}}%)</td>
 							<td>{{$sale->kode}}</td>
-							<td>Rp {{Rupiahd($sale->total)}}</td>
+							<td>Rp {{Rupiahd($sale->subtotal)}}</td>
 							<td>Rp {{Rupiahd($sale->potongan)}}</td>
 							<td>Rp {{Rupiahd($sale->total_pajak)}}</td>
 							

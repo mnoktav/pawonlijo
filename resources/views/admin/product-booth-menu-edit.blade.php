@@ -85,7 +85,7 @@
 													<div class="col-md-4">
 														<div class="form-group {{$errors->has('reguler') ? 'has-error' : null}}">
 															<label for="reguler">Harga Reguler</label>
-															<input type="text" class="form-control" id="reguler" name="reguler" value="{{$menu->harga_reguler}}" >
+															<input type="text" class="form-control" id="reguler" name="reguler" value="{{$menu->harga_reguler}}" onkeypress="return NumberOnly(event)">
 															@if ($errors->has('reguler'))
 																<span class="help-block text-danger">
 																	{{$errors->first('reguler')}}
@@ -96,7 +96,7 @@
 													<div class="col-md-4">
 														<div class="form-group {{$errors->has('gojek') ? 'has-error' : null}}">
 															<label for="gojek">Harga Go-Food</label>
-															<input type="text" class="form-control" id="gojek" name="gojek" value="{{$menu->harga_gojek}}">
+															<input type="text" class="form-control" id="gojek" name="gojek" value="{{$menu->harga_gojek}}" onkeypress="return NumberOnly(event)">
 															@if ($errors->has('gojek'))
 																<span class="help-block text-danger">
 																	{{$errors->first('gojek')}}
@@ -107,7 +107,7 @@
 													<div class="col-md-4">
 														<div class="form-group {{$errors->has('grab') ? 'has-error' : null}}">
 															<label for="grab">Harga Grab</label>
-															<input type="text" class="form-control" id="grab" name="grab" value="{{$menu->harga_grab}}">
+															<input type="text" class="form-control" id="grab" name="grab" value="{{$menu->harga_grab}}" onkeypress="return NumberOnly(event)">
 															@if ($errors->has('grab'))
 																<span class="help-block text-danger">
 																	{{$errors->first('grab')}}

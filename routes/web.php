@@ -31,6 +31,9 @@ Route::get('/admin/booth/booth-pawonlijo/activate/{id}', 'AdminBooth@ActBooth')-
 Route::get('/admin/booth/booth-pawonlijo/transaksi/{id}/{status}', 'AdminBooth@ActTrans')->name('admin.active-booth-transaksi');
 Route::post('/admin/booth/booth-pawonlijo/transaksi/update-pajak', 'AdminBooth@UpdatePajak')->name('admin.pajak-booth-transaksi');
 Route::get('/admin/tax', 'AdminBooth@JenisTransaksi')->name('admin.booth-jenis-transaksi');
+Route::get('/admin/tax/{tgl}/{id}/{jenis}', 'AdminBooth@DetailPajak')->name('admin.booth-detail-pajak');
+Route::get('/admin/tax/detail/{id}', 'AdminSales@Detail')->name('admin.sales-tax');
+
 
 //produk
 Route::get('/admin/product', 'AdminProduct@index')->name('admin.product');
@@ -61,6 +64,7 @@ Route::get('/admin/pesanan/update/{id}', 'AdminSales@PesananSelesai')->name('adm
 //report
 Route::get('/admin/report', 'AdminReport@index')->name('admin.report');
 Route::get('/admin/report/pdf', 'AdminReport@DownloadPdf')->name('admin.report-pdf');
+Route::get('/admin/report/excel', 'AdminReport@DownloadExcel')->name('admin.report-pdf');
 
 
 //kasir-login

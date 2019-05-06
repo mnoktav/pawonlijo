@@ -1,4 +1,11 @@
 @extends('kasir/master-d')
+@section('css')
+	<style>
+		.table td, .table th{
+			padding: 0.5rem !important;
+		}
+	</style>
+@endsection
 @section('content')
 	<div class="page-inner">
 		<div class="card">
@@ -13,7 +20,7 @@
 				</div>
 				<div class="separator-solid"></div>
 				<div class="table-responsive">
-					<table class="table  table-bordered border">
+					<table class="table table-bordered border">
 						<tr>
 							<th width="20%">Pemasukan</th>
 							<td width="1%">:</td>

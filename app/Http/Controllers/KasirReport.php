@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\DB;
 
 class KasirReport extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('cekstatus');
+
+    }
     public function index()
     {
     	$id = session('login')['id_booth'];

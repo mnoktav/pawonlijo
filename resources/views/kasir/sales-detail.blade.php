@@ -1,5 +1,11 @@
 @extends('kasir/master-d')
 @section('css')
+	<style>
+		.table th, .table td{
+			padding: 0.5rem !important;
+			font-size: 0.85
+		}
+	</style>
 @endsection
 @section('content')	
 	<div class="page-inner">
@@ -61,7 +67,6 @@
 											<tr>
 												<th>Nama Produk</th>
 												<th>Harga Satuan</th>
-												<th>Jumlah</th>
 												<th>Sub Total</th>
 											</tr>
 										</thead>
@@ -69,30 +74,29 @@
 											@foreach ($detail as $detail)
 											<tr>
 												<td>{{$detail->nama_makanan}}</td>
-												<td>Rp {{Rupiah($detail->harga_satuan)}}</td>
-												<td>{{$detail->jumlah}}</td>
-												<td>Rp {{Rupiah($detail->harga_satuan*$detail->jumlah)}}</td>
+												<td>Rp {{Rupiahd($detail->harga_satuan)}} x {{$detail->jumlah}}</td>
+												<td>Rp {{Rupiahd($detail->harga_satuan*$detail->jumlah)}}</td>
 											</tr>
 											@endforeach
 											<tr>
-												<td colspan="3"><b>SUBTOTAL</b></td>
-												<td>Rp {{Rupiah($sale->subtotal)}}</td>
+												<td colspan="2"><b>SUBTOTAL</b></td>
+												<td colspan="2">Rp {{Rupiahd($sale->subtotal)}}</td>
 											</tr>
 											<tr>
-												<td colspan="3"><b>POTONGAN</b></td>
-												<td>Rp {{Rupiah($sale->potongan)}}</td>
+												<td colspan="2"><b>POTONGAN</b></td>
+												<td colspan="2">Rp {{Rupiahd($sale->potongan)}}</td>
 											</tr>
 											<tr>
-												<td colspan="3"><b>TOTAL</b></td>
-												<td>Rp {{Rupiah($sale->total)}}</td>
+												<td colspan="2"><b>TOTAL</b></td>
+												<td colspan="2">Rp {{Rupiahd($sale->total)}}</td>
 											</tr>
 											<tr>
 												<td><b>BAYAR</b></td>
-												<td>Rp {{Rupiah($sale->bayar)}}</td>
+												<td>Rp {{Rupiahd($sale->bayar)}}</td>
 											</tr>
 											<tr>
 												<td><b>KEMBALI</b></td>
-												<td>Rp {{Rupiah($sale->kembali)}}</td>
+												<td>Rp {{Rupiahd($sale->kembali)}}</td>
 											</tr>
 										</tbody>
 									</table>

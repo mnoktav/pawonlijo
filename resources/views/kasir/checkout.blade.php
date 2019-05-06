@@ -3,12 +3,13 @@
 	<style>
 		.table td{
 			height: 3rem;
-			font-size: 0.85rem;
+			font-size: 1rem;
+			padding: 0.5rem !important;
 		}
 
 		.form-group input{
 			border: 1px solid #aaaaaa;
-			height: 2rem !important;
+			height: 2.5rem !important;
 		}
 		.form-group{
 			padding: 0.5rem 0;
@@ -20,20 +21,24 @@
 		{{-- <form action="" method="GET"> --}}
 			<div class="row">
 				<div class="col-md-8 offset-md-2">
-					<div class="text-right">
-						<a href="{{ url('/kasir/product?jenis='.$jenis) }}" class="btn btn-primary btn-rounded btn-sm mb-3">
-							<span class="btn-label">
-								<i class="fas fa-angle-left"></i>
-							</span>
-							Kembali
-						</a>
-					</div>
+					
 					<div class="card border">
 						<div class="card-body">
 							@if(session('cart'))
-				
-							<h4><b>CHECKOUT</b></h4>
-							<div class="separator-solid"></div>
+							<div class="row">
+								<div class="col-8 mt-2">
+									<h4><b>CHECKOUT</b></h4>
+								</div>
+								<div class=" col-4 text-right">
+									<a href="{{ url('/kasir/product?jenis='.$jenis) }}" class="btn btn-primary btn-rounded btn-sm mb-3">
+										<span class="btn-label">
+											<i class="fas fa-angle-left"></i>
+										</span>
+										Kembali
+									</a>
+								</div>
+							</div>
+							<div class="separator-solid mt-0"></div>
 							<form action="{{ route('kasir.product-update') }}" method="POST">
 							@csrf
 								<input type="hidden" name="jenis" value="{{$jenis}}">
@@ -52,37 +57,37 @@
 										<tr>
 											<td colspan="3">
 												<b>{{$order['nama_produk']}}</b> 
-												<a href="{{ route('kasir.product-remove', $id) }}" class="ml-4 p-1 pl-2 pr-2" style="background-color: white; border-radius: 1rem;" >
-													<i class="fas fa-times text-danger"></i>
+												<a href="{{ route('kasir.product-remove', $id) }}" class="ml-4 p-1 pl-2 pr-2" style="background-color: white; border-radius: 1rem; float: right;" >
+													<i class="fas fa-trash text-warning"></i>
 												</a>
 											</td>
 											<input type="hidden" name="id_product[]" value="{{$id}}">
 										</tr>
 										<tr>
 											<td width="40%" class="p-3">
-												Rp {{Rupiah($order['harga'])}}
+												Rp {{Rupiahd($order['harga'])}}
 												
 											</td>
 											<td width="20%">
 												<input type="text" name="jumlah[]" value="{{$order['jumlah']}}" class="form-control"  style="height: 1.8rem !important; width: 2rem; font-size: 0.8rem; border-radius: 5px; border: 1px solid #aaaaaa; padding: 5px">
 											</td>
 
-											<td width="40%">Rp {{Rupiah($total_item)}}</td>
+											<td width="40%">Rp {{Rupiahd($total_item)}}</td>
 										</tr>
 
 									@endforeach
 									{{-- subtotal --}}
 									<tr>
 										<td colspan="2"><b>SUBTOTAL</b></td>
-										<td>Rp {{Rupiah($subtotal)}}</td>
+										<td>Rp {{Rupiahd($subtotal)}}</td>
 									</tr>
 								</table>
 								<div class="row">
 									<div class="col-6">
-										<a href="{{ route('kasir.product-reset') }}" class="btn btn-sm btn-danger reset">Reset</a>
+										<a href="{{ route('kasir.product-reset') }}" class="btn btn-danger reset">Reset</a>
 									</div>
 									<div class="col-6 text-right">
-										<input type="submit" value="Update" name="update_cart" class="btn btn-sm btn-primary">
+										<input type="submit" value="Update" name="update_cart" class="btn btn-primary">
 									</div>
 								</div>
 							</form>
@@ -142,11 +147,24 @@
 								</div>
 								<div class="separator-solid"></div>
 								<div class="text-center">
-									<input type="submit" value="Simpan & Cetak" name="simpan_cetak" class="btn btn-primary btn-rounded btn-sm">
+									<input type="submit" value="Simpan & Cetak" name="simpan_cetak" class="btn btn-primary btn-rounded">
 								</div> 
 							</form>
 							@else
-
+							<div class="row">
+								<div class="col-8 mt-2">
+									<h4><b>CHECKOUT</b></h4>
+								</div>
+								<div class=" col-4 text-right">
+									<a href="{{ url('/kasir/product?jenis='.$jenis) }}" class="btn btn-primary btn-rounded btn-sm mb-3">
+										<span class="btn-label">
+											<i class="fas fa-angle-left"></i>
+										</span>
+										Kembali
+									</a>
+								</div>
+							</div>
+							<div class="separator-solid mt-0"></div>
 							<h3 align="center" class="mt-2">Belum Ada Makanan Yang Dipesan</h3>
 							@endif
 						</div>

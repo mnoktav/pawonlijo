@@ -99,6 +99,9 @@ function StatusBooth($id)
 	if($booth->status != 1){
 		$session = session()->forget('login');
 	}
+	if(date('H:i') < date('H:i',strtotime($booth->jam_buka)) || date('H:i') > date('H:i',strtotime($booth->jam_tutup))){
+		$session = session()->forget('login');
+	}
 	else{
 		$session = null;
 	}

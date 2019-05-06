@@ -106,10 +106,10 @@ class AdminBooth extends Controller
                         ->orderBy('jumlah','desc')
                         ->get();
 
-        if(count($tb) == null){
-            Alert::message('Tidak Ada Data Transaksi '.BulanIndo($request->bulan).' '.date('Y'));
-            return redirect()->back();
-        }                                 
+        // if(count($tb) == null){
+        //     Alert::message('Tidak Ada Data Transaksi '.BulanIndo($request->bulan).' '.date('Y'));
+        //     return redirect()->back();
+        // }                                 
         return view('admin/booth-detail-info',[
             'id' => $id,
             'booth' => $booth,
@@ -163,7 +163,17 @@ class AdminBooth extends Controller
         Alert::success('Berhasil Update');
         return redirect()->back();
     }
-
+    public function DetailPajak(Request $request)
+    {
+        $detail = View_transaksi::where('status',1)
+                                ->where('id_booth', $request->id)
+                                ->whereDate('created_at', $request->tgl)
+                                ->where('jenis', $request->jenis)
+                                ->get();
+        return view('admin/booth-jenis-transaksi-pajak',[
+            'detail' => $detail
+        ]);
+    }
     //Update booth
     public function EditBooth(Request $request)
     {
@@ -195,7 +205,7 @@ class AdminBooth extends Controller
             ]);
 
             Alert::success('Berhasil Update Data '.$request->nama_booth.' ('.$request->id_booth.')', 'Berhasil');
-            return redirect()->back();
+            return redirect()->back()->with('msg', 'booth');
         }
         elseif($request->update_akun != null){
 
@@ -212,7 +222,7 @@ class AdminBooth extends Controller
                 're_pass.same' => 'Password tidak sama.',
                 'username_booth.unique' => 'Username booth sudah digunakan.'
             ])->validate();
-
+            
             PL_Booth::where('id_booth',$request->id_booth)
                     ->update([
                 'username_booth' => $request->username_booth,
@@ -221,7 +231,7 @@ class AdminBooth extends Controller
             ]);
 
             Alert::success('Berhasil Update Data '.$request->nama_booth.' ('.$request->id_booth.')', 'Berhasil');
-            return redirect()->back();
+            return redirect()->back()->with('msg', 'akun');
         }
         elseif($request->update_kasir1 != null){
 
@@ -239,7 +249,7 @@ class AdminBooth extends Controller
             }
 
             Alert::success('Berhasil Update Data Kasir', 'Berhasil');
-            return redirect()->back();
+            return redirect()->back()->with('msg', 'pegawai');
         }
         
     }

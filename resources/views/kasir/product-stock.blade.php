@@ -41,7 +41,6 @@
 								<table class="table" id="table">
 									<thead class="bg-dark text-light">
 										<tr>
-											<th width="10%"></th>
 											<th>Nama Makanan</th>
 											<th>Terjual</th>
 											<th>Sisa Stok</th>
@@ -53,13 +52,6 @@
 												
 											
 											<tr>
-												<td class="text-center">
-													@if ($product->gambar != null)
-														<img src="{!! asset($product->gambar) !!}" height="50" alt="" class="rounded">
-													@else
-														<img src="{{ asset('assets/img/nf.png') }}" height="50" alt="" class="rounded">
-													@endif
-												</td>
 												<td>
 													{{$product->nama_makanan}}
 													<input type="hidden" name="id_produk[]" value="{{$product->id}}">
@@ -104,7 +96,7 @@
 
 		  // Loop through all table rows, and hide those who don't match the search query
 		  for (i = 0; i < tr.length; i++) {
-		    td = tr[i].getElementsByTagName("td")[1];
+		    td = tr[i].getElementsByTagName("td")[0];
 		    if (td) {
 		      txtValue = td.textContent || td.innerText;
 		      if (txtValue.toUpperCase().indexOf(filter) > -1) {

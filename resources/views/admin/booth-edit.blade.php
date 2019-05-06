@@ -64,19 +64,19 @@
 						<div class="separator-solid"></div>
 						<ul class="nav nav-pills nav-primary nav-pills-no-bd" id="pills-tab-without-border" role="tablist">
 							<li class="nav-item">
-								<a class="nav-link active" id="pills-home-tab-nobd" data-toggle="pill" href="#pills-home-nobd" role="tab" aria-controls="pills-home-nobd" aria-selected="true">Booth</a>
+								<a class="nav-link {{session()->get('msg') == 'booth' || session()->get('msg') == "" ? 'active' : null}}" id="pills-home-tab-nobd" data-toggle="pill" href="#pills-home-nobd" role="tab" aria-controls="pills-home-nobd" aria-selected="true">Booth</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" id="pills-akun-tab-nobd" data-toggle="pill" href="#pills-akun-nobd" role="tab" aria-controls="pills-akun-nobd" aria-selected="false">Akun</a>
+								<a class="nav-link {{session()->get('msg') == 'akun' ? 'active' : null}}" id="pills-akun-tab-nobd" data-toggle="pill" href="#pills-akun-nobd" role="tab" aria-controls="pills-akun-nobd" aria-selected="false">Akun</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" id="pills-kasir-tab-nobd" data-toggle="pill" href="#pills-kasir-nobd" role="tab" aria-controls="pills-kasir-nobd" aria-selected="false">Kasir</a>
+								<a class="nav-link {{session()->get('msg') == 'pegawai' ? 'active' : null}}" id="pills-kasir-tab-nobd" data-toggle="pill" href="#pills-kasir-nobd" role="tab" aria-controls="pills-kasir-nobd" aria-selected="false">Pegawai</a>
 							</li>
 						</ul>
 						<div class="row" style="margin-top: 1rem;">
 							<div class="col-md-12">
 								<div class="tab-content" id="pills-without-border-tabContent">
-									<div class="tab-pane fade show active" id="pills-home-nobd" role="tabpanel" aria-labelledby="pills-home-tab-nobd">
+									<div class="tab-pane fade show {{session()->get('msg') == 'booth' || session()->get('msg') == "" ? 'active' : null}}" id="pills-home-nobd" role="tabpanel" aria-labelledby="pills-home-tab-nobd">
 										<div class="card" style="border: 1px solid #dddddd;">
 											<div class="card-body">
 												<form action="{{ route('admin.update-booth') }}" method="POST">
@@ -116,7 +116,7 @@
 														</div>
 														<div class="form-group">
 															<label for="nomor">Nomor Telephone</label>
-															<input type="text" class="form-control" name="nomor" id="nomor" value="{{$booth->telepon_booth}}">
+															<input type="text" class="form-control" name="nomor" id="nomor" value="{{$booth->telepon_booth}}" onkeypress="return NumberOnly(event)">
 														</div>
 														<div class="text-right">
 															<input type="submit" name="update_booth" value="Update" class="btn btn-warning">
@@ -126,7 +126,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="tab-pane fade" id="pills-akun-nobd" role="tabpanel" aria-labelledby="pills-akun-tab-nobd">
+									<div class="tab-pane fade show {{session()->get('msg') == 'akun' ? 'active' : null}}" id="pills-akun-nobd" role="tabpanel" aria-labelledby="pills-akun-tab-nobd">
 										<div class="card" style="border: 1px solid #dddddd;">
 											<div class="card-body">
 												<h4><b><span class="fas fa-user-lock text-warning"></span>&nbsp; AKUN</b></h4>
@@ -193,7 +193,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="tab-pane fade" id="pills-kasir-nobd" role="tabpanel" aria-labelledby="pills-kasir-tab-nobd">
+									<div class="tab-pane fade show {{session()->get('msg') == 'pegawai' ? 'active' : null}}" id="pills-kasir-nobd" role="tabpanel" aria-labelledby="pills-kasir-tab-nobd">
 										<div class="card" style="border: 1px solid #dddddd;">
 											<div class="card-body">
 												<h4><b><span class="fas fa-info-circle text-warning"></span>&nbsp; INFORMASI BOOTH</b></h4>
@@ -203,32 +203,32 @@
 													@csrf
 													<div class="form col-md-8 col-12" style="padding: 0;">
 														<div class="form-group">
-															<label for="nama-kasir1">Nama Kasir 1</label>
+															<label for="nama-kasir1">Nama Pegawai 1</label>
 															<input type="text" class="form-control" id="nama-kasir1" name="nama_kasir[]">
 															<input type="hidden" name="id_kasir[]" value="{{$max}}">
 															<input type="hidden" name="id_booth[]" value="{{$booth->id_booth}}">
 														</div>
 														<div class="form-group">
-															<label for="alamat-kasir1">Alamat Kasir 1</label>
+															<label for="alamat-kasir1">Alamat Pegawai 1</label>
 															<textarea class="form-control" id="alamat-kasir1" name="alamat_kasir[]"></textarea>
 														</div>
 														<div class="form-group">
-															<label for="no-kasir1">Telephone Kasir 1</label>
-															<input type="text" class="form-control" id="no-kasir1" name="telp_kasir[]">
+															<label for="no-kasir1">Telephone Pegawai 1</label>
+															<input type="text" class="form-control" id="no-kasir1" name="telp_kasir[]" onkeypress="return NumberOnly(event)">
 														</div>
 														<div class="form-group">
-															<label for="nama-kasir2">Nama Kasir 2</label>
+															<label for="nama-kasir2">Nama Pegawai 2</label>
 															<input type="text" class="form-control" id="nama-kasir2" name="nama_kasir[]">
 															<input type="hidden" name="id_kasir[]" value="{{$max+1}}">
 															<input type="hidden" name="id_booth[]" value="{{$booth->id_booth}}">
 														</div>
 														<div class="form-group">
-															<label for="alamat-kasir2">Alamat Kasir 2</label>
+															<label for="alamat-kasir2">Alamat Pegawai 2</label>
 															<textarea class="form-control" id="alamat-kasir2" name="alamat_kasir[]"></textarea>
 														</div>
 														<div class="form-group">
-															<label for="no-kasir2">Telephone Kasir 2</label>
-															<input type="text" class="form-control" id="no-kasir2" name="telp_kasir[]">
+															<label for="no-kasir2">Telephone Pegawai 2</label>
+															<input type="text" class="form-control" id="no-kasir2" name="telp_kasir[]" onkeypress="return NumberOnly(event)">
 														</div>
 														<div class="text-right">
 															<input type="submit" name="update_kasir1" value="Update" class="btn btn-warning">
@@ -241,36 +241,36 @@
 													<div class="form col-md-8 col-12" style="padding: 0;">
 														@foreach ($kasirs as $kasir)
 															<div class="form-group">
-																<label for="nama-kasir1">Nama Kasir 1</label>
+																<label for="nama-kasir1">Nama Pegawai 1</label>
 																<input type="text" class="form-control" id="nama-kasir1" name="nama_kasir[]" value="{{$kasir->nama_kasir}}">
 																<input type="hidden" name="id_kasir[]" value="{{$kasir->id}}">
-																<input type="hidden" name="id_booth[]" value="{{$booth->id_booth}}">
+																<input type="hidden" name="id_booth[]" value="{{$booth->id_booth}}" >
 															</div>
 															<div class="form-group">
-																<label for="alamat-kasir1">Alamat Kasir 1</label>
+																<label for="alamat-kasir1">Alamat Pegawai 1</label>
 																<textarea class="form-control" id="alamat-kasir1" name="alamat_kasir[]">{{$kasir->alamat_kasir}}</textarea>
 															</div>
 															<div class="form-group">
-																<label for="no-kasir1">Telephone Kasir 1</label>
-																<input type="text" class="form-control" id="no-kasir1" name="telp_kasir[]" value="{{$kasir->telp_kasir}}">
+																<label for="no-kasir1">Telephone Pegawai 1</label>
+																<input type="text" class="form-control" id="no-kasir1" name="telp_kasir[]" value="{{$kasir->telp_kasir}}" onkeypress="return NumberOnly(event)">
 															</div>
 															<a href="{{ route('admin.delete-kasir',$kasir->id) }}" class="btn btn-danger btn-sm hapus-kasir" data-id="{{$kasir->id}}">Hapus</a>
 															<div class="separator-solid"></div>
 														@endforeach
 														<div class="form-group">
-															<label for="nama-kasir2">Nama Kasir 2</label>
+															<label for="nama-kasir2">Nama Pegawai 2</label>
 															<input type="text" class="form-control" id="nama-kasir2" name="nama_kasir[]">
 															<input type="hidden" name="id_booth[]" value="{{$booth->id_booth}}">
 															<input type="hidden" name="id_kasir[]" value="{{$max}}">
 
 														</div>
 														<div class="form-group">
-															<label for="alamat-kasir2">Alamat Kasir 2</label>
+															<label for="alamat-kasir2">Alamat Pegawai 2</label>
 															<textarea class="form-control" id="alamat-kasir2" name="alamat_kasir[]"></textarea>
 														</div>
 														<div class="form-group">
-															<label for="no-kasir2">Telephone Kasir 2</label>
-															<input type="text" class="form-control" id="no-kasir2" name="telp_kasir[]">
+															<label for="no-kasir2">Telephone Pegawai 2</label>
+															<input type="text" class="form-control" id="no-kasir2" name="telp_kasir[]" onkeypress="return NumberOnly(event)">
 														</div>
 														<div class="text-right">
 															<input type="submit" name="update_kasir1" value="Update" class="btn btn-warning">
@@ -284,19 +284,19 @@
 													<div class="form col-md-8 col-12" style="padding: 0;">
 														@foreach ($kasirs as $kasir)
 															<div class="form-group">
-																<label for="nama-kasir1">Nama Kasir</label>
+																<label for="nama-kasir1">Nama Pegawai</label>
 																<input type="text" class="form-control" id="nama-kasir1" name="nama_kasir[]" value="{{$kasir->nama_kasir}}">
 																<input type="hidden" name="id_kasir[]" value="{{$kasir->id}}">
 																<input type="hidden" name="id_booth[]" value="{{$booth->id_booth}}">
 																
 															</div>
 															<div class="form-group">
-																<label for="alamat-kasir1">Alamat Kasir</label>
+																<label for="alamat-kasir1">Alamat Pegawai</label>
 																<textarea class="form-control" id="alamat-kasir1" name="alamat_kasir[]">{{$kasir->alamat_kasir}}</textarea>
 															</div>
 															<div class="form-group">
-																<label for="no-kasir1">Telephone Kasir</label>
-																<input type="text" class="form-control" id="no-kasir1" name="telp_kasir[]" value="{{$kasir->telp_kasir}}">
+																<label for="no-kasir1">Telephone Pegawai</label>
+																<input type="text" class="form-control" id="no-kasir1" name="telp_kasir[]" value="{{$kasir->telp_kasir}}" onkeypress="return NumberOnly(event)">
 															</div>
 															<a href="{{ route('admin.delete-kasir',$kasir->id) }}" class="btn btn-danger btn-sm hapus-kasir" data-id="{{$kasir->id}}">Hapus</a>
 															<div class="separator-solid"></div>

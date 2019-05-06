@@ -42,9 +42,9 @@
 									<tr>
 										<td width="5%"><input type="checkbox" class="checkitem" name="nama_makanan[]" value="{{$p->nama_makanan}}"></td>
 										<td width="25%">{{$p->nama_makanan}} <input type="hidden" name="kategori[]" value="{{$p->kategori}}"></td>
-										<td><input type="text" class="form-control" name="reguler[]" value="{{$p->harga_reguler}}"></td>
-										<td><input type="text" class="form-control" name="gojek[]" value="{{$p->harga_gojek}}"></td>
-										<td><input type="text" class="form-control" name="grab[]" value="{{$p->harga_grab}}"></td>
+										<td><input type="text" class="form-control" name="reguler[]" value="{{$p->harga_reguler}}" onkeypress="return NumberOnly(event)"></td>
+										<td><input type="text" class="form-control" name="gojek[]" value="{{$p->harga_gojek}}" onkeypress="return NumberOnly(event)"></td>
+										<td><input type="text" class="form-control" name="grab[]" value="{{$p->harga_grab}}" onkeypress="return NumberOnly(event)"></td>
 									</tr>
 									@endforeach
 								</table>
