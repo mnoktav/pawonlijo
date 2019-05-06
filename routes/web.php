@@ -22,13 +22,15 @@ Route::get('/admin/booth/note-booth/delete/{judul}', 'AdminBooth@DeleteNote')->n
 Route::get('/admin/booth/booth-pawonlijo', 'AdminBooth@Booth')->name('admin.booth');
 Route::get('/admin/booth/booth-pawonlijo/{id_booth}', 'AdminBooth@DetailBoothHome')->name('admin.detail-booth');
 Route::get('/admin/booth/booth-pawonlijo/{id_booth}/transaksi', 'AdminBooth@DetailBoothTransaksi')->name('admin.detail-booth-transaksi');
-Route::get('/admin/booth/booth-pawonlijo/{id_booth}/pendapatan', 'AdminBooth@DetailBoothPendapatan')->name('admin.detail-booth-menu');
+Route::get('/admin/booth/booth-pawonlijo/{id_booth}/info', 'AdminBooth@DetailBoothInfo')->name('admin.detail-booth-info');
 Route::get('/admin/booth/booth-pawonlijo/{id_booth}/edit', 'AdminBooth@EditBooth')->name('admin.edit-booth');
 Route::post('/admin/booth/booth-pawonlijo/update', 'AdminBooth@UpdateBooth')->name('admin.update-booth');
 Route::get('/admin/booth/booth-pawonlijo/delete/{id}', 'AdminBooth@DeleteKasir')->name('admin.delete-kasir');
 Route::get('/admin/booth/booth-pawonlijo/non-activate/{id}', 'AdminBooth@NonBooth')->name('admin.nonactive-booth');
 Route::get('/admin/booth/booth-pawonlijo/activate/{id}', 'AdminBooth@ActBooth')->name('admin.active-booth');
-
+Route::get('/admin/booth/booth-pawonlijo/transaksi/{id}/{status}', 'AdminBooth@ActTrans')->name('admin.active-booth-transaksi');
+Route::post('/admin/booth/booth-pawonlijo/transaksi/update-pajak', 'AdminBooth@UpdatePajak')->name('admin.pajak-booth-transaksi');
+Route::get('/admin/tax', 'AdminBooth@JenisTransaksi')->name('admin.booth-jenis-transaksi');
 
 //produk
 Route::get('/admin/product', 'AdminProduct@index')->name('admin.product');
@@ -54,9 +56,11 @@ Route::get('/admin/sales', 'AdminSales@index')->name('admin.sales');
 Route::get('/admin/pesanan', 'AdminSales@Pesanan')->name('admin.pesanan');
 Route::get('/admin/sales/detail/{id}', 'AdminSales@Detail')->name('admin.sales-detail');
 Route::get('/admin/pesanan/detail/{id}', 'AdminSales@Detail')->name('admin.pesanan-detail');
+Route::get('/admin/pesanan/update/{id}', 'AdminSales@PesananSelesai')->name('admin.transaksi-update-pesanan');
 
 //report
 Route::get('/admin/report', 'AdminReport@index')->name('admin.report');
+Route::get('/admin/report/pdf', 'AdminReport@DownloadPdf')->name('admin.report-pdf');
 
 
 //kasir-login
@@ -76,6 +80,7 @@ Route::get('/kasir/checkout', 'KasirDashboard@Checkout')->name('kasir.checkout')
 Route::post('/kasir/checkout/save', 'KasirDashboard@SaveCheckout')->name('kasir.checkout-save');
 Route::get('/kasir/print-nota/{id}', 'KasirDashboard@PrintNota')->name('kasir.print-nota');
 
+
 //kasir-transaksi
 Route::get('/kasir/transaksi', 'KasirSales@index')->name('kasir.transaksi');
 Route::get('/kasir/transaksi/pesanan', 'KasirSales@SalesPesanan')->name('kasir.transaksi-pesanan');
@@ -86,4 +91,11 @@ Route::post('/kasir/transaksi/batal', 'KasirSales@TransaksiBatal')->name('kasir.
 
 //kasir stok
 Route::get('/kasir/stok', 'KasirSales@StockProduct')->name('kasir.stok');
+Route::post('/kasir/stok/update', 'KasirDashboard@StockUpdate')->name('kasir.stok-update');
 Route::get('/kasir/report', 'KasirReport@index')->name('kasir.report');
+
+//akun admin
+Route::get('/admin/akun', 'AdminDashboard@Akun')->name('admin.akun');
+Route::post('/admin/akun/update', 'AdminDashboard@UpdateAkun')->name('admin.akun-update');
+
+Auth::routes();

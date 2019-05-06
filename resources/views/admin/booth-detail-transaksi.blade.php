@@ -17,14 +17,15 @@
 			<div class="table-responsive">
 				<table id="basic-datatables" class="display table table-striped table-hover" style="padding: 0px;">
 					<thead class="bg-dark text-light">
-						<tr>
+						<tr style="text-transform: uppercase;">
 							<th>Tanggal</th>
 							<th>ID. Transaksi</th>
-							<th>Jenis</th>
+							<th>Jenis (Pajak)</th>
 							<th>Kode</th>
-							<th>Subtotal</th>
-							<th>Potongan</th>
 							<th>Total</th>
+							<th>Discount</th>
+							<th>Pajak</th>
+							<th>Total Bersih</th>
 							<th>Status</th>
 							<th>Detail</th>
 						</tr>
@@ -34,17 +35,21 @@
 						<tr>
 							<td>{{date('d/m/Y H:i', strtotime($sale->created_at))}}</td>
 							<td>{{$sale->id}}</td>
-							<td>{{$sale->jenis}}</td>
+							<td>{{$sale->jenis}} ({{$sale->pajak}}%)</td>
 							<td>{{$sale->kode}}</td>
-							<td>Rp {{$sale->subtotal}}</td>
-							<td>Rp {{$sale->potongan}}</td>
-							<td>Rp {{$sale->total}}</td>
+							<td>Rp {{Rupiahd($sale->total)}}</td>
+							<td>Rp {{Rupiahd($sale->potongan)}}</td>
+							<td>Rp {{Rupiahd($sale->total_pajak)}}</td>
+							
+							<td>Rp {{Rupiahd($sale->total_bersih)}}</td>
 							@if($sale->status == 2)
 							<td class="d-none d-sm-table-cell">Pending</td>
-							@elseif($sale->status == 1)
+							@elseif($sale->status == 1 and $sale->jenis == 'Pesanan')
 							<td class="d-none d-sm-table-cell">
 								Selesai <br><small>{{date('d/m/Y H:i', strtotime($sale->updated_at))}}</small>
 							</td>
+							@elseif($sale->status == 1 and $sale->jenis != 'Pesanan')
+							<td class="d-none d-sm-table-cell">Sukses</td>
 							@else
 							<td class="d-none d-sm-table-cell">Batal</td>
 							@endif

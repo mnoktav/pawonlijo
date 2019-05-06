@@ -62,20 +62,36 @@
 			type: 'line',
 			data: {
 				labels: {!!json_encode(array_reverse($pl))!!},
-				datasets: [{
-					label: "Sisa Stok",
-					borderColor: "#f21c4e",
-					pointBorderColor: "#FFF",
-					pointBackgroundColor: "#f21c4e",
-					pointBorderWidth: 2,
-					pointHoverRadius: 4,
-					pointHoverBorderWidth: 1,
-					pointRadius: 4,
-					backgroundColor: 'transparent',
-					fill: true,
-					borderWidth: 2,
-					data: [{{implode(',', array_reverse($ph))}}]
-				}]
+				datasets: [
+					{
+						label: "Sisa Stok",
+						borderColor: "#f21c4e",
+						pointBorderColor: "#FFF",
+						pointBackgroundColor: "#f21c4e",
+						pointBorderWidth: 2,
+						pointHoverRadius: 4,
+						pointHoverBorderWidth: 1,
+						pointRadius: 4,
+						backgroundColor: 'transparent',
+						fill: true,
+						borderWidth: 2,
+						data: [{{implode(',', array_reverse($ph))}}]
+					},
+					{
+						label: "Stok Terjual",
+						borderColor: "#20b218",
+						pointBorderColor: "#FFF",
+						pointBackgroundColor: "#20b218",
+						pointBorderWidth: 2,
+						pointHoverRadius: 4,
+						pointHoverBorderWidth: 1,
+						pointRadius: 4,
+						backgroundColor: 'transparent',
+						fill: true,
+						borderWidth: 2,
+						data: [{{implode(',', array_reverse($pt))}}]
+					}
+				]
 			},
 			options : {
 				responsive: true, 

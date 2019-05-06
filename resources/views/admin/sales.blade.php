@@ -1,8 +1,10 @@
 @extends('admin/master-d')
 @section('css')
 	<style>
-		.table th, .table td{
+		#table th, #table td{
 			font-size: 0.8rem;
+			padding: 0.5rem !important;
+			height: 2.5rem;
 		}
 		.info td{
 			padding: 5px;
@@ -14,7 +16,7 @@
 			margin: 0;
 		}
 		.popover{
-			width:30%;
+			width:40%;
 			height:60%;
 			max-width:none;
 		}
@@ -75,29 +77,29 @@
 						<div class="row">
 							
 							@if (is_null($t_awal))
-								<div class="col-md-6" style="text-transform: uppercase; padding-left: 2.5%">
-									<small><b>Daftar Penjualan Semua Booth PawonLijo</b></small><br>
-									<small><b>sampai dengan : {{date('d/m/Y H:i')}}</b></small>
+								<div class="col-md-6" style="text-transform: uppercase;">
+									<h4><b>Daftar Penjualan Semua Booth PawonLijo</b></h4>
+									<h5>sampai dengan : {{date('d/m/Y H:i')}} WIB</h5>
 								</div>
 							@else
-								<div class="col-md-6" style="text-transform: uppercase; padding-left: 2.5%">
+								<div class="col-md-6" style="text-transform: uppercase;">
 									@if($id_booth == '')
-										<small><b>Daftar Penjualan Semua Booth PawonLijo</b></small><br>
+										<h4><b>Daftar Penjualan Semua Booth PawonLijo</b></h4>
 									@else
-										<small><b>Daftar Penjualan Booth {{$id_booth}}</b></small><br>
+										<h4><b>Daftar Penjualan Booth {{$id_booth}}</b></h4>
 									@endif
-									<small><b>Tanggal :  {{date('d/m/Y', strtotime($t_awal))}}</b></small>
-									@if($t_akhir != '')
-										<small><b> - {{date('d/m/Y', strtotime($t_akhir))}}</b></small>
+									@if($t_akhir == '')
+									<h5>Tanggal :  {{date('d/m/Y', strtotime($t_awal))}}</h5>
+									@else
+										<h5>Tanggal :  {{date('d/m/Y', strtotime($t_awal))}} - {{date('d/m/Y', strtotime($t_akhir))}}</h5>
 									@endif
-									<br>
-									<small><b>
+									<h5>
 										Jenis : {{implode(', ',$jenis)}}
 										
-									</b></small>
+									</h5>
 								</div>
 							@endif
-							<div class="col-md-6 mb-2 text-right" style="padding-right: 2.5%">
+							<div class="col-md-6 mb-2 text-right">
 								<button data-toggle="modal" data-target="#FilterModal" class="btn btn-sm"><i class="fas fa-search"></i></button>
 								<button href="#popover_content_wrapper" class="btn btn-sm btn-pop" data-trigger="focus"><i class="fas fa-info"></i></button>
 							</div>
@@ -107,48 +109,54 @@
 								<div class="head" style="border-bottom: 1px solid #aaaaaa;">
 									<h4><i class="fas fa-info-circle mr-2"></i>INFO</h4>
 								</div>
-								<table class="table table-striped mt-2 text-center border">
+								<table class="table table-striped mt-2 border">
 									<tr>
 										<td></td>
-										<td>Transaksi</td>
-										<td>Pendapatan</td>
+										<th>Transaksi</th>
+										<th>Pendapatan</th>
+										<th>Pajak</th>
 									</tr>
 									@php
 										$tt = 0;
 										$tp = 0;
+										$t_pajak = 0;
 									@endphp
 									@foreach ($jumlah_t as $t)
 										<tr>
 											<td>{{$t->jenis}}</td>
-											<td>{{$t->jumlah}}</td>
-											<td>Rp {{$t->total}}</td>
+											<td align="center">{{$t->jumlah}}</td>
+											<td>Rp {{Rupiahd($t->total)}}</td>
+											<td>Rp {{Rupiahd($t->t_pajak)}} </td>
 										</tr>
 										@php
 											$tt += $t->jumlah;
 											$tp += $t->total;
+											$t_pajak += $t->t_pajak
 										@endphp
 									@endforeach
 									<tr>
 										<td><b>TOTAL</b></td>
-										<td>{{$tt}}</td>
-										<td>Rp {{$tp}}</td>
+										<td align="center">{{$tt}}</td>
+										<td>Rp {{Rupiahd($tp)}}</td>
+										<td>Rp {{Rupiahd($t_pajak)}}</td>
 									</tr>
 								</table>
 							</div>
-
+							
 							<div class="col-md-12">
 								<div class="table-responsive mt-2">
-									<table class="table table-striped transaksi">
+									<table class="table table-striped transaksi" id="table">
 										<thead class="bg-dark text-light">
 											<tr>
 												<th>TANGGAL</th>
 												<th>ID TRANSAKSI</th>
-												<th>JENIS TRANSAKSI</th>
+												<th>JENIS (PAJAK)</th>
 												<th>KODE</th>
 												<th>TOTAL</th>
-												<th>POTONGAN</th>
-												<th>TOTAL BAYAR</th>
-												<th>Detail</th>
+												<th>DISCOUNT</th>
+												<th>PAJAK</th>
+												<th>TOTAL BERSIH</th>
+												<th>DETAIL</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -156,16 +164,20 @@
 											<tr>
 												<td>{{date('d/m/Y H:i',strtotime($sale->created_at))}}</td>
 												<td>{{$sale->id}}</td>
-												<td>{{$sale->jenis}}</td>
+												<td>
+													{{$sale->jenis}} 
+													({{$sale->pajak}}%)
+												</td>
 												@if($sale->kode != null)
 												<td>{{$sale->kode}}</td>
 												@else
 												<td>-</td>
 												@endif
-												<td>Rp {{$sale->subtotal}}</td>
-												<td>Rp {{$sale->potongan}}</td>
-												<td>Rp {{$sale->total}}</td>
-												<td><a href="{{ route('admin.sales-detail',$sale->id) }}" class="btn btn-primary btn-sm">Detail</a></td>
+												<td>Rp {{Rupiahd($sale->subtotal)}}</td>
+												<td>Rp {{Rupiahd($sale->potongan)}}</td>
+												<td>Rp {{Rupiahd($sale->total_pajak)}}</td>
+												<td>Rp {{Rupiahd($sale->total_bersih)}}</td>
+												<td><a href="{{ route('admin.sales-detail',$sale->id) }}" class="btn btn-primary btn-xs">Detail</a></td>
 											</tr>
 											@endforeach
 										</tbody>
@@ -226,7 +238,7 @@
 								  	</div>
 								  	<input type="text" class="form-control" value="Gojek" readonly style="background-color: white !important; color: black !important">
 								</div>
-								<div class="input-group">
+								<div class="input-group mb-1">
 								  	<div class="input-group-prepend">
 								    	<div class="input-group-text">
 								      		<input type="checkbox" aria-label="Radio button for following text input" name="jenis[]" value="grab" {{GetSelected($jenis,'grab') == true ? 'checked' : null}}>
@@ -266,20 +278,45 @@
 		var ProdukTransaksiTahun = document.getElementById('ProdukTransaksiTahun').getContext('2d');
 
 		var myProdukTransaksiTahun = new Chart(ProdukTransaksiTahun, {
-			type: 'line',
+			type: 'bar',
 			data: {
 				labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"],
-				datasets : [{
-					@if ($rc == 'p')
-					label: "Rp",
-					@else
-					label: "Transaksi",
+				datasets : [
+					{
+						@if ($rc == 't')
+						label: "Transaksi",
+						@else
+						label: "Rp",
+						@endif
+						pointBorderColor: "#FFF",
+						pointBackphpgroundColor: "#20b218",
+						pointBorderWidth: 2,
+						pointHoverRadius: 4,
+						pointHoverBorderWidth: 1,
+						pointRadius: 4,
+						fill: true,
+						borderWidth: 2,
+						backgroundColor: 'orange',
+						borderColor: '#b5b5b5',
+						data: [{{implode(',',$chart)}}],
+					},
+					@if ($rc == 'p' or empty($rc))
+					{
+						label: "Rp",
+						pointBorderColor: "#FFF",
+						pointBackphpgroundColor: "#20b218",
+						pointBorderWidth: 2,
+						pointHoverRadius: 4,
+						pointHoverBorderWidth: 1,
+						pointRadius: 4,
+						fill: true,
+						borderWidth: 2,
+						backgroundColor: 'red',
+						borderColor: '#b5b5b5',
+						data: [{{implode(',',$tpajak)}}],
+					}
 					@endif
-					
-					backgroundColor: 'transparent',
-					borderColor: 'rgb(23, 125, 255)',
-					data: [{{implode(',',$chart)}}],
-				}],
+				],
 			},
 			options: {
 				responsive: true, 
@@ -287,13 +324,40 @@
 				legend: {
 					display: false,
 				},
+				@if (empty($rc) || $rc == 'p')
+				tooltips: {
+	                enabled: true,
+	                mode: 'single',
+	                callbacks: {
+	                    label: function(tooltipItems, data) { 
+	                    	if (tooltipItems.datasetIndex == 0) {
+	                        	return 'Income : Rp '+ tooltipItems.yLabel + ' K';
+	                        }
+	                        else if (tooltipItems.datasetIndex == 1) {
+	                        	return 'Pajak : Rp '+ tooltipItems.yLabel + ' K';
+	                        }
+	                    }
+	                }
+	            },
+				@endif
 				scales: {
 					yAxes: [{
+						@if ($rc == 't')
 						ticks: {
-							beginAtZero:true
+							beginAtZero:true	
 						}
+						
+						@else
+						ticks: {
+		                    callback: function(label, index, labels) {
+		                        return label+' K';
+		                    }
+		                }
+						@endif
+						
 					}]
 				}
+				
 			}
 		});
 
@@ -309,10 +373,17 @@
 		});
 	</script>
 	<script src="{{ asset('assets/atlantis/js/plugin/datatables/datatables.min.js') }}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+	<script src="https://cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
 	<script>
 		$(document).ready(function() {
+			$.fn.dataTable.moment( 'DD/MM/YYYY HH:mm' );
 			$('.transaksi').DataTable({
 				 aaSorting: [[0, 'desc']],
+				 columnDefs: [{
+				    target: 0,
+				    type: 'datetime-moment'
+				  }],
 				 "pageLength": 25
 			});
 		})

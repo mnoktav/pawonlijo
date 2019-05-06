@@ -3,6 +3,7 @@
 	<style>
 		.table td, .table th{
 			height: 2.6rem !important;
+			border:1px solid grey !important;
 		}
 	</style>
 @endsection

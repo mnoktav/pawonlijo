@@ -17,7 +17,7 @@
 						<tr>
 							<th width="20%">Pemasukan</th>
 							<td width="1%">:</td>
-							<td colspan="2">Rp {{$total}} </td>
+							<td colspan="2">Rp {{Rupiah($total)}} </td>
 						</tr>
 						<tr>
 							<th>Transaksi Berhasil</th>
@@ -37,13 +37,19 @@
 						@php
 							$i = 1;
 						@endphp
-						@foreach ($jh as $jh)
-							<tr>
-								<td width="5%">{{$i++}}.</td>
-								<td width="30%">{{$jh->nama_makanan}}</td>
-								<td>{{$jh->jumlah}} Porsi</td>
+						@if (count($jh) == null)
+							<tr class="text-center">
+								<td colspan="3">Belum Ada Produk terjual</td>
 							</tr>
-						@endforeach
+						@else
+							@foreach ($jh as $jh)
+								<tr>
+									<td width="5%">{{$i++}}.</td>
+									<td width="30%">{{$jh->nama_makanan}}</td>
+									<td>{{$jh->jumlah}} Porsi</td>
+								</tr>
+							@endforeach
+						@endif
 					</table>
 				</div>
 			</div>

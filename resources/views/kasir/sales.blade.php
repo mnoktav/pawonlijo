@@ -42,9 +42,9 @@
 								@else
 								<td class="d-none d-sm-table-cell">-</td>
 								@endif
-								<td class="d-none d-sm-table-cell">Rp {{$sale->subtotal}}</td>
-								<td class="d-none d-sm-table-cell">Rp {{$sale->potongan}}</td>
-								<td class="d-none d-sm-table-cell">Rp {{$sale->total}}</td>
+								<td class="d-none d-sm-table-cell">Rp {{Rupiahd($sale->subtotal)}}</td>
+								<td class="d-none d-sm-table-cell">Rp {{Rupiahd($sale->potongan)}}</td>
+								<td class="d-none d-sm-table-cell">Rp {{Rupiahd($sale->total)}}</td>
 								@if($sale->status == 1)
 								<td class="d-none d-sm-table-cell">Sukses</td>
 								@else

@@ -29,17 +29,21 @@
 				</div>
 			</div>
 			@endif
+			@foreach ($jenis as $j)
+				{{-- expr --}}
+			
 			<div class="col-md-3 col-6" >
 				<div class="card card-pricing border">
 					<div class="card-header">
-						<h4 class="card-title"><b>REGULER</b></h4>
+						<h4 class="card-title" style="text-transform: uppercase;"><b>{{$j->jenis_transaksi}}</b></h4>
 					</div>
 					<div class="card-footer">
-						<a href="{{ url('/kasir/product?jenis=Reguler') }}" class="btn btn-primary btn-block btn-lg">Pesan</a>
+						<a href="/kasir/product?jenis={{$j->jenis_transaksi}}" class="btn btn-primary btn-block btn-lg">Pesan</a>
 					</div>
 				</div>
 			</div>
-			<div class="col-md-3 col-6">
+			@endforeach
+			{{-- <div class="col-md-3 col-6">
 				<div class="card card-pricing border">
 					<div class="card-header">
 						<h4 class="card-title"><b>GRAB</b></h4>
@@ -68,7 +72,7 @@
 						<a href="{{ url('/kasir/product?jenis=Pesanan') }}" class="btn btn-primary btn-block btn-lg">Pesan</a>
 					</div>
 				</div>
-			</div> 
+			</div>  --}}
 		</div>
 		<div class="row">
 			{{-- <div class="col-md-4 mt-3">

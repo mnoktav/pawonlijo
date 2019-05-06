@@ -13,12 +13,22 @@
 								<small>{{session('login')['nama_booth']}}, {{session('login')['kota_booth']}} ({{session('login')['id_booth']}})</small><br>
 							</div>
 							<div class="col-md-2 text-right">
-								<a class="btn btn-sm btn-rounded btn-primary text-light" onclick="window.history.back()">
-									<span class="btn-label">
-										<i class="fas fa-angle-left"></i>
-									</span>
-									Kembali
-								</a>
+								@if (Request::segment(2) == 'Pesanan')
+									<a class="btn btn-sm btn-rounded btn-primary text-light" href="{{ route('admin.pesanan') }}">
+										<span class="btn-label">
+											<i class="fas fa-angle-left"></i>
+										</span>
+										Kembali
+									</a>
+								@else
+									<a class="btn btn-sm btn-rounded btn-primary text-light" onclick="window.history.back()">
+										<span class="btn-label">
+											<i class="fas fa-angle-left"></i>
+										</span>
+										Kembali
+									</a>
+								@endif
+								
 							</div>
 						</div>
 						<div class="separator-solid"></div>
@@ -59,30 +69,30 @@
 											@foreach ($detail as $detail)
 											<tr>
 												<td>{{$detail->nama_makanan}}</td>
-												<td>Rp {{$detail->harga_satuan}}</td>
+												<td>Rp {{Rupiah($detail->harga_satuan)}}</td>
 												<td>{{$detail->jumlah}}</td>
-												<td>Rp {{$detail->harga_satuan*$detail->jumlah}}</td>
+												<td>Rp {{Rupiah($detail->harga_satuan*$detail->jumlah)}}</td>
 											</tr>
 											@endforeach
 											<tr>
 												<td colspan="3"><b>SUBTOTAL</b></td>
-												<td>Rp {{$sale->subtotal}}</td>
+												<td>Rp {{Rupiah($sale->subtotal)}}</td>
 											</tr>
 											<tr>
 												<td colspan="3"><b>POTONGAN</b></td>
-												<td>Rp {{$sale->potongan}}</td>
+												<td>Rp {{Rupiah($sale->potongan)}}</td>
 											</tr>
 											<tr>
 												<td colspan="3"><b>TOTAL</b></td>
-												<td>Rp {{$sale->total}}</td>
+												<td>Rp {{Rupiah($sale->total)}}</td>
 											</tr>
 											<tr>
 												<td><b>BAYAR</b></td>
-												<td>Rp {{$sale->bayar}}</td>
+												<td>Rp {{Rupiah($sale->bayar)}}</td>
 											</tr>
 											<tr>
 												<td><b>KEMBALI</b></td>
-												<td>Rp {{$sale->kembali}}</td>
+												<td>Rp {{Rupiah($sale->kembali)}}</td>
 											</tr>
 										</tbody>
 									</table>

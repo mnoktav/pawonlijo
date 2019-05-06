@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\PL_Product;
 use App\PL_Transaksi;
+use App\PL_JenisTransaksi;
 use App\PL_Stok;
 use App\PL_Detail;
 use App\PL_Note;
 use App\PL_Booth;
+use App\PL_Pajak;
 use Illuminate\Http\Request;
 use Validator;  
 use Alert;
@@ -27,10 +29,14 @@ class KasirDashboard extends Controller
         $stok = PL_Stok::whereDate('created_at',date('Y-m-d'))
                         ->where('id_booth',$id)
                         ->count();
-                        
+        $jenis = PL_JenisTransaksi::where('id_booth', $id)
+                                ->where('status', 1)
+                                ->get();    
+
     	return view('kasir/dashboard',[
              'notes' => $notes,
-             'stok' => $stok
+             'stok' => $stok,
+             'jenis' => $jenis
         ]);
     }
 
@@ -243,6 +249,14 @@ class KasirDashboard extends Controller
                             'jumlah' => $detail['jumlah']
                         ]);
                     }
+                    
+                    $pajak = PajakTrans($request->jenis,$request->id_booth);
+                    PL_Pajak::create([
+                        'id_transaksi' => $id_transaksi,
+                        'jenis_transaksi' => $request->jenis,
+                        'pajak' => $pajak->pajak,
+                        'total_pajak' => $pajak->pajak/100*Nominal($request->subtotal)
+                    ]);
                 }
                 else{
                     PL_Transaksi::create([
@@ -270,6 +284,14 @@ class KasirDashboard extends Controller
                                 ->where('id_produk',$id)
                                 ->decrement('sisa_stok',$detail['jumlah']);
                     }
+
+                    $pajak = PajakTrans($request->jenis,$request->id_booth);
+                    PL_Pajak::create([
+                        'id_transaksi' => $id_transaksi,
+                        'jenis_transaksi' => $request->jenis,
+                        'pajak' => $pajak->pajak,
+                        'total_pajak' => $pajak->pajak/100*Nominal($request->subtotal)
+                    ]);
                 }
                 
 
@@ -294,6 +316,49 @@ class KasirDashboard extends Controller
             'booth' => $booth,
             'produk' => $produk
         ]);
+    }
+
+    //update stok
+    public function StockUpdate(Request $request)
+    {
+        if($request->update != null){
+            if(count(array_filter($request->update_stok)) < 1){
+                Alert::warning('Isi Kolom Update Stok Terlebih Dahulu', 'Gagal');
+                return redirect()->back();
+            }
+            else{
+                for ($i=0; $i < count($request->update_stok); $i++) { 
+                    $stok[] = PL_Stok::where('id_produk', $request->id_produk[$i])
+                            ->whereDate('created_at',date('Y-m-d'))
+                            ->where('id_booth', $request->id_booth)
+                            ->count();
+                    
+                    $val[] = intval($request->update_stok[$i]);
+      
+                    if($stok[$i] <= 0){
+                        PL_Stok::create([
+                            'total_stok' => $val[$i],
+                            'sisa_stok' => $val[$i], 
+                            'id_produk' => $request->id_produk[$i],
+                            'id_booth' => $request->id_booth
+                        ]);
+                    }
+                    else{
+                        PL_Stok::where('id_produk', $request->id_produk[$i])
+                            ->whereDate('created_at',date('Y-m-d'))
+                            ->where('id_booth', $request->id_booth)
+                            ->update([
+                                    'total_stok' => DB::raw('total_stok + '.$val[$i].''),
+                                    'sisa_stok' => DB::raw('sisa_stok + '.$val[$i].'')
+                            ]);
+                    }
+                }
+            }
+        }
+
+        Alert::success('Produk Berhasil Update Stok Produk', 'Berhasil');
+        return redirect()->back();
+        
     }
 }
 

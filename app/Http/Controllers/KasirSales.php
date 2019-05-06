@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\PL_Product;
+use App\Top_Product;
 use App\PL_Transaksi;
 use App\PL_Stok;
 use App\PL_Detail;
 use App\PL_Booth;
+use App\View_Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Validator;  
@@ -25,7 +27,7 @@ class KasirSales extends Controller
     	$booth = PL_Booth::where('id_booth',$id)->first();
     	$sales = PL_Transaksi::whereDate('created_at',date('Y-m-d'))
     						->where('id_booth', $id)
-                            ->where('status',1)
+                            ->whereIn('status',[0,1])
     						->orderBy('created_at','desc')
     						->get();
     	// dd($sales);	
@@ -56,19 +58,21 @@ class KasirSales extends Controller
     {
     	if(!is_null($request->batal)){
 
-            $cek_detail = PL_Detail::where('id_transaksi',$request->id)->get();
-
-            foreach ($cek_detail as $a) {
-                PL_Stok::whereDate('created_at', date('Y-m-d'))
-                        ->where('id_produk',$a->id_produk)
-                        ->increment('sisa_stok',$a->jumlah);
-            }
-
             $sale = PL_Transaksi::find($request->id);
             $sale->status = 0;
             $sale->keterangan = $request->keterangan;
             $sale->save();
             
+            if($sale->jenis != 'Pesanan'){
+                $cek_detail = PL_Detail::where('id_transaksi',$request->id)->get();
+            
+                foreach ($cek_detail as $a) {
+                    PL_Stok::whereDate('created_at', date('Y-m-d'))
+                            ->where('id_produk',$a->id_produk)
+                            ->increment('sisa_stok',$a->jumlah);
+                }
+            }
+
     		Alert::success('Berhasil Dibatalkan', 'Berhasil');
             return redirect()->back();
     	}
@@ -84,12 +88,11 @@ class KasirSales extends Controller
         $stocks = PL_Stok::whereDate('created_at',date('Y-m-d'))
                         ->where('id_booth',$id)
                         ->get();
-        $terjual = PL_Detail::join('pl_produk', 'pl_produk.id', '=', 'pl_detail_transaksi.id_produk')
-                            ->select(DB::raw('pl_detail_transaksi.id_produk, sum(pl_detail_transaksi.jumlah) as jumlah, pl_detail_transaksi.created_at, pl_produk.id_booth'))
-                            ->where('id_booth',$id)
-                            ->whereDate('pl_detail_transaksi.updated_at', date('Y-m-d'))
-                            ->groupBy('id_produk')
-                            ->get();
+        $terjual = Top_Product::select(DB::raw('id_produk, sum(jumlah) as jumlah'))
+                                ->whereDate('created_at',date('Y-m-d'))
+                                ->where('id_booth',$id)
+                                ->groupBy('id_produk')
+                                ->get();
         return view('kasir/product-stock', [
             'products' => $products,
             'booth' => $booth,

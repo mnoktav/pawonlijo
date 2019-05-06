@@ -1,5 +1,6 @@
 @extends('admin/product')
 @section('css')
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<style>
 		.form-group{
 			padding: 1rem 0;
@@ -23,7 +24,7 @@
 						<div class="separator-solid"></div>
 						<div class="form-group {{$errors->has('nama_makanan') ? 'has-error' : null}}">
 							<label for="nama_makanan">Nama Makanan</label>
-							<input type="text" class="form-control" id="nama_makanan" name="nama_makanan" value="{{old('nama_makanan')}}">
+							<input type="text" class="form-control" id="tags" name="nama_makanan" value="{{old('nama_makanan')}}">
 							@if ($errors->has('nama_makanan'))
 								<span class="help-block text-danger">
 									{{$errors->first('nama_makanan')}}
@@ -110,4 +111,17 @@
 			</div>
 		</div>
 	</div>
+@endsection
+@section('js')
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script>
+	  $( function() {
+	    var availableTags = 
+	 	{!!json_encode($p)!!};
+	    
+	    $( "#tags" ).autocomplete({
+	      source: availableTags
+	    });
+	  } );
+  	</script>
 @endsection

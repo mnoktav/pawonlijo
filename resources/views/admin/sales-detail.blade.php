@@ -87,37 +87,41 @@
 											@foreach ($detail as $detail)
 											<tr>
 												<td>{{$detail->nama_makanan}}</td>
-												<td>Rp {{$detail->harga_satuan}}</td>
+												<td>Rp {{Rupiah($detail->harga_satuan)}}</td>
 												<td>{{$detail->jumlah}}</td>
-												<td>Rp {{$detail->harga_satuan*$detail->jumlah}}</td>
+												<td>Rp {{Rupiah($detail->harga_satuan*$detail->jumlah)}}</td>
 											</tr>
 											@endforeach
 											<tr>
 												<td colspan="3"><b>SUBTOTAL</b></td>
-												<td>Rp {{$sale->subtotal}}</td>
+												<td>Rp {{Rupiah($sale->subtotal)}}</td>
 											</tr>
 											<tr>
-												<td colspan="3"><b>POTONGAN</b></td>
-												<td>Rp {{$sale->potongan}}</td>
+												<td colspan="3"><b>DISCOUNT BOOTH</b></td>
+												<td>Rp {{Rupiah($sale->potongan)}}</td>
 											</tr>
 											<tr>
 												<td colspan="3"><b>TOTAL</b></td>
-												<td>Rp {{$sale->total}}</td>
+												<td><b> Rp {{Rupiah($sale->total)}}</b></td>
+											</tr>
+											<tr>
+												<td colspan="3"><b>TOTAL BERSIH (PAJAK {{$sale->pajak}}%)</b></td>
+												<td><b>Rp {{Rupiah($sale->total_bersih)}} &nbsp;&nbsp;&nbsp;(Rp {{Rupiah($sale->subtotal*$sale->pajak/100)}})</b></td>
 											</tr>
 											<tr>
 												<td><b>BAYAR</b></td>
-												<td>Rp {{$sale->bayar}}</td>
+												<td>Rp {{Rupiah($sale->bayar)}}</td>
 											</tr>
 											<tr>
 												<td><b>KEMBALI</b></td>
-												<td>Rp {{$sale->kembali}}</td>
+												<td>Rp {{Rupiah($sale->kembali)}}</td>
 											</tr>
 										</tbody>
 									</table>
 								</div>
 								<div class="text-center">
 									<button type="button" class="btn btn-sm btn-rounded btn-danger {{$sale->status == 0 || $sale->jenis == 'Pesanan' || $sale->status == 1 ? 'd-none' : null}}" data-toggle="modal" data-target=".bd-example-modal-sm ">Batalkan Transaksi</button>
-									<a href="{{ route('kasir.transaksi-update-pesanan', $sale->id) }}" class="btn btn-sm btn-rounded btn-success {{$sale->status != 2 ? 'd-none' : null}}">Transaksi Selesai</a>
+									<a href="{{ route('admin.transaksi-update-pesanan', $sale->id) }}" class="btn btn-sm btn-rounded btn-success {{$sale->status != 2 ? 'd-none' : null}}">Transaksi Selesai</a>
 								</div>
 							</div>
 						</div>

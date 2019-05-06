@@ -1,4 +1,12 @@
 @extends('kasir/master-d')
+@section('css')	
+	<style>
+		#table td, #table th{
+			border:1px solid grey !important;
+			height: 2.5rem !important;
+		}
+	</style>
+@endsection
 @section('content')	
 	<div class="page-inner">
 		<div class="row">
@@ -12,7 +20,7 @@
 							</div>
 						</div>
 						<div class="separator-solid"></div>
-						<form action="{{ route('admin.stock-update') }}" method="POST">
+						<form action="{{ route('kasir.stok-update') }}" method="POST">
 						@csrf
 							<div class="row mb-3">
 								<div class="col-md-6">
@@ -30,12 +38,13 @@
 								</div>
 							</div>
 							<div class="table-responsive">
-								<table class="table table-striped" id="table">
+								<table class="table" id="table">
 									<thead class="bg-dark text-light">
 										<tr>
 											<th width="10%"></th>
 											<th>Nama Makanan</th>
-											<th>Stok</th>
+											<th>Terjual</th>
+											<th>Sisa Stok</th>
 											<th>Update Stok</th>
 										</tr>
 									</thead>
@@ -46,15 +55,20 @@
 											<tr>
 												<td class="text-center">
 													@if ($product->gambar != null)
-														<img src="{!! asset($product->gambar) !!}" height="50" alt="">
+														<img src="{!! asset($product->gambar) !!}" height="50" alt="" class="rounded">
 													@else
-														<img src="{{ asset('assets/img/nf.png') }}" height="50" alt="">
+														<img src="{{ asset('assets/img/nf.png') }}" height="50" alt="" class="rounded">
 													@endif
 												</td>
 												<td>
 													{{$product->nama_makanan}}
 													<input type="hidden" name="id_produk[]" value="{{$product->id}}">
 													<input type="hidden" name="id_booth" value="{{session('login')['id_booth']}}">
+												</td>
+												<td>
+													@foreach ($terjual as $t)
+														{{$t->id_produk == $product->id ? $t->jumlah : null}}
+													@endforeach
 												</td>
 												<td>
 													@foreach ($stocks as $stock1)

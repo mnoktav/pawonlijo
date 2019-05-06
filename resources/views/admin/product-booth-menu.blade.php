@@ -90,6 +90,11 @@
 										<div class="tab-content mt-2 mb-3" id="pills-tabContent">
 											<div class="tab-pane fade" id="pills-table" role="tabpanel" aria-labelledby="pills-table-tab">
 												<div class="row">
+													@if (count($menus_d) <= 0)
+													<div class=" col-md-12 text-center mt-3">
+														<h3>Tidak ada menu yang dihapus.</h3>
+													</div>
+													@endif
 													@foreach($menus_d as $menu_d)
 													<div class="col-md-3 target">
 														<div class="card shadow-none list" style="background-color: #f7f7f7">
@@ -102,30 +107,22 @@
 																		<tr>
 																			<th>Reguler</th>
 																			<td>:</td>
-																			<td>Rp {{$menu_d->harga_reguler}}</td>
+																			<td>Rp {{Rupiahd($menu_d->harga_reguler)}}</td>
 																		</tr>
 																		<tr>
 																			<th>Go-Food</th>
 																			<td>:</td>
-																			<td>Rp {{$menu_d->harga_gojek}}</td>
+																			<td>Rp {{Rupiahd($menu_d->harga_gojek)}}</td>
 																		</tr>
 																		<tr>
 																			<th>Grab</th>
 																			<td>:</td>
-																			<td>Rp {{$menu_d->harga_grab}}</td>
+																			<td>Rp {{Rupiahd($menu_d->harga_grab)}}</td>
 																		</tr>
 																	</table>
 																</div>
 																<div class="separator-solid mt-2 mb-3" style="margin: 0"></div>
 																<div class="button text-center">
-																	{{-- <a href="/admin/product/booth/{{$booth->id_booth.'/'.$menu_d->id}}" class="btn btn-icon btn-round btn-primary btn-sm">
-																		<i class="fas fa-info mt-2"></i>
-																	</a>
-
-																	<a href="/admin/product/booth/{{$booth->id_booth}}/edit/{{$menu_d->id}}" class="btn btn-icon btn-round btn-warning btn-sm">
-																		<i class="fas fa-pen mt-2"></i>
-																	</a> --}}
-
 																	<a href="{{ route('admin.product-back',$menu_d->id) }}" class="btn btn-icon btn-round btn-warning btn-sm b-produk">
 																		<i class="fas fa-sync mt-2"></i>
 																	</a>
@@ -141,6 +138,7 @@
 											</div>
 											<div class="tab-pane fade show active" id="pills-square" role="tabpanel" aria-labelledby="pills-square-tab">
 												<div class="row">
+													
 													@foreach($menus as $menu1)
 													<div class="col-md-3 target">
 														<div class="card shadow-none list" style="background-color: #f7f7f7">
@@ -153,17 +151,17 @@
 																		<tr>
 																			<th>Reguler</th>
 																			<td>:</td>
-																			<td>Rp {{$menu1->harga_reguler}}</td>
+																			<td>Rp {{Rupiahd($menu1->harga_reguler)}}</td>
 																		</tr>
 																		<tr>
 																			<th>Go-Food</th>
 																			<td>:</td>
-																			<td>Rp {{$menu1->harga_gojek}}</td>
+																			<td>Rp {{Rupiahd($menu1->harga_gojek)}}</td>
 																		</tr>
 																		<tr>
 																			<th>Grab</th>
 																			<td>:</td>
-																			<td>Rp {{$menu1->harga_grab}}</td>
+																			<td>Rp {{Rupiahd($menu1->harga_grab)}}</td>
 																		</tr>
 																		
 																	</table>

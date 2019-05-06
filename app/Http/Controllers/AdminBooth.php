@@ -6,7 +6,10 @@ use App\PL_Booth;
 use App\PL_Kasir;
 use App\PL_Note;
 use App\PL_Transaksi;
+use App\View_Transaksi;
+use App\PL_JenisTransaksi;
 use App\PL_Product;
+use App\Top_Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Validator;  
@@ -15,32 +18,19 @@ use Alert;
 
 class AdminBooth extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 	//booth
 	public function Booth()
     {
         $booths = PL_Booth::all();
         $kasirs = PL_Kasir::all();
-        foreach ($booths as $booth) {
-            $ts[$booth->id_booth] = PL_Transaksi::whereDate('created_at',date('Y-m-d'))
-                                ->where('id_booth', $booth->id_booth)
-                                ->where('status',1)
-                                ->count();
-            $tb[$booth->id_booth] = PL_Transaksi::whereDate('created_at',date('Y-m-d'))
-                                ->where('id_booth', $booth->id_booth)
-                                ->where('status',0)
-                                ->count();
-            $total[$booth->id_booth] = PL_Transaksi::whereDate('created_at',date('Y-m-d'))
-                                ->where('id_booth', $booth->id_booth)
-                                ->where('status',1)
-                                ->sum('total');
-        }
         
     	return view('admin/booth',[
             'booths' => $booths,
-            'kasirs' => $kasirs,
-            'ts' => $ts,
-            'tb' => $tb,
-            'total' => $total
+            'kasirs' => $kasirs
         ]);
     }
 
@@ -49,6 +39,7 @@ class AdminBooth extends Controller
 
         $id = $request->id_booth;
         $booth = PL_Booth::where('id_booth',$id)->first();
+       
         return view('admin/booth-detail',[
             'booth' => $booth
         ]);
@@ -60,10 +51,12 @@ class AdminBooth extends Controller
         $booth = PL_Booth::where('id_booth',$id)->first();
         $kasirs = PL_Kasir::where('id_booth',$id)->get();
         $jumlah_kasir = PL_Kasir::where('id_booth',$id)->count();
+        $jenis = PL_JenisTransaksi::where('id_booth',$id)->orderBy('pajak','desc')->get();
         return view('admin/booth-detail-home',[
             'booth' => $booth,
             'kasirs' => $kasirs,
-            'jumlah_kasir' => $jumlah_kasir
+            'jumlah_kasir' => $jumlah_kasir,
+            'jenis' => $jenis
         ]);
     }
 
@@ -71,9 +64,10 @@ class AdminBooth extends Controller
     {
         $id = $request->id_booth;
         $booth = PL_Booth::where('id_booth',$id)->first();
-        $sales = PL_Transaksi::where('id_booth', $id)
-                            ->orderBy('created_at','desc')
+        $sales = View_Transaksi::where('id_booth', $id)
+                            ->orderBy('id','desc')
                             ->get();
+
         return view('admin/booth-detail-transaksi',[
             'id' => $id,
             'booth' => $booth,
@@ -81,14 +75,95 @@ class AdminBooth extends Controller
         ]);
     }
 
-    public function DetailBoothMenu(Request $request)
+    public function DetailBoothInfo(Request $request)
     {
         $id = $request->id_booth;
-       
-        return view('admin/booth-detail-menu',[
-            'id' => $id
+        $booth = PL_Booth::where('id_booth',$id)->first();
+        $income = ChartIncomeBooth($id,'income');
+        $pjk = ChartIncomeBooth($id,'tax');
+        $income_h = ChartIncomeBoothH($id,'transaksi');
+        $label_h = ChartIncomeBoothH($id,'label');
+        $tax_h = ChartIncomeBoothH($id,'tax');
+        //transaksi
+        if (empty($request->bulan)) {
+            $b = date('n');
+        }
+        else{
+            $b = $request->bulan;
+        }
+        $tb =  View_Transaksi::select(DB::raw('count(id) as trans, jenis, sum(total_bersih) as total_b, sum(total_pajak) as t_pajak'))
+                            ->where('id_booth',$id)
+                            ->whereMonth('created_at',$b)
+                            ->whereYear('created_at',date('Y'))
+                            ->where('status',1)
+                            ->groupBy('jenis')
+                            ->get();
+        $p = Top_Product::select(DB::raw('sum(jumlah) as jumlah, nama_makanan, id_booth'))
+                        ->where('id_booth',$request->id_booth)
+                        ->whereMonth('created_at',$b)
+                        ->whereYear('created_at',date('Y'))
+                        ->groupBy('nama_makanan')
+                        ->orderBy('jumlah','desc')
+                        ->get();
+
+        if(count($tb) == null){
+            Alert::message('Tidak Ada Data Transaksi '.BulanIndo($request->bulan).' '.date('Y'));
+            return redirect()->back();
+        }                                 
+        return view('admin/booth-detail-info',[
+            'id' => $id,
+            'booth' => $booth,
+            'income' => $income,
+            'tb' => $tb,
+            'pj' => $p,
+            'b' => $b,
+            'lb'=> $label_h,
+            'th' => $income_h,
+            'pjk' => $pjk,
+            'tax_h' => $tax_h
         ]);
     }
+    //Jenis Transaksi
+    public function JenisTransaksi()
+    {
+        $jenis = PL_JenisTransaksi::groupBy('jenis_transaksi')
+                                    ->orderBy('pajak','desc')
+                                    ->get();
+        $booths = PL_Booth::all();
+        $tax = View_transaksi::select(DB::raw('sum(total_pajak) as pajak, date(created_at) as tanggal, jenis , id_booth'))
+                                ->where('status',1)
+                                ->where('pajak','>',0)
+                                ->groupBy('jenis','id_booth', 'tanggal')
+                                ->orderBy('tanggal','asc')
+                                ->orderBy('id_booth')
+                                ->get();
+        
+        return view('admin/booth-jenis-transaksi',[
+            'jenis' => $jenis,
+            'booths' => $booths,
+            'tax' => $tax
+        ]);
+    }
+    public function ActTrans(Request $request)
+    {
+        PL_JenisTransaksi::find($request->id)
+                    ->update([
+                'status' => $request->status
+            ]);
+
+        Alert::success('Berhasil Update');
+        return redirect()->back();
+    }
+    public function UpdatePajak(Request $request)
+    {
+        PL_JenisTransaksi::where('jenis_transaksi',$request->jenis_transaksi)
+                    ->update([
+                'pajak' => $request->pajak
+            ]);
+        Alert::success('Berhasil Update');
+        return redirect()->back();
+    }
+
     //Update booth
     public function EditBooth(Request $request)
     {
@@ -327,15 +402,28 @@ class AdminBooth extends Controller
             return redirect()->route('admin.add-booth-step5');
         }
         elseif($request->selesai != null){
-            for ($i=0; $i < count($request->nama_makanan) ; $i++) { 
-                PL_Product::create([
-                    'nama_makanan' => $request->nama_makanan[$i],
-                    'kategori' => $request->kategori[$i],
-                    'harga_reguler' => $request->reguler[$i],
-                    'harga_gojek' => $request->gojek[$i],
-                    'harga_grab' => $request->grab[$i],
-                    'id_booth' => $request->id_booth,
-                    'status' => 1
+            if(!empty($request->nama_makanan)){
+                for ($i=0; $i < count($request->nama_makanan) ; $i++) { 
+                    PL_Product::create([
+                        'nama_makanan' => $request->nama_makanan[$i],
+                        'kategori' => $request->kategori[$i],
+                        'harga_reguler' => $request->reguler[$i],
+                        'harga_gojek' => $request->gojek[$i],
+                        'harga_grab' => $request->grab[$i],
+                        'id_booth' => $request->id_booth,
+                        'status' => 1
+                    ]);
+                }
+            }
+
+            $jenis = PL_JenisTransaksi::groupBy('jenis_transaksi')
+                                    ->get();
+            foreach($jenis as $j){
+                PL_JenisTransaksi::create([
+                    'jenis_transaksi' => $j->jenis_transaksi,
+                    'pajak' => $j->pajak,
+                    'status' => 1,
+                    'id_booth' => $request->id_booth
                 ]);
             }
             session()->forget('finish');
@@ -422,5 +510,4 @@ class AdminBooth extends Controller
         Alert::success('Berhasil Hapus Note', 'Berhasil');
         return redirect()->route('admin.note-booth');
     }
-
 }

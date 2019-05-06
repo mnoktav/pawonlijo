@@ -90,22 +90,22 @@
 												<tr>
 													<th>Kategori</th>
 													<td>:</td>
-													<td>{{$menu->kategori}}</td>
+													<td style="text-transform: capitalize;">{{$menu->kategori}}</td>
 												</tr>
 												<tr>
 													<th>Reguler</th>
 													<td>:</td>
-													<td>Rp {{$menu->harga_reguler}}</td>
+													<td>Rp {{Rupiahd($menu->harga_reguler)}}</td>
 												</tr>
 												<tr>
 													<th>Go-Food</th>
 													<td>:</td>
-													<td>Rp {{$menu->harga_gojek}}</td>
+													<td>Rp {{Rupiahd($menu->harga_gojek)}}</td>
 												</tr>
 												<tr>
 													<th>Grab</th>
 													<td>:</td>
-													<td>Rp {{$menu->harga_grab}}</td>
+													<td>Rp {{Rupiahd($menu->harga_grab)}}</td>
 												</tr>
 												<tr>
 													<th>Booth</th>
@@ -120,7 +120,7 @@
 						</div>
 						<div class="card" style="border: 1px solid #dddddd;">
 							<div class="card-body">
-								<h4><b>INFORMASI PENJUALAN</b></h4>
+								<h4><b>INFORMASI PENJUALAN PRODUK</b></h4>
 								<div class="separator-solid"></div>
 								<div class="row">
 									<div class="col-md-12">

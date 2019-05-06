@@ -16,6 +16,7 @@
 					<label for="no-kasir1">Telephone Kasir 1</label>
 					<input type="text" class="form-control" id="no-kasir1" name="no_kasir1" value="{{ session('step3')['no_kasir1']}}">
 				</div>
+				<div class="separator-solid"></div>
 				<div class="form-group">
 					<label for="nama-kasir2">Nama Kasir 2</label>
 					<input type="text" class="form-control" id="nama-kasir2" name="nama_kasir2" value=" {{ session('step3')['nama_kasir2'] }}">

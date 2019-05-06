@@ -75,7 +75,7 @@
 								<a class="nav-link {{Route::is('admin.detail-booth-transaksi') ? 'active' : null}}" href="{{ route('admin.detail-booth-transaksi',$booth->id_booth) }}">Transaksi</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link {{Route::is('admin.detail-booth-menu') ? 'active' : null}}" href="{{ route('admin.detail-booth-menu',$booth->id_booth) }}">Report</a>
+								<a class="nav-link {{Route::is('admin.detail-booth-info') ? 'active' : null}}" href="{{ route('admin.detail-booth-info',$booth->id_booth) }}">Info</a>
 							</li>
 						</ul>
 						<div class="row" style="margin-top: 1rem">
@@ -95,7 +95,7 @@
 	<script>
 		$(document).ready(function() {
 			$('#basic-datatables').DataTable({
-				 aaSorting: [[0, 'desc']]
+				 aaSorting: [[1, 'desc']]
 			});
 		})
 	</script>

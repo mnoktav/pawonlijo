@@ -34,30 +34,30 @@
 					
 				</tr>
 				<tr>
-					<td width="80px">Rp {{$d->harga_satuan}}</td>
+					<td width="80px">Rp {{Rupiahd($d->harga_satuan)}}</td>
 					<td width="50px" style="padding-bottom: 5px">x {{$d->jumlah}}</td>
-					<td>Rp {{$d->harga_satuan*$d->jumlah}}</td>
+					<td>Rp {{Rupiahd($d->harga_satuan*$d->jumlah)}}</td>
 				</tr>
 				@endforeach
 				<tr>
 					<td width="60%" colspan="2" style="padding-top: 20px">Subtotal</td>
-					<td width="40%" style="padding-top: 20px">Rp {{$nota->subtotal}}</td>
+					<td width="40%" style="padding-top: 20px">Rp {{Rupiahd($nota->subtotal)}}</td>
 				</tr>
 				<tr >
 					<td width="60%" colspan="2">Potongan</td>
-					<td width="40%">Rp {{$nota->potongan}}</td>
+					<td width="40%">Rp {{Rupiahd($nota->potongan)}}</td>
 				</tr>
 				<tr >
 					<td width="60%" colspan="2"><b>Total</b></td>
-					<td width="40%"><b>Rp {{$nota->total}}</b></td>
+					<td width="40%"><b>Rp {{Rupiahd($nota->total)}}</b></td>
 				</tr>
 				<tr>
 					<td colspan="2" style="padding-top: 20px">Bayar</td>
-					<td style="padding-top: 20px">Rp {{$nota->bayar}}</td>
+					<td style="padding-top: 20px">Rp {{Rupiahd($nota->bayar)}}</td>
 				</tr>
 				<tr>
 					<td colspan="2">Kembali</td>
-					<td>Rp {{$nota->kembali}}</td>
+					<td>Rp {{Rupiahd($nota->kembali)}}</td>
 				</tr>
 			</table>
 			<div class="" style="padding-top: 20px; border-top: 2px dashed black;">

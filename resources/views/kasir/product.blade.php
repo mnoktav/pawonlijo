@@ -77,13 +77,13 @@
 												<div class="produk mb-3">
 													<h5 style="text-transform: capitalize;"><b><i class="fas fa-tag text-danger mr-2"></i>{{$product->nama_makanan}}</b></h5>
 													@if ($jenis == 'Reguler' or $jenis == 'Pesanan')
-														<p class="ml-3 pl-1">Rp {{$product->harga_reguler}}</p>
+														<p class="ml-3 pl-1">Rp {{Rupiah($product->harga_reguler)}}</p>
 														<input type="hidden" name="harga" value="{{$product->harga_reguler}}">
 													@elseif($jenis == 'Grab')
-														<p class="ml-3 pl-1">Rp {{$product->harga_grab}}</p>
+														<p class="ml-3 pl-1">Rp {{Rupiah($product->harga_grab)}}</p>
 														<input type="hidden" name="harga" value="{{$product->harga_grab}}">
 													@elseif($jenis == 'Gojek')
-														<p class="ml-3 pl-1">Rp {{$product->harga_gojek}}</p>
+														<p class="ml-3 pl-1">Rp {{Rupiah($product->harga_gojek)}}</p>
 														<input type="hidden" name="harga" value="{{$product->harga_gojek}}">
 													@endif
 													

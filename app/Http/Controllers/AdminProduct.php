@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\DB;
 
 class AdminProduct extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     //product
     public function index()
     {
@@ -25,8 +29,13 @@ class AdminProduct extends Controller
     public function ProductAdd()
     {
         $booths = PL_Booth::all();
+        $p = PL_Product::groupBy('nama_makanan')
+                        ->pluck('nama_makanan')
+                        ->toArray();
+
         return view('admin/product-add',[
-            'booths' => $booths
+            'booths' => $booths,
+            'p' => $p
         ]);
     }
     public function ProductSave(Request $request)
@@ -390,12 +399,14 @@ class AdminProduct extends Controller
 
         $ph = StokProduct($request->id,'produk');
         $pl = StokProduct($request->id,'label');
+        $pt = StokProductTerjual($request->id);
 
         return view('admin/product-stock-history',[
             'booth' => $booth,
             'p' => $product,
             'ph' => $ph,
-            'pl' => $pl
+            'pl' => $pl,
+            'pt' => $pt
 
         ]);
     }

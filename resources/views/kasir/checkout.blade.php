@@ -37,6 +37,7 @@
 							<form action="{{ route('kasir.product-update') }}" method="POST">
 							@csrf
 								<input type="hidden" name="jenis" value="{{$jenis}}">
+								
 								<table class="table table-striped border">
 									{{-- order --}}
 									@php
@@ -59,21 +60,21 @@
 										</tr>
 										<tr>
 											<td width="40%" class="p-3">
-												Rp {{$order['harga']}}
+												Rp {{Rupiah($order['harga'])}}
 												
 											</td>
 											<td width="20%">
 												<input type="text" name="jumlah[]" value="{{$order['jumlah']}}" class="form-control"  style="height: 1.8rem !important; width: 2rem; font-size: 0.8rem; border-radius: 5px; border: 1px solid #aaaaaa; padding: 5px">
 											</td>
 
-											<td width="40%">Rp {{$total_item}}</td>
+											<td width="40%">Rp {{Rupiah($total_item)}}</td>
 										</tr>
 
 									@endforeach
 									{{-- subtotal --}}
 									<tr>
 										<td colspan="2"><b>SUBTOTAL</b></td>
-										<td>Rp {{$subtotal}}</td>
+										<td>Rp {{Rupiah($subtotal)}}</td>
 									</tr>
 								</table>
 								<div class="row">
