@@ -179,6 +179,6 @@ class AdminReport extends Controller
 
     public function DownloadExcel(Request $request)
     {
-        return (new ReportExcel)->Awal($request->awal)->Akhir($request->akhir)->Id($request->id_booth)->download('LP.xlsx');
+        return (new ReportExcel)->Awal($request->awal)->Akhir($request->akhir)->Id($request->id_booth)->download('LP '.$request->id_booth.' '.$request->awal.':'.$request->akhir.'.xlsx');
     }
 }

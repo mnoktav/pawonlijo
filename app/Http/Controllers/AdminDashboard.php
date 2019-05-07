@@ -98,6 +98,7 @@ class AdminDashboard extends Controller
 
 		$booths = PL_Booth::get();
 		
+        $hari = null;
 		foreach ($booths as $b => $a) {
 			for($i=0; $i<=13; $i++){
 				$ts = date('Y-m-d');

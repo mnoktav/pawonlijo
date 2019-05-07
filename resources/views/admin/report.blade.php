@@ -78,7 +78,7 @@
 										@else
 										
 										<div>
-											<a class="btn btn-default btn-sm pr-3 pl-3 mr-2" href="/admin/report/excel?awal={{date('Y-m-d', strtotime($awal))}}&akhir={{date('Y-m-d', strtotime($akhir))}}&id_booth={{$id_booth}}" target="_blank"><i class="fas fa-file-excel mr-2"></i>Export to Excel</a>
+											<a class="btn btn-default btn-sm pr-3 pl-3 mr-2" href="/admin/report/excel?awal={{$awal}}&akhir={{$akhir}}&id_booth={{$id_booth}}" target="_blank"><i class="fas fa-file-excel mr-2"></i>Export to Excel</a>
 										</div>
 							
 										<div class="print-content">

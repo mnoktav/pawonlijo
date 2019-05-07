@@ -13,6 +13,8 @@ use App\PL_Pajak;
 use Illuminate\Http\Request;
 use Validator;  
 use Alert;
+use PDF;
+use Illuminate\Support\Facades\DB;
 
 
 class KasirDashboard extends Controller
@@ -316,6 +318,26 @@ class KasirDashboard extends Controller
             'booth' => $booth,
             'produk' => $produk
         ]);
+
+    }
+
+    public function Nota($id)
+    {
+        $nota = PL_Transaksi::find($id);
+        $detail = PL_Detail::where('id_transaksi',$id)->get();
+        $booth = PL_Booth::where('id_booth',session('login')['id_booth'])->first();
+        $produk = PL_Product::whereIn('id',$detail->pluck('id_produk'))->get();
+
+        $pdf = PDF::loadView('kasir/print-nota',[
+            'nota' => $nota,
+            'detail' => $detail,
+            'booth' => $booth,
+            'produk' => $produk
+        ]);
+        // $pdf->setPaper([0,0,164,200],'potrait');
+        
+        return $pdf->stream($id.'.pdf');
+
     }
 
     //update stok

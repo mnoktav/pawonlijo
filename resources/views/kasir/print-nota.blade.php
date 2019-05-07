@@ -5,15 +5,19 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Nota</title>
 	<style>
-		@media print{
-			.back {
-			    display: none;
-			 }
+		@page{ 
+			size: 164pt {{(5*30)+(count($detail)*2*35)+(200)}}pt;
+			margin: 0;
 		}
+		@if (Request::segment(2) == 'nota')
+			a{
+				visibility: hidden;
+			}
+		@endif
 	</style>
 </head>
-<body style="width: 100%" onload="window.print()">
-	<div class="container" onload="" style="width: 219px; margin: 0 auto;">
+<body>
+	<div class="container" style="padding: 3mm; width: 53mm;">
 		<div class="print">
 			<div class="header" style="text-align: center;">
 				<h3>Pawon Lijo</h3>
@@ -25,7 +29,7 @@
 
 			<table style="margin-bottom: 20px;">
 				@foreach ($detail as $d)
-				<tr>
+				<tr style="height: 20px">
 					@foreach ($produk as $p)
 						@if($d->id_produk == $p->id)
 							<td colspan="3">{{$p->nama_makanan}}</td>
@@ -33,9 +37,9 @@
 					@endforeach
 					
 				</tr>
-				<tr>
-					<td width="80px">Rp {{Rupiahd($d->harga_satuan)}}</td>
-					<td width="50px" style="padding-bottom: 5px">x {{$d->jumlah}}</td>
+				<tr  style="height: 20">
+					<td width="70px">Rp {{Rupiahd($d->harga_satuan)}}</td>
+					<td width="40px" style="padding-bottom: 5px">x {{$d->jumlah}}</td>
 					<td>Rp {{Rupiahd($d->harga_satuan*$d->jumlah)}}</td>
 				</tr>
 				@endforeach
@@ -43,7 +47,7 @@
 					<td width="60%" colspan="2" style="padding-top: 20px">Subtotal</td>
 					<td width="40%" style="padding-top: 20px">Rp {{Rupiahd($nota->subtotal)}}</td>
 				</tr>
-				<tr >
+				<tr>
 					<td width="60%" colspan="2">Potongan</td>
 					<td width="40%">Rp {{Rupiahd($nota->potongan)}}</td>
 				</tr>
@@ -60,15 +64,16 @@
 					<td>Rp {{Rupiahd($nota->kembali)}}</td>
 				</tr>
 			</table>
-			<div class="" style="padding-top: 20px; border-top: 2px dashed black;">
+			<div class="" style="padding-top: 20px; border-top: 2px dashed black; height: 40px;">
 				{{$nota->id}} <br>
 				{{date('d/m/Y H:i',strtotime($nota->created_at))}}
 			</div>
-			<div align="center">
+			<div align="center" style="height: 40px;">
 				<p>Thank you {{$nota->nama_pembeli}}!</p>
 			</div>
 		</div>
-		<a type="button" href="{{ route('kasir.dashboard') }}" class="back" style="margin-top: 20px">kembali</a>
+		<a type="button" href="{{ route('kasir.dashboard') }}" style="margin-top: 20px">kembali</a>
+		<a type="button" href="{{ route('kasir.nota',$nota->id) }}" style=" float: right">cetak</a>
 	</div>
 	
 	

@@ -18,13 +18,10 @@
 						<div class="card-title">Jumlah Transaksi Bulan {{BulanIndo(date('n')).' '.date('Y')}}</div>
 						<div class="card-category">Data Seluruh Booth Pawon Lijo</div>
 						<div class="d-flex flex-wrap justify-content-around pb-2 pt-4">
-							@php
-								$i=1;
-							@endphp
-							@foreach ($jenis as $j)
+							@foreach ($tb as $j)
 								<div class="px-2 pb-2 pb-md-0 text-center">
-									<div id="circles-{{$i++}}"></div>
-									<h6 class="fw-bold mt-3 mb-0">{{$j->jenis_transaksi}}</h6>
+									<div id="circles-{{$j->jenis}}"></div>
+									<h6 class="fw-bold mt-3 mb-0">{{$j->jenis}}</h6>
 								</div>
 							@endforeach
 							
@@ -176,7 +173,7 @@
 			@foreach ($tb as $t)
 				@if ($e->jenis_transaksi == $t->jenis)
 				Circles.create({
-					id:'circles-{{$a++}}',
+					id:'circles-{{$t->jenis}}',
 					radius:45,
 					value:{{$t->jumlah}},
 					maxValue:30,
@@ -193,24 +190,7 @@
 			@endforeach
 
 		@endforeach
-		@if(count($tb)<count($jenis))
-			@for ($i = 1; $i <= count($jenis)-count($tb) ; $i++)
-				Circles.create({
-					id:'circles-{{count($tb)+$i}}',
-					radius:45,
-					value:0,
-					maxValue:30,
-					width:10,
-					text:'0',
-					colors:['#f1f1f1', '{{$colors[count($tb)+$i]}}' ],
-					duration:400,
-					wrpClass:'circles-wrp',
-					textClass:'circles-text',
-					styleWrapper:true,
-					styleText:true
-				})
-			@endfor
-		@endif
+	
 		
 		var totalIncomeChart = document.getElementById('totalIncomeChart').getContext('2d');
 		var mytotalIncomeChart = new Chart(totalIncomeChart, {

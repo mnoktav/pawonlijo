@@ -140,7 +140,8 @@
 									<div class="col-md-12">
 										<div class="form-group">
 											<label for="">Keterangan</label>
-											<textarea name="keterangan" class="form-control" required="" placeholder="tanggal ambil atau alamat pengantaran"></textarea>
+											<textarea name="keterangan" class="form-control" required="" placeholder="tanggal ambil atau alamat pengantaran" rows="5" style="border-color: #aaaaaa"></textarea>
+											
 										</div>
 									</div>
 									@endif

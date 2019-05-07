@@ -1,6 +1,7 @@
 <?php
 
 //Dashboard
+Route::get('/', 'AdminDashboard@index');
 Route::get('/admin/', 'AdminDashboard@index');
 Route::get('/admin/dashboard', 'AdminDashboard@index')->name('admin.dashboard');
 
@@ -83,6 +84,7 @@ Route::get('/kasir/product/reset-back', 'KasirDashboard@RemoveCartBack')->name('
 Route::get('/kasir/checkout', 'KasirDashboard@Checkout')->name('kasir.checkout');
 Route::post('/kasir/checkout/save', 'KasirDashboard@SaveCheckout')->name('kasir.checkout-save');
 Route::get('/kasir/print-nota/{id}', 'KasirDashboard@PrintNota')->name('kasir.print-nota');
+Route::get('/kasir/nota/{id}', 'KasirDashboard@Nota')->name('kasir.nota');
 
 
 //kasir-transaksi

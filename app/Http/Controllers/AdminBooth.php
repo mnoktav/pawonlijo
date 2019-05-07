@@ -222,7 +222,7 @@ class AdminBooth extends Controller
                 're_pass.same' => 'Password tidak sama.',
                 'username_booth.unique' => 'Username booth sudah digunakan.'
             ])->validate();
-            
+
             PL_Booth::where('id_booth',$request->id_booth)
                     ->update([
                 'username_booth' => $request->username_booth,
@@ -426,6 +426,7 @@ class AdminBooth extends Controller
                 }
             }
 
+            
             $jenis = PL_JenisTransaksi::groupBy('jenis_transaksi')
                                     ->get();
             foreach($jenis as $j){
