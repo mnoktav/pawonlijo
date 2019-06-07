@@ -2,9 +2,6 @@
 @section('css')
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<style>
-		.form-group{
-			padding: 1rem 0;
-		}
 		.form-group label{
 			text-transform: uppercase;
 		}
@@ -35,43 +32,28 @@
 							<label for="kategori">Kategori</label>
 							<select name="kategori" id="kategori" class="form-control" name="kategori">
 								<option value="makanan">Makanan</option>
-								<option value="makanan">Minuman</option>
+								<option value="minuman">Minuman</option>
 							</select>
 						</div>
 						<div class="row">
-							<div class="col-md-4">
-								<div class="form-group {{$errors->has('reguler') ? 'has-error' : null}}">
-									<label for="reguler">Harga Reguler</label>
-									<input type="text" class="form-control" id="reguler" name="reguler" value="{{old('reguler')}}" onkeypress="return NumberOnly(event)">
-									@if ($errors->has('reguler'))
+							<div class="col-md-12">
+								<div class="form-group {{$errors->has('harga') ? 'has-error' : null}}">
+									<label for="harga">Jenis Transaksi</label>
+									@if ($errors->has('harga'))
 										<span class="help-block text-danger">
-											{{$errors->first('reguler')}}
+											{{$errors->first('harga')}}
 										</span>
 									@endif
 								</div>
 							</div>
-							<div class="col-md-4">
-								<div class="form-group {{$errors->has('gojek') ? 'has-error' : null}}">
-									<label for="reguler">Harga Go-Food</label>
-									<input type="text" class="form-control" id="gojek" name="gojek" value="{{old('gojek')}}" onkeypress="return NumberOnly(event)">
-									@if ($errors->has('gojek'))
-										<span class="help-block text-danger">
-											{{$errors->first('gojek')}}
-										</span>
-									@endif
+							@foreach ($j as $jenis)
+								<div class="col-md-3 mt--4">
+									<div class="form-group">
+										<small style="text-transform: uppercase;">{{$jenis->jenis_transaksi}}</small>
+										<input type="text" class="form-control" name="harga[]" onkeypress="return NumberOnly(event)" placeholder="Rp ...">
+									</div>
 								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="form-group {{$errors->has('grab') ? 'has-error' : null}}">
-									<label for="reguler">Harga Grab</label>
-									<input type="text" class="form-control" id="grab" name="grab" value="{{old('grab')}}" onkeypress="return NumberOnly(event)">
-									@if ($errors->has('grab'))
-										<span class="help-block text-danger">
-											{{$errors->first('grab')}}
-										</span>
-									@endif
-								</div>
-							</div>
+							@endforeach
 						</div>
 						<div class="form-group {{$errors->has('gambar') ? 'has-error' : null}}">
 							<label for="gambar">Gambar Produk</label>
@@ -124,4 +106,5 @@
 	    });
 	  } );
   	</script>
+  	
 @endsection

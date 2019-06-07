@@ -83,12 +83,25 @@
 						@else
 							<td>Non-Aktif</td>
 						@endif
+
 						@if ($j->status == 1)
-							<td>
-								<a href="/admin/booth/booth-pawonlijo/transaksi/{{$j->id}}/0" class="btn btn-xs btn-warning">Non-aktifkan</a>
-							</td>
+							@if ($booth->status != 1)
+								<td>
+									<a href="/admin/booth/booth-pawonlijo/transaksi/{{$j->id}}/0" class="btn btn-xs btn-warning disabled">Non-aktifkan</a>
+								</td>
+							@else
+								<td>
+									<a href="/admin/booth/booth-pawonlijo/transaksi/{{$j->id}}/0" class="btn btn-xs btn-warning">Non-aktifkan</a>
+								</td>
+							@endif
+							
 						@else
-							<td><a href="/admin/booth/booth-pawonlijo/transaksi/{{$j->id}}/1" class="btn btn-xs btn-success">Aktifkan</a></td>
+							@if ($booth->status != 1)
+								<td><a href="/admin/booth/booth-pawonlijo/transaksi/{{$j->id}}/1" class="btn btn-xs btn-success disabled">Aktifkan</a></td>
+							@else
+								<td><a href="/admin/booth/booth-pawonlijo/transaksi/{{$j->id}}/1" class="btn btn-xs btn-success">Aktifkan</a></td>
+							@endif
+							
 						@endif
 					</tr>
 					@endforeach

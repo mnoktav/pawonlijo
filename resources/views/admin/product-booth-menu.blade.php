@@ -97,28 +97,22 @@
 													@endif
 													@foreach($menus_d as $menu_d)
 													<div class="col-md-3 target">
-														<div class="card shadow-none list" style="background-color: #f7f7f7">
+														<div class="card shadow-none list full-height" style="background-color: #f7f7f7">
 															<div class="card-body">
 																<h5 style="text-transform: capitalize;"><i class="fas fa-tag text-danger mr-2"></i><b>{{$menu_d->nama_makanan}}</b></h5>
 																<small class="ml-4" style="text-transform: capitalize;">{{$menu_d->kategori}}</small>
 																<div class="separator-solid mt-2 mb-2" style="margin: 0"></div>
 																<div class="harga d-flex justify-content-center text-center">
 																	<table>
-																		<tr>
-																			<th>Reguler</th>
-																			<td>:</td>
-																			<td>Rp {{Rupiahd($menu_d->harga_reguler)}}</td>
-																		</tr>
-																		<tr>
-																			<th>Go-Food</th>
-																			<td>:</td>
-																			<td>Rp {{Rupiahd($menu_d->harga_gojek)}}</td>
-																		</tr>
-																		<tr>
-																			<th>Grab</th>
-																			<td>:</td>
-																			<td>Rp {{Rupiahd($menu_d->harga_grab)}}</td>
-																		</tr>
+																		@foreach ($harga as $h)
+																			@if ($h->id_produk == $menu_d->id)
+																			<tr>
+																				<th>{{$h->jenis_transaksi}}</th>
+																				<td>:</td>
+																				<td>Rp {{Rupiahd($h->harga)}}</td>
+																			</tr>
+																			@endif
+																		@endforeach
 																	</table>
 																</div>
 																<div class="separator-solid mt-2 mb-3" style="margin: 0"></div>
@@ -141,32 +135,32 @@
 													
 													@foreach($menus as $menu1)
 													<div class="col-md-3 target">
-														<div class="card shadow-none list" style="background-color: #f7f7f7">
+														<div class="card shadow-none list full-height" style="background-color: #f7f7f7">
 															<div class="card-body">
 																<h5 style="text-transform: capitalize;"><i class="fas fa-tag text-danger mr-2"></i><b>{{$menu1->nama_makanan}}</b></h5>
 																<small class="ml-4" style="text-transform: capitalize;">{{$menu1->kategori}}</small>
 																<div class="separator-solid mt-2 mb-2" style="margin: 0"></div>
 																<div class="harga d-flex justify-content-center text-center">
 																	<table>
-																		<tr>
-																			<th>Reguler</th>
-																			<td>:</td>
-																			<td>Rp {{Rupiahd($menu1->harga_reguler)}}</td>
-																		</tr>
-																		<tr>
-																			<th>Go-Food</th>
-																			<td>:</td>
-																			<td>Rp {{Rupiahd($menu1->harga_gojek)}}</td>
-																		</tr>
-																		<tr>
-																			<th>Grab</th>
-																			<td>:</td>
-																			<td>Rp {{Rupiahd($menu1->harga_grab)}}</td>
-																		</tr>
-																		
+																		@foreach ($harga as $h)
+																			@if ($h->id_produk == $menu1->id)
+																			<tr>
+																				<th>{{$h->jenis_transaksi}}</th>
+																				<td>:</td>
+																				@if ($h->harga != null)
+																					<td>Rp {{Rupiahd($h->harga)}}</td>
+																				@else
+																					<td>-</td>
+																				@endif
+																				
+																			</tr>
+																			@endif
+																		@endforeach
 																	</table>
 																</div>
-																<div class="separator-solid mt-2 mb-3" style="margin: 0"></div>
+																
+															</div>
+															<di class="card-footer">
 																<div class="button text-center">
 																	<a href="/admin/product/booth/{{$booth->id_booth.'/'.$menu1->id}}" class="btn btn-icon btn-round btn-primary btn-sm">
 																		<i class="fas fa-info mt-2"></i>
@@ -180,7 +174,7 @@
 																		<i class="fas fa-trash mt-2"></i>
 																	</a>
 																</div>
-															</div>
+															</di>
 														</div>
 													</div>
 													@endforeach

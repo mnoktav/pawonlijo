@@ -2,19 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\PL_Product;
+use App\PL_Produk;
 use App\PL_Transaksi;
-use App\PL_JenisTransaksi;
-use App\PL_Stok;
-use App\PL_Detail;
-use App\PL_Note;
-use App\PL_Booth;
+use App\View_Transaksi;
+use App\PL_Transaksi_Jenis;
+use App\PL_Produk_Stok;
+use App\PL_Transaksi_Detail;
+use App\PL_Catatan;
+use App\PL_Cabang;
 use App\PL_Pajak;
+use App\View_Produk_Kasir;
+use App\View_Stok_Produk;
+
 use Illuminate\Http\Request;
 use Validator;  
 use Alert;
 use PDF;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
 
 
 class KasirDashboard extends Controller
@@ -27,29 +33,33 @@ class KasirDashboard extends Controller
     public function index()
     {
         $id = session('login')['id_booth'];
-        $notes = PL_Note::where('id_booth', $id)->get();
-        $stok = PL_Stok::whereDate('created_at',date('Y-m-d'))
+        $notes = PL_Catatan::where('id_booth', $id)->get();
+        $stok = View_Stok_Produk::whereDate('created_at',date('Y-m-d'))
                         ->where('id_booth',$id)
                         ->count();
-        $jenis = PL_JenisTransaksi::where('id_booth', $id)
+        $jenis = PL_Transaksi_Jenis::where('id_booth', $id)
                                 ->where('status', 1)
                                 ->get();    
 
     	return view('kasir/dashboard',[
              'notes' => $notes,
              'stok' => $stok,
-             'jenis' => $jenis
+             'jenis' => $jenis,
+             'id' => $id
         ]);
     }
 
     public function KasirProduct(Request $request)
     {
+        $id_jenis = $request->id;
         $jenis = $request->jenis;
         $id = session('login')['id_booth'];
-        $products = PL_Product::where('id_booth', $id)
+        $products = View_Produk_Kasir::where('id_booth', $id)
                                 ->where('status',1)
+                                ->where('id_jenis_transaksi',$id_jenis)
+                                ->where('harga','!=',0)
                                 ->get();
-        $stok = PL_Stok::whereDate('created_at',date('Y-m-d'))
+        $stok = View_Stok_Produk::whereDate('created_at',date('Y-m-d'))
                         ->where('id_booth',$id)
                         ->get();
        
@@ -57,7 +67,8 @@ class KasirDashboard extends Controller
             'products' => $products,
             'id' => $id,
             'stok' => $stok,
-            'jenis' => $jenis
+            'jenis' => $jenis,
+            'id_jenis' => $id_jenis
         ]);
     }
 
@@ -82,9 +93,11 @@ class KasirDashboard extends Controller
             }
             else{
                 $id = $request->id_product;
+                $id_jenis = $request->id_jenis;
                 $cart = session()->get('cart');
-                $product = PL_Product::find($id);
-
+                $product = View_Produk_Kasir::where('id_produk', $id)
+                                            ->where('id_jenis_transaksi',$id_jenis)
+                                            ->first();
                 if(!$cart){
                     $cart = [
                             $id => [
@@ -137,7 +150,7 @@ class KasirDashboard extends Controller
                 }
                 else{
                     $id = session('login')['id_booth'];
-                    $stok[$i] = PL_Stok::whereDate('created_at',date('Y-m-d'))
+                    $stok[$i] = PL_Produk_Stok::whereDate('created_at',date('Y-m-d'))
                         ->where('id_produk',$request->id_product[$i])
                         ->sum('sisa_stok');
                     if($request->jenis == 'Pesanan'){
@@ -164,15 +177,17 @@ class KasirDashboard extends Controller
 
     public function RemoveFromCart(Request $request)
     {
+
         if ($request->id_product != null) {
             $cart = session()->get('cart');
 
             unset($cart[$request->id_product]);
             session()->put('cart', $cart);
 
-            Alert::success('Berhasil Dihapus Dari Keranjang', 'Berhasil');
-            return redirect()->back();
         }
+        Alert::success('Berhasil Diupdate', 'Berhasil');
+        return redirect()->back();
+
     }
 
     public function RemoveCart()
@@ -188,15 +203,17 @@ class KasirDashboard extends Controller
         $cart = session()->get('cart');
         session()->forget('cart');
 
-        return redirect()->route('kasir.dashboard');
+        return redirect()->back();
     }
     
     //checkout
     public function Checkout(Request $request)
     {
         $jenis = $request->jenis;
+        $id_jenis = $request->id;
     	return view('kasir/checkout',[
-            'jenis' => $jenis
+            'jenis' => $jenis,
+            'id_jenis' => $id_jenis
         ]);
     }
 
@@ -218,7 +235,7 @@ class KasirDashboard extends Controller
                 return redirect()->back();
             }
             else{
-                $nilai_max = PL_Transaksi::where('id_booth', $request->id_booth)->max('id'); //nilai max
+                $nilai_max = View_Transaksi::where('id_booth', $request->id_booth)->max('id'); //nilai max
                 $max = strpos($nilai_max, '-')+1;
                 $max = substr($nilai_max, $max);
                 
@@ -234,17 +251,16 @@ class KasirDashboard extends Controller
                         'subtotal' => Nominal($request->subtotal),
                         'potongan' => Nominal($request->potongan),
                         'total' => Nominal($request->total),
-                        'jenis' => $request->jenis,
                         'bayar' => Nominal($request->bayar),
                         'kembali' => Nominal($request->kembali),
                         'nama_pembeli' => $request->nama,
                         'status' => 2, 
-                        'id_booth' => $request->id_booth,
+                        'id_jenis_transaksi' => $request->id_jenis,
                         'keterangan' => $request->keterangan
                     ]);
 
                     foreach(session('cart') as $id => $detail){
-                        PL_Detail::create([
+                        PL_Transaksi_Detail::create([
                             'id_produk' => $id,
                             'id_transaksi' => $id_transaksi,
                             'harga_satuan' => $detail['harga'],
@@ -255,7 +271,7 @@ class KasirDashboard extends Controller
                     $pajak = PajakTrans($request->jenis,$request->id_booth);
                     PL_Pajak::create([
                         'id_transaksi' => $id_transaksi,
-                        'jenis_transaksi' => $request->jenis,
+                        'id_jenis_transaksi' => $request->id_jenis,
                         'pajak' => $pajak->pajak,
                         'total_pajak' => $pajak->pajak/100*Nominal($request->subtotal)
                     ]);
@@ -266,23 +282,22 @@ class KasirDashboard extends Controller
                         'subtotal' => Nominal($request->subtotal),
                         'potongan' => Nominal($request->potongan),
                         'total' => Nominal($request->total),
-                        'jenis' => $request->jenis,
                         'kode' => $request->kode,
                         'bayar' => Nominal($request->bayar),
                         'kembali' => Nominal($request->kembali),
                         'nama_pembeli' => $request->nama,
                         'status' => 1, 
-                        'id_booth' => $request->id_booth
+                        'id_jenis_transaksi' => $request->id_jenis,
                     ]);
 
                     foreach(session('cart') as $id => $detail){
-                        PL_Detail::create([
+                        PL_Transaksi_Detail::create([
                             'id_produk' => $id,
                             'id_transaksi' => $id_transaksi,
                             'harga_satuan' => $detail['harga'],
                             'jumlah' => $detail['jumlah']
                         ]);
-                        PL_Stok::whereDate('created_at',date('Y-m-d'))
+                        PL_Produk_Stok::whereDate('created_at',date('Y-m-d'))
                                 ->where('id_produk',$id)
                                 ->decrement('sisa_stok',$detail['jumlah']);
                     }
@@ -290,7 +305,7 @@ class KasirDashboard extends Controller
                     $pajak = PajakTrans($request->jenis,$request->id_booth);
                     PL_Pajak::create([
                         'id_transaksi' => $id_transaksi,
-                        'jenis_transaksi' => $request->jenis,
+                        'id_jenis_transaksi' => $request->id_jenis,
                         'pajak' => $pajak->pajak,
                         'total_pajak' => $pajak->pajak/100*Nominal($request->subtotal)
                     ]);
@@ -307,10 +322,19 @@ class KasirDashboard extends Controller
 
     public function PrintNota($id)
     {
-        $nota = PL_Transaksi::find($id);
-        $detail = PL_Detail::where('id_transaksi',$id)->get();
-        $booth = PL_Booth::where('id_booth',session('login')['id_booth'])->first();
-        $produk = PL_Product::whereIn('id',$detail->pluck('id_produk'))->get();
+        $nota = View_Transaksi::find($id);
+        $detail = PL_Transaksi_Detail::where('id_transaksi',$id)->get();
+        $booth = PL_Cabang::where('id_booth',session('login')['id_booth'])->first();
+        $produk = PL_Produk::whereIn('id',$detail->pluck('id_produk'))->get();
+
+        $pdf = PDF::loadView('kasir/print-nota-p',[
+            'nota' => $nota,
+            'detail' => $detail,
+            'booth' => $booth,
+            'produk' => $produk
+        ]);
+        $filename = $id.'.pdf';
+        Storage::put($filename, $pdf->output());
 
         return view('kasir/print-nota',[
             'nota' => $nota,
@@ -323,24 +347,30 @@ class KasirDashboard extends Controller
 
     public function Nota($id)
     {
-        $nota = PL_Transaksi::find($id);
-        $detail = PL_Detail::where('id_transaksi',$id)->get();
-        $booth = PL_Booth::where('id_booth',session('login')['id_booth'])->first();
-        $produk = PL_Product::whereIn('id',$detail->pluck('id_produk'))->get();
-
-        $pdf = PDF::loadView('kasir/print-nota',[
-            'nota' => $nota,
-            'detail' => $detail,
-            'booth' => $booth,
-            'produk' => $produk
-        ]);
-        // $pdf->setPaper([0,0,164,200],'potrait');
-        
-        return $pdf->stream($id.'.pdf');
+        $file_path = '/storage/'.$id.'.pdf';
+        return redirect($file_path);
 
     }
 
     //update stok
+    public function StockProduct()
+    {
+        $id = session('login')['id_booth'];
+
+        $booth = PL_Cabang::where('id_booth',$id)->first();
+        $products = PL_Produk::where('id_booth',$id)
+                    ->where('status',1)
+                    ->get();
+        $stocks = View_Stok_Produk::whereDate('created_at',date('Y-m-d'))
+                        ->where('id_booth',$id)
+                        ->get();
+
+        return view('kasir/product-stock', [
+            'products' => $products,
+            'booth' => $booth,
+            'stocks' => $stocks
+        ]);
+    }
     public function StockUpdate(Request $request)
     {
         if($request->update != null){
@@ -350,25 +380,22 @@ class KasirDashboard extends Controller
             }
             else{
                 for ($i=0; $i < count($request->update_stok); $i++) { 
-                    $stok[] = PL_Stok::where('id_produk', $request->id_produk[$i])
+                    $stok[] = View_Stok_Produk::where('id_produk', $request->id_produk[$i])
                             ->whereDate('created_at',date('Y-m-d'))
-                            ->where('id_booth', $request->id_booth)
                             ->count();
                     
                     $val[] = intval($request->update_stok[$i]);
       
                     if($stok[$i] <= 0){
-                        PL_Stok::create([
+                        PL_Produk_Stok::create([
                             'total_stok' => $val[$i],
                             'sisa_stok' => $val[$i], 
-                            'id_produk' => $request->id_produk[$i],
-                            'id_booth' => $request->id_booth
+                            'id_produk' => $request->id_produk[$i]
                         ]);
                     }
                     else{
-                        PL_Stok::where('id_produk', $request->id_produk[$i])
+                        View_Stok_Produk::where('id_produk', $request->id_produk[$i])
                             ->whereDate('created_at',date('Y-m-d'))
-                            ->where('id_booth', $request->id_booth)
                             ->update([
                                     'total_stok' => DB::raw('total_stok + '.$val[$i].''),
                                     'sisa_stok' => DB::raw('sisa_stok + '.$val[$i].'')
@@ -381,6 +408,21 @@ class KasirDashboard extends Controller
         Alert::success('Produk Berhasil Update Stok Produk', 'Berhasil');
         return redirect()->back();
         
+    }
+
+    public function StatusBooth($id_booth)
+    {
+        $booth = PL_Cabang::where('id_booth',$id_booth)->first();
+        if($booth->status != 1){
+            $session = 0;
+        }
+        elseif(date('H:i') < date('H:i',strtotime($booth->jam_buka)) || date('H:i') > date('H:i',strtotime($booth->jam_tutup))){
+            $session = 0;
+        }
+        else{
+            $session = 1;
+        }
+        return response()->json($session);
     }
 }
 

@@ -1,5 +1,4 @@
 <?php
-
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +9,7 @@ class PL_Pajak extends Model
     protected $fillable = [
     	'id',
     	'id_transaksi',
-    	'jenis_transaksi',
+    	'id_jenis_transaksi',
         'pajak',
         'total_pajak'
     ];

@@ -69,36 +69,23 @@
 					<div class="separator-solid" style="border-color: #dddddd"></div>
 					<div class="table-responsive">
 						<table class="table table-bordered table-striped border">
-							<tr>
-								<th width="25%">nama kasir 1</th>
-								<td>{{ session('step3')['nama_kasir1'] }}</td>
-								<input type="hidden" name="nama_kasir[]" value="{{ session('step3')['nama_kasir1'] }}">
-							</tr>
-							<tr>
-								<th>alamat kasir 1 </th>
-								<td>{{ session('step3')['alamat_kasir1'] }}</td>
-								<input type="hidden" name="alamat_kasir[]" value="{{ session('step3')['alamat_kasir1'] }}">
-							</tr>
-							<tr>
-								<th>Nomor Telepon Kasir 1</th>
-								<td>{{ session('step3')['no_kasir1'] }}</td>
-								<input type="hidden" name="no_kasir[]" value="{{ session('step3')['no_kasir1'] }}">
-							</tr>
-							<tr>
-								<th>nama kasir 2</th>
-								<td>{{ session('step3')['nama_kasir2'] }}</td>
-								<input type="hidden" name="nama_kasir[]" value="{{ session('step3')['nama_kasir2'] }}">
-							</tr>
-							<tr>
-								<th>alamat kasir 2 </th>
-								<td>{{ session('step3')['no_kasir2'] }}</td>
-								<input type="hidden" name="no_kasir[]" value="{{ session('step3')['no_kasir2'] }}">
-							</tr>
-							<tr>
-								<th>Nomor Telepon Kasir 2</th>
-								<td>{{ session('step3')['alamat_kasir2'] }}</td>
-								<input type="hidden" name="alamat_kasir[]" value="{{ session('step3')['alamat_kasir2'] }}">
-							</tr>
+							@for ($i = 0; $i < count(session('step3')) ; $i++)
+								<tr>
+									<th width="25%">nama kasir</th>
+									<td>{{ session('step3')[$i]['nama_kasir'] }}</td>
+									<input type="hidden" name="nama_kasir[]" value="{{ session('step3')[$i]['nama_kasir'] }}">
+								</tr>
+								<tr>
+									<th>alamat kasir</th>
+									<td>{{ session('step3')[$i]['alamat_kasir'] }}</td>
+									<input type="hidden" name="alamat_kasir[]" value="{{ session('step3')[$i]['alamat_kasir'] }}">
+								</tr>
+								<tr>
+									<th>Nomor Telepon Kasir</th>
+									<td>{{ session('step3')[$i]['no_kasir'] }}</td>
+									<input type="hidden" name="no_kasir[]" value="{{ session('step3')[$i]['no_kasir'] }}">
+								</tr>
+							@endfor
 						</table>
 					</div>
 				</div> 

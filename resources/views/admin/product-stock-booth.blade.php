@@ -1,9 +1,11 @@
 @extends('admin/master-d')
-@section('css')
+@section('css')	
 	<style>
 		.table td, .table th{
-			height: 2.6rem !important;
-			border:1px solid grey !important;
+			border:1px solid grey !important;	
+		}
+		.table th{
+			text-transform: uppercase;
 		}
 	</style>
 @endsection
@@ -71,23 +73,27 @@
 								<table class="table table-striped" id="table">
 									<thead class="bg-dark text-light">
 										<tr>
+											<th>No</th>
 											<th width="25%">Nama Makanan</th>
 											<th>Stok Hari Ini</th>
 											<th>Sisa Stok Hari Ini</th>
-											<th>Terjual Hari Ini</th>
 											<th>Update Stok</th>
 											<th>Info Stok</th>
 										</tr>
 									</thead>
 									<tbody>
+										@php
+											$o = 1;
+										@endphp
 										@foreach ($products as $product)
 												
 											
 											<tr>
+												<td>{{$o++}}</td>
 												<td>
 													{{$product->nama_makanan}}
 													<input type="hidden" name="id_produk[]" value="{{$product->id}}">
-													<input type="hidden" name="id_booth" value="{{$booth->id_booth}}">
+													
 												</td>
 												
 
@@ -102,15 +108,10 @@
 														{{$stock1->id_produk == $product->id ? $stock1->sisa_stok : null}}
 													@endforeach
 												</td>
-												<td>
-													@foreach ($terjual as  $t)
-														{{$t->id_produk == $product->id ? $t->jumlah : null}}
-													@endforeach
-												</td>
 												
 												<td><input type="number" name="update_stok[]" min="1" style="border-radius: 4px; border: 1px solid #aaaaaa; width: 4rem; padding-left: 0.5rem;"></td>
 
-												<td><a href="/admin/stock-product/{{$booth->id_booth}}/{{$product->id}}" class="btn btn-rounded btn-sm">Info</a></td>
+												<td ><a href="/admin/stock-product/{{$booth->id_booth}}/{{$product->id}}" class="btn btn-primary btn-rounded btn-sm">Info</a></td>
 											</tr>
 											
 										@endforeach
@@ -137,7 +138,7 @@
 
 		  // Loop through all table rows, and hide those who don't match the search query
 		  for (i = 0; i < tr.length; i++) {
-		    td = tr[i].getElementsByTagName("td")[0];
+		    td = tr[i].getElementsByTagName("td")[1];
 		    if (td) {
 		      txtValue = td.textContent || td.innerText;
 		      if (txtValue.toUpperCase().indexOf(filter) > -1) {

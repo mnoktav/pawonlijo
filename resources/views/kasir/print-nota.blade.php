@@ -6,7 +6,7 @@
 	<title>Nota</title>
 	<style>
 		@page{ 
-			size: 164pt {{(5*30)+(count($detail)*2*35)+(200)}}pt;
+			size: 164pt {{(5*30)+(count($detail)*2*35)+(280)}}pt;
 			margin: 0;
 		}
 		@if (Request::segment(2) == 'nota')
@@ -17,7 +17,7 @@
 	</style>
 </head>
 <body>
-	<div class="container" style="padding: 3mm; width: 53mm;">
+	<div class="container" style="padding: 1.5mm; width: 53mm;">
 		<div class="print">
 			<div class="header" style="text-align: center;">
 				<h3>Pawon Lijo</h3>
@@ -52,8 +52,8 @@
 					<td width="40%">Rp {{Rupiahd($nota->potongan)}}</td>
 				</tr>
 				<tr >
-					<td width="60%" colspan="2"><b>Total</b></td>
-					<td width="40%"><b>Rp {{Rupiahd($nota->total)}}</b></td>
+					<td width="60%" colspan="2">Total</td>
+					<td width="40%">Rp {{Rupiahd($nota->total)}}</td>
 				</tr>
 				<tr>
 					<td colspan="2" style="padding-top: 20px">Bayar</td>
@@ -66,14 +66,16 @@
 			</table>
 			<div class="" style="padding-top: 20px; border-top: 2px dashed black; height: 40px;">
 				{{$nota->id}} <br>
-				{{date('d/m/Y H:i',strtotime($nota->created_at))}}
+				{{date('d/m/Y H:i',strtotime($nota->created_at))}}<br>
+				{{$nota->jenis}} 
+				{{$nota->kode != null ? '('.$nota->kode.')' : null}}
 			</div>
-			<div align="center" style="height: 40px;">
+			<div align="center" style="height: 40px; margin-top: 30px;">
 				<p>Thank you {{$nota->nama_pembeli}}!</p>
 			</div>
+			<a href="{{ route('kasir.dashboard') }}"><button>Kembali</button></a>
+			<a href="{{ route('kasir.nota',$nota->id) }}" target="_blank"><button>Cetak</button></a>
 		</div>
-		<a type="button" href="{{ route('kasir.dashboard') }}" style="margin-top: 20px">kembali</a>
-		<a type="button" href="{{ route('kasir.nota',$nota->id) }}" style=" float: right">cetak</a>
 	</div>
 	
 	

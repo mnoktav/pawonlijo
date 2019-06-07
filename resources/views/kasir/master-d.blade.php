@@ -1,5 +1,3 @@
-{{Request::segment(2) == 'transaksi' && Request::segment(2) == 'stok' ? session()->forget('cart') : null}}
-{{StatusBooth(session('login')['id_booth'])}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -205,7 +203,49 @@
 	<script src="{{ asset('assets/atlantis/js/atlantis.min.js') }}"></script>
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	@include('sweet::alert')
-	
+	@php
+		$hapus_cart = SessionCart() ;
+	@endphp
+	@if ($hapus_cart == 'hapus')
+		<script>
+			$(document).ready(function(){
+		        swal({
+		            title: "Transaksi Belum Selesai",
+		            text: "Item dihalaman checkout akan dihapus", 
+		            icon: "warning",
+		            buttons: true,
+		            dangerMode: true,
+		        })
+		        
+		        .then((willDelete) => {
+		          if (willDelete) {
+		            window.location.href = '{{ route('kasir.product-reset-back') }}';
+		          }
+		          else{
+		          	 window.location.href = '{{ url()->previous() }}';
+		          }
+		        });		
+		        $(".swal-modal").css('border', '2px solid grey');
+			});
+
+		</script>
+	@endif
+	<script>
+		function send_data() {
+		    $.ajax({
+			  	type    : 'GET', 
+			  	url     : '{{ route('kasir.logout-update',session('login')['id_booth']) }}',
+			  	dataType: 'json',
+			  	success : function(response) {
+				    if(response == 0){
+				    	window.location.href = '{{ route('kasir.logout') }}';
+				    }
+				}
+			});
+		}
+		send_data();
+		setInterval(send_data, 2000);
+	</script>
 	@yield('js')
 </body>
 </html>

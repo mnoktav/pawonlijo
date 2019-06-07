@@ -6,12 +6,12 @@ use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Illuminate\Support\Facades\DB;
-use App\PL_Product;
+use App\PL_Produk;
 use App\PL_Transaksi;
 use App\View_Transaksi;
-use App\PL_Stok;
-use App\PL_Detail;
-use App\PL_Booth;
+use App\PL_Porduk_Stok;
+use App\PL_Transaksi_Detail;
+use App\PL_Cabang;
 use App\Top_Product;
 
 class ReportExcel implements FromView
@@ -39,12 +39,12 @@ class ReportExcel implements FromView
     public function view(): View
     {
 
-        $nb = PL_Booth::where('id_booth',$this->id)->first();
+        $nb = PL_Cabang::where('id_booth',$this->id)->first();
         $sales = null;
         $pj = null;
         $pjk = null;
-        $detail = PL_Detail::join('pl_produk', 'pl_produk.id', '=', 'pl_detail_transaksi.id_produk')
-                            ->select('pl_detail_transaksi.*','pl_produk.nama_makanan')
+        $detail = PL_Transaksi_Detail::join('pl_produk', 'pl_produk.id', '=', 'pl_transaksi_detail.id_produk')
+                            ->select('pl_transaksi_detail.*','pl_produk.nama_makanan')
                             ->get();
 
         $builder = View_Transaksi::query();

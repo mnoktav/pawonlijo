@@ -30,7 +30,7 @@
 									<h4><b>CHECKOUT</b></h4>
 								</div>
 								<div class=" col-4 text-right">
-									<a href="{{ url('/kasir/product?jenis='.$jenis) }}" class="btn btn-primary btn-rounded btn-sm mb-3">
+									<a href="/kasir/product/{{$id_jenis}}/{{$jenis}}" class="btn btn-primary btn-rounded btn-sm mb-3">
 										<span class="btn-label">
 											<i class="fas fa-angle-left"></i>
 										</span>
@@ -95,6 +95,7 @@
 							<form action="{{ route('kasir.checkout-save') }}" method="POST">
 								@csrf	
 								<div class="row">
+									<input type="hidden" name="id_jenis" value="{{$id_jenis}}">
 									<input type="hidden" name="jenis" value="{{$jenis}}">
 									<input type="hidden" name="id_booth" value="{{session('login')['id_booth']}}">
 									<div class="col-md-6 col-6">
@@ -148,7 +149,7 @@
 								</div>
 								<div class="separator-solid"></div>
 								<div class="text-center">
-									<input type="submit" value="Simpan & Cetak" name="simpan_cetak" class="btn btn-primary btn-rounded">
+									<input type="submit" value="Simpan & Cetak" name="simpan_cetak" class="btn btn-success btn-rounded">
 								</div> 
 							</form>
 							@else
@@ -157,7 +158,7 @@
 									<h4><b>CHECKOUT</b></h4>
 								</div>
 								<div class=" col-4 text-right">
-									<a href="{{ url('/kasir/product?jenis='.$jenis) }}" class="btn btn-primary btn-rounded btn-sm mb-3">
+									<a href="/kasir/product/{{$id_jenis}}/{{$jenis}}" class="btn btn-primary btn-rounded btn-sm mb-3">
 										<span class="btn-label">
 											<i class="fas fa-angle-left"></i>
 										</span>

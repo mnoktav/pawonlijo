@@ -2,7 +2,7 @@
 @section('content')	
 	<div class="page-inner">
 		<div class="page-header">
-			<h4 class="page-title">Nama Booth</h4>
+			<h4 class="page-title">Booth</h4>
 			<ul class="breadcrumbs">
 				<li class="nav-home">
 					<a href="{{ route('admin.dashboard') }}">
@@ -34,7 +34,7 @@
 				<div class="card">
 					<div class="card-body">
 						<div class="row">
-							<div class="col-lg-6">
+							<div class="col-4">
 								@if($booth->status == 0)
 									<h4><b>{{$booth->nama_booth}}, {{$booth->kota_booth}}</b> <i>(Nonaktif)</i></h4>
 								@else
@@ -42,7 +42,7 @@
 								@endif
 								<small class="text-secondary"><b>#{{$booth->id_booth}}</b></small>
 							</div>
-							<div class="col-lg-6 text-right">
+							<div class="col-8 text-right">
 								<a class="btn btn-sm btn-rounded btn-primary" href="{{ route('admin.booth') }}">
 									<span class="btn-label">
 										<i class="fas fa-angle-left"></i>

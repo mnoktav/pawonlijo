@@ -1,10 +1,6 @@
 @extends('admin/booth-add')
 @section('css')
 	<style>
-		.table td, .table th{
-			height: 2.5rem;
-			border: none;
-		}
 		.form-control{
 			height: 2rem !important;
 			border: 1px solid #aaaaaa;
@@ -26,25 +22,27 @@
 					@csrf
 					<div class="col-md-12" id="daftar-menu">
 						<div class="card border shadow-none">
-							<div class="card-body" style="height: 300px; overflow-y: scroll;">
+							<div class="card-body" style="height: 500px; overflow-y: scroll;">
 								<h5><b>DAFTAR MENU</b></h5>
 								<div class="separator-solid"></div>
-								<table class="table table-borderless">
+								<table class="table table-bordered">
 									<tr>
 										<th><input type="checkbox" class="mr-1" id="select-all"></th>
-										<th>Nama</th>
-										<th>Reguler</th>
-										<th>Gojek</th>
-										<th>Grab</th>
+										<th width="20%">Nama</th>
+										@foreach ($jenis as $e)
+										
+										<th>{{$e->jenis_transaksi}}</th>
+										@endforeach
+										
 									</tr>
 									<input type="hidden" name="id_booth" value="{{$booth}}">
 									@foreach ($products as $p)
 									<tr>
 										<td width="5%"><input type="checkbox" class="checkitem" name="nama_makanan[]" value="{{$p->nama_makanan}}"></td>
-										<td width="25%">{{$p->nama_makanan}} <input type="hidden" name="kategori[]" value="{{$p->kategori}}"></td>
-										<td><input type="text" class="form-control" name="reguler[]" value="{{$p->harga_reguler}}" onkeypress="return NumberOnly(event)"></td>
-										<td><input type="text" class="form-control" name="gojek[]" value="{{$p->harga_gojek}}" onkeypress="return NumberOnly(event)"></td>
-										<td><input type="text" class="form-control" name="grab[]" value="{{$p->harga_grab}}" onkeypress="return NumberOnly(event)"></td>
+										<td width="15%">{{$p->nama_makanan}} <input type="hidden" name="kategori[]" value="{{$p->kategori}}"></td>
+										@foreach ($jenis as $je)
+										<td><input type="text" class="form-control" name="harga[]" value="{{GetHarga($p->id,$je->jenis_transaksi)}}" onkeypress="return NumberOnly()"></td>
+										@endforeach
 									</tr>
 									@endforeach
 								</table>
@@ -54,7 +52,7 @@
 					</div>
 					<div class="col-md-12">
 						<div class="text-center">
-							<input type="submit" name="selesai" value="Selesai" class="btn btn-primary btn-sm">
+							<input type="submit" name="selesai" value="Tambahkan" class="btn btn-primary btn-sm">
 						</div>
 					</div>
 				</form>

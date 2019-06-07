@@ -5,12 +5,15 @@
 			height: 2.5rem !important;
 			padding: 0.5rem !important;
 		}
+		.table th{
+			text-transform: uppercase;
+		}
 	</style>
 @endsection
 @section('content')	
 	<div class="page-inner">
 		<div class="page-header">
-			<h4 class="page-title">Jenis Transaksi Booth PawonLijo</h4>
+			<h4 class="page-title">Data Pajak Pawon Lijo</h4>
 			<ul class="breadcrumbs">
 				<li class="nav-home">
 					<a href="{{ route('admin.dashboard') }}">
@@ -27,61 +30,74 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<div class="card">
+				<div class="card full-height">
 					<div class="card-body">
 						<div class="row">
-							@foreach ($jenis as $j)
-							<div class="col-md-3">
-								<div class="card card-pricing border">
-									<div class="card-header">
-										<h4 class="card-title">{{$j->jenis_transaksi}}</h4>
-										<div class="card-price">
-											<span class="price">{{$j->pajak}}%</span><br>
-											<span>Pajak</span>
+							<div class="col-md-12">
+								<ul class="nav nav-pills nav-primary" id="pills-tab" role="tablist">
+									<li class="nav-item">
+										<a class="nav-link {{session()->get('msg') == '' ? 'active' : null}}" id="pills-pajak-tab" data-toggle="pill" href="#pills-pajak" role="tab" aria-controls="pills-pajak" aria-selected="true">Pajak</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link {{session()->get('msg') == 'jenis' ? 'active' : null}}" id="pills-jenis-tab" data-toggle="pill" href="#pills-jenis" role="tab" aria-controls="pills-jenis" aria-selected="false">Jenis Transaksi</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="separator-solid"></div>
+						<div class="tab-content mt-2 mb-3" id="pills-tabContent">
+							<div class="tab-pane fade show {{session()->get('msg') == 'jenis' ? 'active' : null}}" id="pills-jenis" role="tabpanel" aria-labelledby="pills-jenis-tab">
+								<div class="row mt-4">
+									@foreach ($jenis as $j)
+									<div class="col-md-3">
+										<div class="card card-pricing border shadow-none">
+											<div class="card-header">
+												<h4 class="card-title">{{$j->jenis_transaksi}}</h4>
+												<div class="card-price">
+													<span class="price">{{$j->pajak}}%</span><br>
+													<span>Pajak</span>
+												</div>
+											</div>
+											<div class="card-footer">
+												<button class="btn btn-block btn-primary open-edit" data-target=".bd-example-modal-sm" data-toggle="modal" data-id="{{$j->id}}" data-pajak="{{$j->pajak}}" data-nama="{{$j->jenis_transaksi}}"><b>Edit Pajak</b></button>
+											</div>
 										</div>
 									</div>
-									<div class="card-footer">
-										<button class="btn btn-block btn-primary open-edit" data-target=".bd-example-modal-sm" data-toggle="modal" data-id="{{$j->id}}" data-pajak="{{$j->pajak}}" data-nama="{{$j->jenis_transaksi}}"><b>Edit Pajak</b></button>
-									</div>
+									@endforeach
 								</div>
 							</div>
-							@endforeach
-						</div>
-						<div class="separator-solid mt--2"></div>
-						<div class="row mt-2">
-							{{-- <div class="col-md-3 offset-md-9">
-								<select name="" id="" class="form-control mb-3" style="border-color: #c4c4c4;">
-									<option value="">Hari Ini</option>
-									<option value="">Minggu Ini</option>
-								</select>
-							</div> --}}
-							<div class="col-md-12">
-								<table class="table table-striped pajak">
-									<thead class="bg-warning text-light">
-										<tr>
-											<th>Tanggal</th>
-											<th>Nama Booth</th>
-											<th>Jenis Transaksi</th>
-											<th>Pajak</th>
-											<th>Detail</th>
-										</tr>
-									</thead>
-									<tbody>
-										@foreach ($tax as $t)
-										<tr>
-											<td>{{date('d/m/Y', strtotime($t->tanggal))}}</td>
-											@foreach ($booths as $b)
-												@if ($b->id_booth == $t->id_booth)
-													<td>{{$b->nama_booth.', '.$b->kota_booth}} ({{$t->id_booth}})</td>
-												@endif
-											@endforeach
-											<td>{{$t->jenis}}</td>
-											<td>Rp {{Rupiahd($t->pajak)}}</td>
-											<td><a href="/admin/tax/{{date('Y-m-d', strtotime($t->tanggal))}}/{{$t->id_booth}}/{{$t->jenis}}" class="btn btn-primary btn-sm btn-rounded">Detail</a></td>
-										</tr>
-										@endforeach
-									</tbody>
-								</table>
+							<div class="tab-pane fade show {{session()->get('msg') == '' ? 'active' : null}}" id="pills-pajak" role="tabpanel" aria-labelledby="pills-pajak-tab">
+								<div class="row mt-2">
+									<div class="col-md-12">
+										<h4 align="center"><b>DATA PAJAK HARIAN</b></h4>
+										<table class="table table-striped pajak">
+											<thead class="bg-warning text-light">
+												<tr>
+													<th>Tanggal</th>
+													<th>Nama Booth</th>
+													<th>Jenis Transaksi</th>
+													<th>Pajak</th>
+													<th>Detail</th>
+												</tr>
+											</thead>
+											<tbody>
+												@foreach ($tax as $t)
+												<tr>
+													<td>{{date('d/m/Y', strtotime($t->tanggal))}}</td>
+													@foreach ($booths as $b)
+														@if ($b->id_booth == $t->id_booth)
+															<td>{{$b->nama_booth.', '.$b->kota_booth}} ({{$t->id_booth}})</td>
+														@endif
+													@endforeach
+													<td>{{$t->jenis}}</td>
+													<td>Rp {{Rupiahd($t->pajak)}}</td>
+													<td><a href="/admin/tax/{{date('Y-m-d', strtotime($t->tanggal))}}/{{$t->id_booth}}/{{$t->jenis}}" class="btn btn-primary btn-sm btn-rounded">Detail</a></td>
+												</tr>
+												@endforeach
+											</tbody>
+										</table>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -89,6 +105,8 @@
 			</div>
 		</div>
 	</div>
+
+
 	<div class="modal fade bd-example-modal-sm mt-4" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
 	  	<div class="modal-dialog modal-sm">
 	    	<div class="modal-content">

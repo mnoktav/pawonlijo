@@ -1,9 +1,8 @@
 @extends('admin/master-d')
 @section('css')
 	<style>
-		.table th, .table td{
-			height: 2.5rem !important;
-			padding: 0.5rem !important;
+		.table th{
+			text-transform: uppercase;
 		}
 	</style>
 @endsection
@@ -33,30 +32,41 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<div class="card">
+				<div class="card full-height">
 					<div class="card-body">
-						<table class="table table-striped">
-							<thead class="bg-warning text-light">
-								<tr>
-									<th>Tanggal</th>
-									<th>ID Transaksi</th>
-									<th>Jenis Transaksi</th>
-									<th>Kode</th>
-									<th>Pajak</th>
-								</tr>
-							</thead>
-							<tbody>
-								@foreach ($detail as $d)
-								<tr>
-									<td>{{date('d/m/Y H:i',strtotime($d->created_at))}}</td>
-									<td><a href="{{ route('admin.sales-tax',$d->id) }}">{{$d->id}}</a></td>
-									<td>{{$d->jenis}}</td>
-									<td>{{$d->kode}}</td>
-									<td>Rp {{Rupiah($d->total_pajak)}}</td>
-								</tr>
-								@endforeach
-							</tbody>
-						</table>
+						<div class="row">
+							<div class="col-md-12 text-right">
+								<a href="{{url()->previous()}}" class="btn btn-primary btn-rounded btn-sm">Kembali</a>
+							</div>
+						</div>
+						<div class="separator-solid"></div>
+						<div class="row">
+							<div class="col-md-12">
+								<table class="table table-striped">
+									<thead class="bg-warning text-light">
+										<tr>
+											<th>Tanggal</th>
+											<th>ID Transaksi</th>
+											<th>Jenis Transaksi</th>
+											<th>Kode</th>
+											<th>Pajak</th>
+										</tr>
+									</thead>
+									<tbody>
+										@foreach ($detail as $d)
+										<tr>
+											<td>{{date('d/m/Y H:i',strtotime($d->created_at))}}</td>
+											<td><a href="{{ route('admin.sales-tax',$d->id) }}">{{$d->id}}</a></td>
+											<td>{{$d->jenis}}</td>
+											<td>{{$d->kode}}</td>
+											<td>Rp {{Rupiah($d->total_pajak)}}</td>
+										</tr>
+										@endforeach
+									</tbody>
+								</table>
+							</div>
+						</div>
+						
 					</div>
 				</div>
 			</div>

@@ -1,4 +1,5 @@
 @extends('admin/master-d')
+
 @section('content')	
 	<div class="page-inner">
 		<div class="page-header">
@@ -59,4 +60,22 @@
 			</div>
 		</div>
 	</div>
+@endsection
+@section('js')
+	<script>
+		function Search() {
+		  var input = document.getElementById("search");
+		  var filter = input.value.toLowerCase();
+		  var nodes = document.getElementsByClassName('target');
+		  var list = document.getElementById('list');
+
+		  for (i = 0; i < nodes.length; i++) {
+		    if (nodes[i].innerText.toLowerCase().includes(filter)) {
+		      nodes[i].style.display = "block";
+		    } else {
+		      nodes[i].style.display = "none";
+		    }
+		  }
+		}
+	</script>
 @endsection

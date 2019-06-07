@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\PL_Booth;
-use App\PL_Kasir;
-use App\PL_Note;
-use App\PL_Transaksi;
-use App\View_Transaksi;
-use App\PL_JenisTransaksi;
-use App\PL_Product;
-use App\Top_Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Validator;  
 use Illuminate\Support\Facades\Crypt;
+use App\PL_Cabang;
+use App\PL_Pegawai;
+use App\PL_Catatan;
+use App\PL_Transaksi;
+use App\PL_Transaksi_Jenis;
+use App\PL_Produk;
+use App\PL_Produk_Harga;
+use App\View_Transaksi;
+use App\Top_Product;
+use Validator;  
 use Alert;
 
 class AdminBooth extends Controller
@@ -25,12 +26,14 @@ class AdminBooth extends Controller
 	//booth
 	public function Booth()
     {
-        $booths = PL_Booth::all();
-        $kasirs = PL_Kasir::all();
+        $booths = PL_Cabang::where('status',1)->orderBy('created_at','desc')->get();
+        $n_booth = PL_Cabang::where('status',0)->orderBy('created_at','desc')->get();
+        $kasirs = PL_Pegawai::all();
         
     	return view('admin/booth',[
             'booths' => $booths,
-            'kasirs' => $kasirs
+            'kasirs' => $kasirs,
+            'nb' => $n_booth
         ]);
     }
 
@@ -38,7 +41,7 @@ class AdminBooth extends Controller
     {
 
         $id = $request->id_booth;
-        $booth = PL_Booth::where('id_booth',$id)->first();
+        $booth = PL_Cabang::where('id_booth',$id)->first();
        
         return view('admin/booth-detail',[
             'booth' => $booth
@@ -48,10 +51,10 @@ class AdminBooth extends Controller
     public function DetailBoothHome(Request $request)
     {
         $id = $request->id_booth;
-        $booth = PL_Booth::where('id_booth',$id)->first();
-        $kasirs = PL_Kasir::where('id_booth',$id)->get();
-        $jumlah_kasir = PL_Kasir::where('id_booth',$id)->count();
-        $jenis = PL_JenisTransaksi::where('id_booth',$id)->orderBy('pajak','desc')->get();
+        $booth = PL_Cabang::where('id_booth',$id)->first();
+        $kasirs = PL_Pegawai::where('id_booth',$id)->get();
+        $jumlah_kasir = PL_Pegawai::where('id_booth',$id)->count();
+        $jenis = PL_Transaksi_Jenis::where('id_booth',$id)->orderBy('pajak','desc')->get();
         return view('admin/booth-detail-home',[
             'booth' => $booth,
             'kasirs' => $kasirs,
@@ -63,7 +66,7 @@ class AdminBooth extends Controller
     public function DetailBoothTransaksi(Request $request)
     {
         $id = $request->id_booth;
-        $booth = PL_Booth::where('id_booth',$id)->first();
+        $booth = PL_Cabang::where('id_booth',$id)->first();
         $sales = View_Transaksi::where('id_booth', $id)
                             ->orderBy('id','desc')
                             ->get();
@@ -78,7 +81,7 @@ class AdminBooth extends Controller
     public function DetailBoothInfo(Request $request)
     {
         $id = $request->id_booth;
-        $booth = PL_Booth::where('id_booth',$id)->first();
+        $booth = PL_Cabang::where('id_booth',$id)->first();
         $income = ChartIncomeBooth($id,'income');
         $pjk = ChartIncomeBooth($id,'tax');
         $income_h = ChartIncomeBoothH($id,'transaksi');
@@ -123,13 +126,15 @@ class AdminBooth extends Controller
             'tax_h' => $tax_h
         ]);
     }
+
+
     //Jenis Transaksi
     public function JenisTransaksi()
     {
-        $jenis = PL_JenisTransaksi::groupBy('jenis_transaksi')
+        $jenis = PL_Transaksi_Jenis::groupBy('jenis_transaksi')
                                     ->orderBy('pajak','desc')
                                     ->get();
-        $booths = PL_Booth::all();
+        $booths = PL_Cabang::all();
         $tax = View_transaksi::select(DB::raw('sum(total_pajak) as pajak, date(created_at) as tanggal, jenis , id_booth'))
                                 ->where('status',1)
                                 ->where('pajak','>',0)
@@ -146,7 +151,7 @@ class AdminBooth extends Controller
     }
     public function ActTrans(Request $request)
     {
-        PL_JenisTransaksi::find($request->id)
+        PL_Transaksi_Jenis::find($request->id)
                     ->update([
                 'status' => $request->status
             ]);
@@ -156,12 +161,12 @@ class AdminBooth extends Controller
     }
     public function UpdatePajak(Request $request)
     {
-        PL_JenisTransaksi::where('jenis_transaksi',$request->jenis_transaksi)
+        PL_Transaksi_Jenis::where('jenis_transaksi',$request->jenis_transaksi)
                     ->update([
                 'pajak' => $request->pajak
             ]);
         Alert::success('Berhasil Update');
-        return redirect()->back();
+        return redirect()->back()->with('msg', 'jenis');
     }
     public function DetailPajak(Request $request)
     {
@@ -174,14 +179,16 @@ class AdminBooth extends Controller
             'detail' => $detail
         ]);
     }
+
+
     //Update booth
     public function EditBooth(Request $request)
     {
         $id = $request->id_booth;
-        $booth = PL_Booth::where('id_booth',$id)->first();
-        $kasirs = PL_Kasir::where('id_booth',$id)->get();
-        $jumlah_kasir = PL_Kasir::where('id_booth',$id)->count();
-        $max = PL_Kasir::max('id');
+        $booth = PL_Cabang::where('id_booth',$id)->first();
+        $kasirs = PL_Pegawai::where('id_booth',$id)->get();
+        $jumlah_kasir = PL_Pegawai::where('id_booth',$id)->count();
+        $max = PL_Pegawai::max('id');
         $max = $max+1;
         return view('admin/booth-edit',[
             'booth' => $booth,
@@ -194,7 +201,7 @@ class AdminBooth extends Controller
     {
         if ($request->update_booth != null) {
 
-            PL_Booth::where('id_booth',$request->id_booth)
+            PL_Cabang::where('id_booth',$request->id_booth)
                     ->update([
                 'nama_booth' => $request->nama_booth,
                 'alamat_booth' => $request->alamat_booth,
@@ -221,9 +228,12 @@ class AdminBooth extends Controller
                 'password_booth.min' => 'Password minimal 8 karakter.',
                 're_pass.same' => 'Password tidak sama.',
                 'username_booth.unique' => 'Username booth sudah digunakan.'
-            ])->validate();
+            ]);
+            if ($validator->fails()) {
+               return redirect()->back()->withErrors($validator)->with('msg', 'akun');
+            }
 
-            PL_Booth::where('id_booth',$request->id_booth)
+            PL_Cabang::where('id_booth',$request->id_booth)
                     ->update([
                 'username_booth' => $request->username_booth,
                 'password_booth' => Crypt::encryptString($request->password_booth)
@@ -237,7 +247,7 @@ class AdminBooth extends Controller
 
             for ($i=0; $i < count($request->nama_kasir); $i++) {
                 if($request->nama_kasir[$i] != null){
-                    PL_Kasir::updateOrCreate(
+                    PL_Pegawai::updateOrCreate(
                         ['id' => $request->id_kasir[$i], 'id_booth' => $request->id_booth[$i]],
                         [
                             'nama_kasir' => $request->nama_kasir[$i],
@@ -257,7 +267,7 @@ class AdminBooth extends Controller
 
     public function DeleteKasir(Request $request)
     {
-        $delete = PL_Kasir::find($request->id);
+        $delete = PL_Pegawai::find($request->id);
 
         $delete->delete();
 
@@ -296,30 +306,36 @@ class AdminBooth extends Controller
             return view('admin/booth-add-step4');
         }
     }
-    public function Step5()
+    public function Step5($id)
     {
         if(session('finish')==null){
             return redirect()->route('admin.add-booth-step4');
         }else{
         
-            $products = PL_Product::where('status',1)
+            $products = PL_Produk::where('status',1)
                         ->groupBy('nama_makanan')
                         ->get();
-            $booth = PL_Booth::max('id_booth');
-
+            $booth = PL_Cabang::max('id_booth');
+            $jenis = PL_Transaksi_Jenis::where('id_booth',$id)
+                                    ->orderBy('jenis_transaksi','desc')
+                                    ->get();
+            $harga = PL_Produk_Harga::all();                            
             return view('admin/booth-add-step5',[
                 'products' => $products,
-                'booth' => $booth
+                'booth' => $booth,
+                'jenis' => $jenis,
+                'harga' => $harga
             ]);
         }
     }
+
     public function SaveStep(Request $request)
     {
         if($request->step1 != null){
 
             $validator = Validator::make($request->all(), [
-                'id_booth' => 'required|unique:pl_booth,id_booth',
-                'nama_booth' => 'required|unique:pl_booth,nama_booth'
+                'id_booth' => 'required|unique:PL_Cabang,id_booth',
+                'nama_booth' => 'required|unique:PL_Cabang,nama_booth'
             ], [
                 'id_booth.required' => 'ID booth harus diisi.',
                 'id_booth.unique' => 'ID sudah digunakan.',
@@ -343,22 +359,21 @@ class AdminBooth extends Controller
             return redirect()->route('admin.add-booth-step2');
         }
         elseif($request->step3 != null){
-
-            $boothValue = [
-                'nama_kasir1' => $request->nama_kasir1,
-                'alamat_kasir1' => $request->alamat_kasir1,
-                'no_kasir1' => $request->no_kasir1,
-                'nama_kasir2' => $request->nama_kasir2,
-                'alamat_kasir2' => $request->alamat_kasir2,
-                'no_kasir2' => $request->no_kasir2
-            ];
-
+            for ($i=0; $i < count($request->nama_kasir) ; $i++) { 
+                if ($request->nama_kasir[$i]) {
+                    $boothValue[$i] = [
+                        'nama_kasir' => $request->nama_kasir[$i],
+                        'alamat_kasir' => $request->alamat_kasir[$i],
+                        'no_kasir' => $request->no_kasir[$i],
+                    ];
+                }
+            }
             session()->put('step3', $boothValue);
             return redirect()->route('admin.add-booth-step4');
         }
         elseif ($request->step2 != null) {
             $validator = Validator::make($request->all(), [
-                'username_booth' => 'required|min:4|unique:pl_booth,username_booth',
+                'username_booth' => 'required|min:4|unique:PL_Cabang,username_booth',
                 'password_booth' => 'required|min:8',
                 're_pass' => 'same:password_booth'
             ], [
@@ -382,7 +397,7 @@ class AdminBooth extends Controller
 
         }
         elseif ($request->finish != null) {
-            PL_Booth::create([
+            PL_Cabang::create([
                 'id_booth' => $request->id_booth,
                 'nama_booth' => $request->nama_booth,
                 'alamat_booth' => $request->alamat_booth,
@@ -397,7 +412,7 @@ class AdminBooth extends Controller
 
             for ($i=0; $i < count($request->nama_kasir) ; $i++) {
                 if($request->nama_kasir[$i] != null){
-                    PL_Kasir::create([
+                    PL_Pegawai::create([
                         'nama_kasir' => $request->nama_kasir[$i],
                         'alamat_kasir' => $request->alamat_kasir[$i],
                         'telp_kasir' => $request->no_kasir[$i],
@@ -405,37 +420,64 @@ class AdminBooth extends Controller
                     ]);
                 }
             }
-            for ($i=1; $i <= 3 ; $i++) { 
-                session()->forget('step'.$i);
-            }
-            session()->put('finish', 'finish');
-            return redirect()->route('admin.add-booth-step5');
-        }
-        elseif($request->selesai != null){
-            if(!empty($request->nama_makanan)){
-                for ($i=0; $i < count($request->nama_makanan) ; $i++) { 
-                    PL_Product::create([
-                        'nama_makanan' => $request->nama_makanan[$i],
-                        'kategori' => $request->kategori[$i],
-                        'harga_reguler' => $request->reguler[$i],
-                        'harga_gojek' => $request->gojek[$i],
-                        'harga_grab' => $request->grab[$i],
-                        'id_booth' => $request->id_booth,
-                        'status' => 1
+
+            $jenis = PL_Transaksi_Jenis::groupBy('jenis_transaksi')
+                                    ->get();
+            $jenis_t = ['Gojek','Grab','Reguler','Pesanan'];
+            $pajak = [20,30,0,0];
+            if(count($jenis)>1){
+                foreach($jenis as $j){
+                    PL_Transaksi_Jenis::create([
+                        'jenis_transaksi' => $j->jenis_transaksi,
+                        'pajak' => $j->pajak,
+                        'status' => 1,
+                        'id_booth' => $request->id_booth
+                    ]);
+                }
+            }else{
+                for ($i=0; $i < count($jenis_t); $i++) { 
+                    PL_Transaksi_Jenis::create([
+                        'jenis_transaksi' => $jenis_t[$i],
+                        'pajak' => $pajak[$i],
+                        'status' => 1,
+                        'id_booth' => $request->id_booth
                     ]);
                 }
             }
 
-            
-            $jenis = PL_JenisTransaksi::groupBy('jenis_transaksi')
-                                    ->get();
-            foreach($jenis as $j){
-                PL_JenisTransaksi::create([
-                    'jenis_transaksi' => $j->jenis_transaksi,
-                    'pajak' => $j->pajak,
-                    'status' => 1,
-                    'id_booth' => $request->id_booth
-                ]);
+            for ($i=1; $i <= 3 ; $i++) { 
+                session()->forget('step'.$i);
+            }
+            session()->put('finish', 'finish');
+            return redirect()->route('admin.add-booth-step5',$request->id_booth);
+        }
+        elseif($request->selesai != null){
+            if (!is_null($request->nama_makanan)) {
+                for ($i=0; $i < count($request->nama_makanan) ; $i++) { 
+                    if($request->nama_makanan != null){
+                        $c = PL_Produk::max('id');
+                        PL_Produk::create([
+                            'id' => $c+1,
+                            'nama_makanan' => $request->nama_makanan[$i],
+                            'kategori' => $request->kategori[$i],
+                            'id_booth' => $request->id_booth,
+                            'status' => 1
+                        ]);
+                        $p = PL_Transaksi_Jenis::where('id_booth', $request->id_booth)
+                                            ->orderBy('jenis_transaksi','desc')
+                                            ->pluck('id');
+
+                        for ($a=0; $a < count($p); $a++) { 
+                                PL_Produk_Harga::create([
+                                    'id_produk' => $c+1,
+                                    'id_jenis_transaksi' => $p[$a],
+                                    'harga' => $request->harga[$a]
+                                ]);
+                        }
+
+                    }
+
+                }
             }
             session()->forget('finish');
 
@@ -446,7 +488,7 @@ class AdminBooth extends Controller
 
     public function NonBooth($id)
     {
-        PL_Booth::where('id_booth',$id)
+        PL_Cabang::where('id_booth',$id)
                 ->update([
                     'status' => 0
                 ]);
@@ -457,7 +499,7 @@ class AdminBooth extends Controller
 
     public function ActBooth($id)
     {
-        PL_Booth::where('id_booth',$id)
+        PL_Cabang::where('id_booth',$id)
                 ->update([
                     'status' => 1
                 ]);
@@ -470,9 +512,9 @@ class AdminBooth extends Controller
     //note-booth
     public function NoteBooth()
     {
-        $notes = DB::table('pl_note')
-                ->join('pl_booth','pl_note.id_booth','=','pl_booth.id_booth')
-                ->select(DB::raw('pl_note.*, pl_booth.nama_booth, GROUP_CONCAT(nama_booth SEPARATOR ", ") as nama_booth '))
+        $notes = DB::table('pl_catatan')
+                ->join('pl_cabang','pl_cabang.id_booth','=','pl_catatan.id_booth')
+                ->select(DB::raw('pl_catatan.*, pl_cabang.nama_booth, GROUP_CONCAT(nama_booth SEPARATOR ", ") as nama_booth '))
                 ->groupBy('judul')
                 ->get();
 
@@ -482,7 +524,7 @@ class AdminBooth extends Controller
     }
     public function AddNoteBooth()
     {
-        $booths = PL_Booth::where('status', 1)->get();
+        $booths = PL_Cabang::where('status', 1)->get();
         return view('admin/booth-note-add',[
             'booths' => $booths
         ]);
@@ -493,14 +535,14 @@ class AdminBooth extends Controller
         if($request->save != null){
             $validator = Validator::make($request->all(), [
                 'id_booth' => 'required',
-                'judul' => 'unique:pl_note,judul'
+                'judul' => 'unique:PL_Catatan,judul'
             ], [
                 'id_booth.required' => 'Pilih booth terlebih dahulu.',
                 'judul.unique' => 'Judul tidak boleh sama.'
             ])->validate();
 
             for ($i=0; $i < count($request->id_booth) ; $i++) { 
-                PL_Note::create([
+                PL_Catatan::create([
                     'judul' => $request->judul,
                     'pesan' => $request->pesan,
                     'id_booth' => $request->id_booth[$i],
@@ -516,7 +558,7 @@ class AdminBooth extends Controller
     public function DeleteNote(Request $request)
     {
         $judul = $request->judul;
-        $delete = PL_Note::where('judul',$judul)->delete();
+        $delete = PL_Catatan::where('judul',$judul)->delete();
 
         Alert::success('Berhasil Hapus Note', 'Berhasil');
         return redirect()->route('admin.note-booth');

@@ -19,15 +19,15 @@
 								<small>{{session('login')['nama_booth']}}, {{session('login')['kota_booth']}} ({{session('login')['id_booth']}})</small><br>
 							</div>
 							<div class="col-md-2 text-right">
-								@if (Request::segment(2) == 'Pesanan')
-									<a class="btn btn-sm btn-rounded btn-primary text-light" href="{{ route('admin.pesanan') }}">
+								@if (Request::segment(3) == 'pesanan')
+									<a class="btn btn-sm btn-rounded btn-primary text-light" href="{{ route('kasir.transaksi-pesanan') }}">
 										<span class="btn-label">
 											<i class="fas fa-angle-left"></i>
 										</span>
 										Kembali
 									</a>
 								@else
-									<a class="btn btn-sm btn-rounded btn-primary text-light" onclick="window.history.back()">
+									<a class="btn btn-sm btn-rounded btn-primary text-light" href="{{ route('kasir.transaksi') }}">
 										<span class="btn-label">
 											<i class="fas fa-angle-left"></i>
 										</span>
@@ -43,10 +43,11 @@
 								<div class="row mb-3">
 									<div class="col-md-6">
 										<h5><b>Nama Pembeli</b> : {{$sale->nama_pembeli}}</h5>
-										<h5><b>Jenis Transaksi</b> : {{$sale->jenis}} ({{$sale->id}})</h5>
+										<h5><b>Jenis Transaksi</b> : {{$sale->jenis}} ({{$sale->kode}})</h5>
+										<h5><b>Tanggal</b> : {{date('d/m/Y H:i',strtotime($sale->created_at))}}</h5>
 									</div>
 									<div class="col-md-6">
-										<h5><b>Tanggal</b> : {{date('d/m/Y H:i',strtotime($sale->created_at))}}</h5>
+										
 										@if($sale->status == 1)
 										<h5><b>Status</b> : Sukses<i class="fas fa-check ml-2 text-success"></i></h5>
 										@elseif($sale->status == 2)
@@ -58,6 +59,9 @@
 										<p><b>Alasan Pembatalan : </b> {{$sale->keterangan}}</p>
 										@else
 										<p><b>Keterangan : </b> {{$sale->keterangan}}</p>
+										@endif
+										@if($sale->status == 1)
+										<a href="/storage/{{$sale->id}}.pdf" class="btn btn-xs btn-secondary" target="_blank">Cetak Nota</a>
 										@endif
 									</div>
 								</div>
@@ -104,6 +108,7 @@
 								<div class="separator-solid"></div>
 								<div class="text-center">
 									<button type="button" class="btn btn-sm btn-rounded btn-danger {{$sale->status == 0 || $sale->jenis == 'Pesanan' && $sale->status == 1 ? 'd-none' : null}}" data-toggle="modal" data-target=".bd-example-modal-sm ">Batalkan Transaksi</button>
+									
 									<a href="{{ route('kasir.transaksi-update-pesanan', $sale->id) }}" class="btn btn-sm btn-rounded btn-success {{$sale->status != 2 ? 'd-none' : null}}">Transaksi Selesai</a>
 								</div>
 								

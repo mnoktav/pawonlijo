@@ -36,12 +36,12 @@
 				<div class="card">
 					<div class="card-body">
 						<div class="row">
-							<div class="col-md-10">
+							<div class="col-md-6">
 								<h4><b>{{$sale->id}}</b></h4>
 								<small>{{$booth->nama_booth}}, {{$booth->kota_booth}} ({{$booth->id_booth}})</small><br>
 							</div>
-							<div class="col-md-2 text-right text-light">
-								<a class="btn btn-sm btn-rounded btn-primary" onclick="window.history.back()" {{-- href="{{ route('admin.sales') }}" --}}>
+							<div class="col-md-6 text-right text-light">
+								<a class="btn btn-sm btn-rounded btn-primary" onclick="window.history.back()">
 									<span class="btn-label">
 										<i class="fas fa-angle-left"></i>
 									</span>
@@ -49,15 +49,20 @@
 								</a>
 							</div>
 						</div>
-						<div class="separator-solid"></div>
-						<div class="card border">
+						<div class="card border mt-4">
 							<div class="card-body">
 								<div class="row mb-3">
-									<div class="col-md-6">
+									<div class="col-md-5">
 										<h5><b>Nama Pembeli</b> : {{$sale->nama_pembeli}}</h5>
-										<h5><b>Jenis Transaksi</b> : {{$sale->jenis}} ({{$sale->id}})</h5>
+										<h5>
+											<b>Jenis Transaksi</b> : 
+											{{$sale->jenis}}
+											@if ($sale->kode != null)
+											 	({{$sale->kode}})
+											@endif
+										</h5>
 									</div>
-									<div class="col-md-6">
+									<div class="col-md-5">
 										<h5><b>Tanggal</b> : {{date('d/m/Y H:i',strtotime($sale->created_at))}}</h5>
 										@if($sale->status == 1)
 										<h5><b>Status</b> : Sukses<i class="fas fa-check ml-2 text-success"></i></h5>
@@ -71,6 +76,16 @@
 										@elseif($sale->jenis == 'Pesanan')
 										<p><b>Keterangan : </b> {{$sale->keterangan}}</p>
 										@endif
+									</div>
+									<div class="col-md-2">
+										<div class="text-right">
+											<a class="btn btn-secondary btn-sm mr-2" href="{{ asset('storage/'.$sale->id.'.pdf') }}" target="_blank">
+												<span class="btn-label">
+													<i class="fas fa-print"></i>
+												</span>
+												Nota
+											</a>
+										</div>
 									</div>
 								</div>
 								<div class="table-responsive">

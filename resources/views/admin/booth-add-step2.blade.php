@@ -6,7 +6,7 @@
 				@csrf
 				<div class="form-group {{$errors->has('username_booth') ? 'has-error' : null}}">					
 					<label for="username_booth">Username</label>
-					@if(session('step3') != null)
+					@if(session('step2') != null)
 					<input type="text" class="form-control" id="username_booth" name="username_booth" value="{{ session('step2')['username_booth']}}">
 					@else
 					<input type="text" class="form-control" id="username_booth" name="username_booth" value="{{old('username_booth')}}">
@@ -19,7 +19,7 @@
 				</div>
 				<div class="form-group {{$errors->has('password_booth') ? 'has-error' : null}}" >
 					<label for="password_booth">Password</label>
-					@if(session('step3') != null)
+					@if(session('step2') != null)
 					<input type="password" class="form-control" id="password_booth" name="password_booth" value="{{ session('step2')['password_booth']}}">
 					@else
 					<input type="password" class="form-control" id="password_booth" name="password_booth" value="{{old('password_booth')}}">
@@ -32,7 +32,7 @@
 				</div>
 				<div class="form-group {{$errors->has('re_pass') ? 'has-error' : null}}">
 					<label for="re_pass">Ketik Ulang Password</label>
-					@if(session('step3') != null)
+					@if(session('step2') != null)
 					<input type="password" class="form-control" id="re_pass" name="re_pass" value="{{ session('step2')['re_pass']}}">
 					@else
 					<input type="password" class="form-control" id="re_pass" name="re_pass" value="{{ old('re_pass')}}">

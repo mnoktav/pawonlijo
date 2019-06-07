@@ -12,13 +12,12 @@ class PL_Transaksi extends Model
     	'subtotal',
     	'potongan',
         'total',
-        'jenis',
+        'id_jenis_transaksi',
         'kode',
         'bayar',
         'kembali',
         'nama_pembeli',
         'status',
-        'id_booth',
         'keterangan'
     ];
     public $timestamps = true;

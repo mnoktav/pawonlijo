@@ -7,7 +7,9 @@
 			padding: 0.5rem !important;
 			height: 2.5rem;
 		}
-
+		#basic-datatables th{
+			text-transform: uppercase;
+		}
 	</style>
 @endsection
 @section('content')

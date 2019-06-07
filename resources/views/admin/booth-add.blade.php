@@ -39,8 +39,8 @@
 				<div class="card">
 					<div class="card-body">
 						<div class="row">
-							<div class="col-md-8 offset-md-2">
-								<ul class="nav nav-pills nav-primary  nav-pills-no-bd nav-pills-icons " id="pills-tab-with-icon" role="tablist">
+							<div class="col-md-10 offset-md-1">
+								<ul class="nav nav-pills nav-primary nav-pills-no-bd nav-pills-icons" id="pills-tab-with-icon" role="tablist">
 									<li class="nav-item">
 										<a class="nav-link {{Route::is('admin.add-booth') ? 'active' : null}}">
 											Booth
@@ -75,7 +75,7 @@
 						</div>
 						<div class="separator-dashed"></div>
 						<div class="row">
-							<div class="col-md-8 offset-md-2">
+							<div class="col-md-10 offset-md-1">
 								@yield('step')
 							</div>
 						</div>

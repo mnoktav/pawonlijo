@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\View_Transaksi;
-use App\PL_Booth;
-use App\Top_Product;
 use App\User;
-use App\PL_JenisTransaksi;
+use App\PL_Cabang;
+use App\PL_Transaksi;
+use App\PL_Transaksi_Jenis;
+use App\PL_Produk;
+use App\View_Transaksi;
+use App\Top_Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -38,17 +40,21 @@ class AdminDashboard extends Controller
                     'email' => 'required|email',
                     'password' => 'required'
                     ], [
-                        'username.min' => 'Username minimal 6 karakter.'
-                ])->validate();
+                        
+                    'username.min' => 'Username minimal 6 karakter.'
+                ]);
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator)->with('msg', 'akun');
+                }
                 $akun->username = $request->username;
                 $akun->email = $request->email;
                 $akun->save();
 
                 Alert::success('Akun Berhasil Diupdate','Berhasil');
-                return redirect()->back();
+                return redirect()->back()->with('msg', 'akun');
             }else{
                 Alert::error('Password yang anda masukkan salah','Password Salah');
-                return redirect()->back();
+                return redirect()->back()->with('msg', 'akun');
             }
         }
         elseif(!empty($request->update_p)){
@@ -61,17 +67,19 @@ class AdminDashboard extends Controller
                     ], [
                         'password_baru.min' => 'password minimal 8 karakter.',
                         'retype.same' => 'Password tidak sama.'
-                ])->validate();
-
+                ]);
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors()->with('msg', 'password');
+                }
                 $akun->password = Hash::make($request->password_baru);
                 $akun->save();
 
                 Alert::success('Akun Berhasil Diupdate','Berhasil');
-                return redirect()->back();
+                return redirect()->back()->with('msg', 'password');
             }
             else{
                 Alert::error('Password yang anda masukkan salah','Password Salah');
-                return redirect()->back();
+                return redirect()->back()->with('msg', 'password');
             }
         }
     }
@@ -79,7 +87,7 @@ class AdminDashboard extends Controller
     public function index()
     {
 
-    	$jenis = PL_JenisTransaksi::groupBy('jenis_transaksi')->get();
+    	$jenis = PL_Transaksi_Jenis::groupBy('jenis_transaksi')->get();
     	$tb =  View_Transaksi::select(DB::raw('count(id) as jumlah, jenis'))
                             ->whereMonth('created_at',date('n'))
                             ->whereYear('created_at',date('Y'))
@@ -96,7 +104,7 @@ class AdminDashboard extends Controller
 				            ->whereYear('created_at',date('Y'))
 				            ->sum('total_pajak')/1000;
 
-		$booths = PL_Booth::get();
+		$booths = PL_Cabang::get();
 		
         $hari = null;
 		foreach ($booths as $b => $a) {
@@ -116,18 +124,28 @@ class AdminDashboard extends Controller
 
 	    $top = Top_Product::select(DB::raw('sum(jumlah) as jumlah, nama_makanan'))
 							->whereMonth('created_at','>=', date('m'))
+                            ->whereYear('created_at',date('Y'))
                             ->groupBy('nama_makanan')
                             ->orderBy('jumlah','desc')
+                            ->orderBy('nama_makanan','asc')
                             ->limit(5)->get();
         $jt = View_Transaksi::select(DB::raw('count(id) as jid, status, created_at, id_booth'))
         					->where('status', 1)
 				            ->whereMonth('created_at',date('m'))
+                            ->whereYear('created_at',date('Y'))
 				            ->groupBy('id_booth')
 				            ->get();
 		$nt = View_Transaksi::orderBy('created_at','desc')
 				            ->limit(5)
 				            ->get();
-
+        $pie = View_Transaksi::select(DB::raw(' Round(sum(total_bersih)/(select sum(total_bersih) from view_transaksi where status = 1) * 100) 
+as persen, id_booth, nama_booth'))
+                            ->where('status', 1)
+                            ->whereMonth('created_at',date('m'))
+                            ->whereYear('created_at',date('Y'))
+                            ->groupBy('id_booth')
+                            ->get();
+        
     	return view('admin/dashboard',[
     		'jenis' => $jenis,
     		'tb' => $tb,
@@ -139,7 +157,8 @@ class AdminDashboard extends Controller
     		'lh' => $lh,
     		'top' => $top,
     		'jt' => $jt,
-    		'nt' => $nt
+    		'nt' => $nt,
+            'pie' => $pie
     	]);
     }
 }

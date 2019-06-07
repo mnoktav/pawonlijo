@@ -56,8 +56,8 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-12">
-				<div class="card border">
+			<div class="col-md-8">
+				<div class="card border full-height">
 					<div class="card-header">
 						<div>
 							<h4 class="card-title">Pendapatan Harian Booth Pawon Lijo</h4>
@@ -70,29 +70,24 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="row">
 			<div class="col-md-4">
 				<div class="card border full-height">
-					<div class="card-body">
-						<h4>
-							<i class="fas fa-tags text-warning mr-2"></i>Produk Terlaris Bulan {{BulanIndo(date('n')).' '.date('Y')}}
-						</h4>
-						<div class="separator-solid"></div>
-						@foreach ($top as $top)
-						<div class="d-flex">
-							<div class="flex-1 pt-1">
-								<h5 class="fw-bold mb-1">{{$top->nama_makanan}}</h5>
-							</div>
-							<div class="d-flex ml-auto align-items-center">
-								<h3 class="text-info fw-bold">{{$top->jumlah}} Porsi</h3>
-							</div>
+					<div class="card-header">
+						<div>
+							<h6 class="card-title">Booth Pawon Lijo Bulan {{BulanIndo(date('n')).' '.date('Y')}}</h6>
+
 						</div>
-						<div class="separator-dashed"></div>
-						@endforeach
+					</div>
+					<div class="card-body">
+						<small class="text-success">Pendapatan Dalam Persen %</small>
+						<div id="chart-container" style="height:50vh;">
+							<canvas id="pieChart"></canvas>
+						</div>	
 					</div>
 				</div>
 			</div>
+		</div>
+		<div class="row">
 			<div class="col-md-4">
 				<div class="card border full-height">
 					<div class="card-body">
@@ -122,6 +117,28 @@
 					</div>
 				</div>
 			</div>
+			<div class="col-md-4">
+				<div class="card border full-height">
+					<div class="card-body">
+						<h4>
+							<i class="fas fa-tags text-warning mr-2"></i>Produk Terlaris Bulan {{BulanIndo(date('n')).' '.date('Y')}}
+						</h4>
+						<div class="separator-solid"></div>
+						@foreach ($top as $top)
+						<div class="d-flex">
+							<div class="flex-1 pt-1">
+								<h5 class="fw-bold mb-1">{{$top->nama_makanan}}</h5>
+							</div>
+							<div class="d-flex ml-auto align-items-center">
+								<h3 class="text-info fw-bold">{{$top->jumlah}} Porsi</h3>
+							</div>
+						</div>
+						<div class="separator-dashed"></div>
+						@endforeach
+					</div>
+				</div>
+			</div>
+			
 			<div class="col-md-4">
 				<div class="card full-height border">
 					<div class="card-body">
@@ -176,7 +193,7 @@
 					id:'circles-{{$t->jenis}}',
 					radius:45,
 					value:{{$t->jumlah}},
-					maxValue:30,
+					maxValue:100,
 					width:10,
 					text: {{$t->jumlah}},
 					colors:['#f1f1f1', '{{$colors[$b--]}}' ],
@@ -250,7 +267,8 @@
 					$a = 0;
 					$s = 0;
 					$c = 0;
-					$color = ['red','blue','green','yellow','grey','orange','pink']
+					$d = 0;
+					$color = ['red','blue','green','purple','grey','orange','pink']
 				@endphp
 				@foreach ($booths as $b)
 					{
@@ -270,11 +288,12 @@
 				@endforeach
 				]
 			},
+
 			options : {
 				responsive: true, 
 				maintainAspectRatio: false,
 				legend: {
-					position: 'right',
+					position: 'bottom',
 					labels : {
 						padding: 20,
 						fontColor: 'black',
@@ -307,6 +326,8 @@
 			}
 		});
 
+		
+
 		$('#lineChart').sparkline([105,103,123,100,95,105,115], {
 			type: 'line',
 			height: '70',
@@ -315,5 +336,57 @@
 			lineColor: '#ffa534',
 			fillColor: 'rgba(255, 165, 52, .14)'
 		});
+	</script>
+	<script>
+		var pieChart = document.getElementById('pieChart').getContext('2d');
+		var myPieChart = new Chart(pieChart, {
+			type: 'pie',
+			data: {
+				@php
+					$g = null;
+					$u = count($pie);
+
+					for($v=0; $v < $u; $v++){
+					  $g[$v] = '#'.rand(100000,999999); 
+					}
+
+				@endphp	
+				datasets: [{
+					data: {!!json_encode($pie->pluck('persen'))!!} ,
+					backgroundColor : {!!json_encode($g)!!} ,
+					borderWidth: 0
+				}],
+				labels: {!!json_encode($pie->pluck('nama_booth'))!!} 
+			},
+			options : {
+				responsive: true, 
+				maintainAspectRatio: false,
+				legend: {
+					position : 'bottom',
+					labels : {
+						fontColor: 'rgb(154, 154, 154)',
+						fontSize: 11,
+						usePointStyle : true,
+						padding: 20
+					},
+					onClick: (e) => e.stopPropagation()
+				},
+				pieceLabel: {
+					render: 'percentage',
+					fontColor: 'white',
+					fontSize: 14,
+				},
+				tooltips: false,
+				layout: {
+					padding: {
+						left: 20,
+						right: 20,
+						top: 20,
+						bottom: 20
+					}
+				}
+			}
+		});
+
 	</script>
 @endsection

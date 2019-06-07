@@ -1,19 +1,6 @@
 @extends('kasir/master-d')
 @section('css')
-	<style>
-		.table td{
-			height: 2.5rem;
-			font-size: 0.8rem;
-		}
-		.bayar p{
-			font-size: 0.8rem;
-			margin-bottom: 0.3rem;
-		}
-		.bayar input{
-			font-size: 0.8rem;
-			height: 2rem !important;
-		}
-	</style>
+	
 @endsection
 @section('content')
 	<div class="page-inner">
@@ -22,12 +9,12 @@
 				<div class="card border">
 					<div class="card-body">
 						<div class="row">
-							<div class="col-md-8">
+							<div class="col-md-6">
 								<h4 style="text-transform: uppercase;"><b>PRODUK {{session('login')['nama_booth']}}</b></h4>
 								<small style="text-transform: uppercase;">Order : {{$jenis}}</small>
 
 							</div>
-							<div class="col-md-4 mt-2">
+							<div class="col-md-6 mt-2">
 								<div class="text-right">
 									@if(session('cart') == null)
 									<a class="btn btn-sm btn-rounded btn-primary mr-2" href="{{ route('kasir.dashboard') }}">
@@ -44,7 +31,7 @@
 										Kembali
 									</a>
 									@endif
-									<a class="btn btn-sm btn-rounded btn-success" href="{{ url('/kasir/checkout?jenis='.$jenis) }}">
+									<a class="btn btn-sm btn-rounded btn-success" href="{{ route('kasir.checkout',['jenis'=>$jenis, 'id'=>$id_jenis]) }}">
 										<b>Checkout</b>
 										@if(session('cart') != null)
 											<span class="ml-2">{{count(session('cart'))}} item</span>
@@ -66,45 +53,44 @@
 								</div>
 							</div>
 							@foreach ($products as $product)
-							<div class="col-md-3 target">
+							<div class="col-md-4 target">
 								<div class="card border">
 									<form action="{{ route('kasir.product-add') }}" method="POST">
 									@csrf
 									<input type="hidden" name="jenis" value="{{$jenis}}">
 									<div class="card-body list-produk" style="background-color: #f4f4f4;">
 										<div class="row">
-											<div class="col-9">
+											<div class="col-8">
 												<div class="produk mb-3">
 													<h5 style="text-transform: capitalize;"><b><i class="fas fa-tag text-danger mr-2"></i>{{$product->nama_makanan}}</b></h5>
-													@if ($jenis == 'Reguler' or $jenis == 'Pesanan')
-														<p class="ml-3 pl-1">Rp {{Rupiah($product->harga_reguler)}}</p>
-														<input type="hidden" name="harga" value="{{$product->harga_reguler}}">
-													@elseif($jenis == 'Grab')
-														<p class="ml-3 pl-1">Rp {{Rupiah($product->harga_grab)}}</p>
-														<input type="hidden" name="harga" value="{{$product->harga_grab}}">
-													@elseif($jenis == 'Gojek')
-														<p class="ml-3 pl-1">Rp {{Rupiah($product->harga_gojek)}}</p>
-														<input type="hidden" name="harga" value="{{$product->harga_gojek}}">
-													@endif
+													<p class="ml-3 pl-1">Rp {{Rupiahd($product->harga)}}</p>
+													<input type="hidden" name="harga" value="{{$product->harga}}">
 													
-													<input type="hidden" name="id_product" value="{{$product->id}}">
+													<input type="hidden" name="id_product" value="{{$product->id_produk}}">
+													<input type="hidden" name="id_jenis" value="{{$product->id_jenis_transaksi}}">
 												</div>
 											</div>
-											<div class="col-3 {{$jenis == 'Pesanan' ? 'd-none':null}}">
+											<div class="col-4 {{$jenis == 'Pesanan' ? 'd-none':null}}">
 												<p><b>Stok</b></p>
 												@foreach ($stok as $s)
-													@if($s->id_produk == $product->id)
-														<p class="mt--3">{{$s->sisa_stok}}</p>
-														<input type="hidden" name="sisa" value="{{$s->sisa_stok}}">
+													@if($s->id_produk == $product->id_produk)
+														@if (!empty(session('cart')[$product->id_produk]['jumlah']))
+															<p class="mt--3">{{$s->sisa_stok-session('cart')[$product->id_produk]['jumlah']}}</p>
+															<input type="hidden" name="sisa" value="{{$s->sisa_stok}}">
+														@else
+															<p class="mt--3">{{$s->sisa_stok}}</p>
+															<input type="hidden" name="sisa" value="{{$s->sisa_stok}}">
+														@endif
+														
 													@endif
 												@endforeach
 											</div>
-											<div class="col-8">
+											<div class="col-7">
 												<div class="form-group p-0">	
 												    <input type="number" class="form-control border mr-6 ml-6" id="jumlah" name="jumlah" placeholder="Jumlah" min="1">
 												</div>
 											</div>
-											<div class="col-4 mt-1">
+											<div class="col-5 mt-1">
 												<div class="button-submit text-center">
 													<input type="submit" name="pesan" value="Pesan" class="btn btn-primary btn-sm">
 												</div>

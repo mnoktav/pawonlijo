@@ -6,8 +6,8 @@
 			padding: 0.5rem !important;
 			height: 2.5rem;
 		}
-		.info td{
-			padding: 5px;
+		.info td, .info th{
+			height: 3rem;
 		}
 		input[readonly]{
 			background-color: white;
@@ -46,277 +46,268 @@
 					<div class="card-body">
 						<div class="row">
 							<div class="col-md-12">
-								<div class="card border">
-									<div class="card-body">
+								<div class="card border shadow-none">
+									<div class="card-body" style="background-color: #f7f7f7;">
 										<div class="row">
 											<div class="col-md-10">
 												<h5><h4 clas><i class="fas fa-info-circle mr-2 text-primary"></i><b>PENJUALAN TAHUN 2019</b></h4></h5>
 											</div>
-											<div class="col-md-2">
-												<form action="" method="get">
-													<select name="chart" class="form-control border" onchange="this.form.submit();">
-														<option value="t" {{$rc == 't' ? 'selected':null}}>Transaksi</option>
-														<option value="p" {{$rc == 'p' ? 'selected':null}}>Income</option>
-													</select>
-												</form>
-											</div>
+
 										</div>
 										
-										<div class="separator-solid mt-4"></div>
-										<div class="chart-container">
+										<div class="chart-container mt-4" style="height:60vh;">
 											<canvas id="ProdukTransaksiTahun"></canvas>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="separator-solid"></div>
-						{{-- @php
-							dd($jenis);
-						@endphp --}}
-						<div class="row">
-							
-							@if (is_null($t_awal))
-								<div class="col-md-6" style="text-transform: uppercase;">
-									<h4><b>Daftar Penjualan Semua Booth PawonLijo</b></h4>
-									<h5>sampai dengan : {{date('d/m/Y H:i')}} WIB</h5>
-								</div>
-							@else
-								<div class="col-md-6" style="text-transform: uppercase;">
-									@if($id_booth == '')
-										<h4><b>Daftar Penjualan Semua Booth PawonLijo</b></h4>
-									@else
-										<h4><b>Daftar Penjualan Booth {{$id_booth}}</b></h4>
-									@endif
-									@if($t_akhir == '')
-									<h5>Tanggal :  {{date('d/m/Y', strtotime($t_awal))}}</h5>
-									@else
-										<h5>Tanggal :  {{date('d/m/Y', strtotime($t_awal))}} - {{date('d/m/Y', strtotime($t_akhir))}}</h5>
-									@endif
-									<h5>
-										Jenis : {{implode(', ',$jenis)}}
-										
-									</h5>
-								</div>
-							@endif
-							<div class="col-md-6 mb-2 text-right">
-								<button data-toggle="modal" data-target="#FilterModal" class="btn btn-sm"><i class="fas fa-search"></i></button>
-								<button href="#popover_content_wrapper" class="btn btn-sm btn-pop" data-trigger="focus"><i class="fas fa-info"></i></button>
-							</div>
-							
+						<div class="card border shadow-none" id="data-transaksi">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-12">
+										<form action="/admin/sales#data-transaksi" method="GET">
+										<div class="row">
+											<div class="col-md-3">
+												<select name="id_booth" class="form-control" style="border-color: grey">
+													<option value="">Semua</option>
+													@foreach ($booths as $booth )
+														<option value="{{$booth->id_booth}}" {{$id_booth == $booth->id_booth ? 'selected' : null}}>{{$booth->nama_booth}}, {{$booth->kota_booth}} </option>
+													@endforeach
+												</select>
+											</div>
+											<div class="col-md-2 ">
+												<select name="bulan" class="form-control" style="border-color: grey">
+													@php
+														$i=1;
+													@endphp
+													@foreach (NamaBulan() as $n => $nama)
+														<option value="{{$n}}" {{$b == $n ? 'selected':null}}>{{$nama}} </option>
+													@endforeach
+												</select>
+											</div>
+											<div class="col-md-2">
+												<select name="tahun" class="form-control" style="border-color: grey">
+													@for ($a=2016; $a < 2027; $a++)
+														<option value="{{$a}}" {{$t == $a ? 'selected':null}}>{{$a}}</option>
+													@endfor
+												</select>
+											</div>
+											<div class="col-md-1">
+												<input type="submit" name="filter" value="Submit" class="btn btn-sm btn-primary mt-1">
+											</div>
+										</div>
+										</form>
+										<div class="separator-solid mt-4"></div>
+									</div>
 
-							<div id="popover_content_wrapper" style="display: none">
-								<div class="head" style="border-bottom: 1px solid #aaaaaa;">
-									<h4><i class="fas fa-info-circle mr-2"></i>INFO</h4>
-								</div>
-								<table class="table table-striped mt-2 border">
-									<tr>
-										<td></td>
-										<th>Transaksi</th>
-										<th>Pendapatan</th>
-										<th>Pajak</th>
-									</tr>
-									@php
-										$tt = 0;
-										$tp = 0;
-										$t_pajak = 0;
-									@endphp
-									@foreach ($jumlah_t as $t)
-										<tr>
-											<td>{{$t->jenis}}</td>
-											<td align="center">{{$t->jumlah}}</td>
-											<td>Rp {{Rupiahd($t->total)}}</td>
-											<td>Rp {{Rupiahd($t->t_pajak)}} </td>
-										</tr>
-										@php
-											$tt += $t->jumlah;
-											$tp += $t->total;
-											$t_pajak += $t->t_pajak
-										@endphp
-									@endforeach
-									<tr>
-										<td><b>TOTAL</b></td>
-										<td align="center">{{$tt}}</td>
-										<td>Rp {{Rupiahd($tp)}}</td>
-										<td>Rp {{Rupiahd($t_pajak)}}</td>
-									</tr>
-								</table>
-							</div>
-							
-							<div class="col-md-12">
-								<div class="table-responsive mt-2">
-									<table class="table table-striped transaksi" id="table">
-										<thead class="bg-dark text-light">
-											<tr>
-												<th>TANGGAL</th>
-												<th>ID TRANSAKSI</th>
-												<th>JENIS (PAJAK)</th>
-												<th>KODE</th>
-												<th>TOTAL</th>
-												<th>DISCOUNT</th>
-												<th>PAJAK</th>
-												<th>TOTAL BERSIH</th>
-												<th>DETAIL</th>
-											</tr>
-										</thead>
-										<tbody>
-											@foreach ($sales as $sale)
-											<tr>
-												<td>{{date('d/m/Y H:i',strtotime($sale->created_at))}}</td>
-												<td>{{$sale->id}}</td>
-												<td>
-													{{$sale->jenis}} 
-													({{$sale->pajak}}%)
-												</td>
-												@if($sale->kode != null)
-												<td>{{$sale->kode}}</td>
-												@else
-												<td>-</td>
-												@endif
-												<td>Rp {{Rupiahd($sale->subtotal)}}</td>
-												<td>Rp {{Rupiahd($sale->potongan)}}</td>
-												<td>Rp {{Rupiahd($sale->total_pajak)}}</td>
-												<td>Rp {{Rupiahd($sale->total_bersih)}}</td>
-												<td><a href="{{ route('admin.sales-detail',$sale->id) }}" class="btn btn-primary btn-xs">Detail</a></td>
-											</tr>
-											@endforeach
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="modal fade" id="FilterModal">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<h4><i class="fa fa-search mr-2 text-primary"></i><b>Filter</b></h4>
-    			</div>
-				<form action="" method="GET">
-				<div class="modal-body">
-					<div class="row pl-2 pr-2">
-						<div class="col-md-6">
-							<div class="form-group p-0">
-								<label>BOOTH</label>
-								<select class="form-control" name="id_booth" id="nama-booth">
-									<option value="">Semua</option>
-									@foreach ($booths as $booth)
-										<option value="{{$booth->id_booth}}" {{$id_booth == $booth->id_booth ? 'selected' : null}}>{{$booth->nama_booth}}, {{$booth->kota_booth}}</option>
-									@endforeach
+									@if (count($sales) != null)
+									<div class="col-md-12 mb-2">
+										<ul class="nav nav-pills nav-primary mb-4" id="pills-tab" role="tablist">
+											<li class="nav-item">
+												<a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Tabel</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Grafik</a>
+											</li>
+										</ul>
+										
 									
-								</select>
-							</div>
-							<div class="form-group p-0 mt-3">
-								<label class="">TANGGAL AWAL</label>
-								<input type="date" class="form-control" name="t_awal" value="{{$t_awal}}" required="">
-							</div>
-							<div class="form-group p-0 mt-3">
-								<label class="">TANGGAL AKHIR</label>
-								<input type="date" class="form-control" name="t_akhir" value="{{$t_akhir}}">
+										<div class="tab-content mt-2 mb-3" id="pills-tabContent">
+											<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+												<div class="row">
+													<div class="col-md-12">
+														<div class="card full-height shadow-sm">
+															<div class="card-body">
+																<h4><b>JUMLAH TRANSAKSI</b></h4>
+																<div class="separator-solid"></div>
+																<div class="d-flex flex-wrap justify-content-around pb-2 pt-4">
+																	@foreach ($jumlah_t as $j)
+																		<div class="px-2 pb-2 pb-md-0 text-center">
+																			<div id="circles-{{$j->jenis}}"></div>
+																			<h4 class="fw-bold mt-3" style="text-transform: uppercase;">{{$j->jenis}}</h4>
+																			<h6 class="fw-bold text-muted">PENDAPATAN : Rp {{$j->total/1000}} K <br> PAJAK : Rp {{$j->t_pajak/1000}} K</h6>
+																		</div>
+																	@endforeach
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-12">
+														<div class="card full-height shadow-sm">
+															<div class="card-body">
+																<h4><b>PRODUK TERJUAL</b></h4>
+																<div class="separator-solid"></div>
+																<div class="chart-container mt-4" style="height:60vh;">
+																	<canvas id="JumlahProduk"></canvas>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+												<div class="row">
+													<div class="col-md-12">
+														<div class="table-responsive">
+															<table class="table table-striped transaksi" id="table">
+																<thead class="bg-warning text-light">
+																	<tr>
+																		<th>TANGGAL</th>
+																		<th>ID TRANSAKSI</th>
+																		<th>JENIS (PAJAK)</th>
+																		<th>KODE</th>
+																		<th>TOTAL</th>
+																		<th>DISCOUNT</th>
+																		<th>PAJAK</th>
+																		<th>TOTAL BERSIH</th>
+																		<th>DETAIL</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	@foreach ($sales as $sale)
+																	<tr>
+																		<td>{{date('d/m/Y H:i',strtotime($sale->created_at))}}</td>
+																		<td>{{$sale->id}}</td>
+																		<td>
+																			{{$sale->jenis}} 
+																			({{$sale->pajak}}%)
+																		</td>
+																		@if($sale->kode != null)
+																		<td>{{$sale->kode}}</td>
+																		@else
+																		<td>-</td>
+																		@endif
+																		<td>Rp {{Rupiahd($sale->subtotal)}}</td>
+																		<td>Rp {{Rupiahd($sale->potongan)}}</td>
+																		<td>Rp {{Rupiahd($sale->total_pajak)}}</td>
+																		<td>Rp {{Rupiahd($sale->total_bersih)}}</td>
+																		<td><a href="{{ route('admin.sales-detail',$sale->id) }}" class="btn btn-primary btn-xs">Detail</a></td>
+																	</tr>
+																	@endforeach
+																</tbody>
+															</table>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									@else
+									<div class="col-md-12">
+										<div class="text-center">
+											<h4 class="m-4">Tidak ada data untuk hasil pencarian ini</h4>
+										</div>
+									</div>
+									@endif
+								</div>
 							</div>
 						</div>
-						<div class="col-md-6">
-							<div class="form-group p-0">
-								<label>JENIS TRANSAKSI</label>
-								<div class="input-group mb-1">
-								  	<div class="input-group-prepend">
-								    	<div class="input-group-text">
-								      		<input type="checkbox" aria-label="Radio button for following text input" name="jenis[]" value="reguler" {{GetSelected($jenis,'reguler') == true ? 'checked' : null}}>
-								    	</div>
-								  	</div>
-								  	<input type="text" class="form-control" value="Reguler" readonly style="background-color: white !important; color: black !important">
-								</div>
-								<div class="input-group mb-1">
-								  	<div class="input-group-prepend">
-								    	<div class="input-group-text">
-								      		<input type="checkbox" aria-label="Radio button for following text input" name="jenis[]" value="gojek" {{GetSelected($jenis,'gojek') == true ? 'checked' : null}}>
-								    	</div>
-								  	</div>
-								  	<input type="text" class="form-control" value="Gojek" readonly style="background-color: white !important; color: black !important">
-								</div>
-								<div class="input-group mb-1">
-								  	<div class="input-group-prepend">
-								    	<div class="input-group-text">
-								      		<input type="checkbox" aria-label="Radio button for following text input" name="jenis[]" value="grab" {{GetSelected($jenis,'grab') == true ? 'checked' : null}}>
-								    	</div>
-								  	</div>
-								  	<input type="text" class="form-control" value="Grab" readonly style="background-color: white !important; color: black !important">
-								</div>
-								<div class="input-group">
-								  	<div class="input-group-prepend">
-								    	<div class="input-group-text">
-								      		<input type="checkbox" aria-label="Radio button for following text input" name="jenis[]" value="pesanan" {{GetSelected($jenis,'pesanan') == true ? 'checked' : null}}>
-								    	</div>
-								  	</div>
-								  	<input type="text" class="form-control" value="Pesanan" readonly style="background-color: white !important; color: black !important">
-								</div>
-								<small class="alertbox">Pilih minimal satu.</small>
-							</div>
-						</div>
-						<p style="display: none;" class="text-danger pl-3 pr-3 mt-2">*Untuk mencari data perhari isi tanggal awal dan kosongkan tanggal akhir</p>
 					</div>
 				</div>
-				<div class="modal-footer">
-					<div class="text-right">
-						<a href="{{ route('admin.sales') }}" class="btn btn-danger btn-sm btn-rounded pl-5 pr-5">Reset</a>
-						<input type="submit" value="Filter" name="filter" id="FilterBtn" class="btn btn-primary btn-sm btn-rounded pl-5 pr-5">
-					</div>
-				</div>
-				</form>
 			</div>
 		</div>
 	</div>
 @endsection
 @section('js')
 	<script src="{{ asset('assets/atlantis/js/plugin/chart-js/chart.min.js') }} "></script>
-
 	<script>
 		var ProdukTransaksiTahun = document.getElementById('ProdukTransaksiTahun').getContext('2d');
-
 		var myProdukTransaksiTahun = new Chart(ProdukTransaksiTahun, {
-			type: 'bar',
+			type: 'line',
 			data: {
 				labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"],
 				datasets : [
+					@php
+					$a = 0;
+					$s = 0;
+					$c = 0;
+					$d = 0;
+					$color = ['red','blue','green','purple','grey','orange','pink']
+				@endphp
+				@foreach ($booths as $op)
 					{
-						@if ($rc == 't')
-						label: "Transaksi",
-						@else
-						label: "Rp",
-						@endif
+						label: "{{$op->nama_booth}}",
+						borderColor: "{{$color[$c++]}}",
 						pointBorderColor: "#FFF",
-						pointBackphpgroundColor: "#20b218",
+						pointBackgroundColor: "{{$color[$s++]}}",
 						pointBorderWidth: 2,
 						pointHoverRadius: 4,
 						pointHoverBorderWidth: 1,
 						pointRadius: 4,
+						backgroundColor: 'transparent',
 						fill: true,
 						borderWidth: 2,
-						backgroundColor: 'orange',
-						borderColor: '#b5b5b5',
-						data: [{{implode(',',$chart)}}],
+						data: [{{implode(',',$ct[$a++])}}]
 					},
-					@if ($rc == 'p' or empty($rc))
+				@endforeach
+				]
+			},
+			options : {
+				responsive: true, 
+				maintainAspectRatio: false,
+				legend: {
+					position: 'bottom',
+					labels : {
+						padding: 20,
+						fontColor: 'black',
+						fontSize: 12
+					}
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+					callbacks: {
+	                    label: function(tooltipItems, data) { 
+	                        return 'Income : Rp '+ tooltipItems.yLabel + ' K';
+	                    }
+	                }
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+			        yAxes: [{
+			            beginAtZero:true,
+		                ticks: {
+		                    callback: function(label, index, labels) {
+		                        return label+' K';
+		                    }
+		                }
+			        }]
+			    }
+			}
+		});
+	</script>
+	<script>
+		var JumlahProduk = document.getElementById('JumlahProduk').getContext('2d');
+		var myJumlahProduk = new Chart(JumlahProduk, {
+			type: 'bar',
+			data: {
+				labels : {!!json_encode($top_n)!!},
+				@php
+					$g = null;
+					$u = count($top_n);
+
+					for($v=0; $v < $u; $v++){
+					  $g[$v] = '#'.rand(100000,999999); 
+					}
+
+				@endphp	
+				datasets : [
 					{
-						label: "Rp",
-						pointBorderColor: "#FFF",
-						pointBackphpgroundColor: "#20b218",
+						label: "Porsi",
 						pointBorderWidth: 2,
 						pointHoverRadius: 4,
 						pointHoverBorderWidth: 1,
 						pointRadius: 4,
+						backgroundColor: {!!json_encode($g)!!},
 						fill: true,
 						borderWidth: 2,
-						backgroundColor: 'red',
-						borderColor: '#b5b5b5',
-						data: [{{implode(',',$tpajak)}}],
-					}
-					@endif
-				],
+						data: [{{implode(',',$top_j)}}]
+					},
+				]
 			},
 			options: {
 				responsive: true, 
@@ -324,43 +315,44 @@
 				legend: {
 					display: false,
 				},
-				@if (empty($rc) || $rc == 'p')
-				tooltips: {
-	                enabled: true,
-	                mode: 'single',
-	                callbacks: {
-	                    label: function(tooltipItems, data) { 
-	                    	if (tooltipItems.datasetIndex == 0) {
-	                        	return 'Income : Rp '+ tooltipItems.yLabel + ' K';
-	                        }
-	                        else if (tooltipItems.datasetIndex == 1) {
-	                        	return 'Pajak : Rp '+ tooltipItems.yLabel + ' K';
-	                        }
-	                    }
-	                }
-	            },
-				@endif
 				scales: {
 					yAxes: [{
-						@if ($rc == 't')
 						ticks: {
-							beginAtZero:true	
+							beginAtZero:true
 						}
-						
-						@else
-						ticks: {
-		                    callback: function(label, index, labels) {
-		                        return label+' K';
-		                    }
-		                }
-						@endif
-						
 					}]
 				}
-				
 			}
 		});
+	</script>
+	<script src="{{ asset('assets/atlantis/js/plugin/chart-circle/circles.min.js') }}"></script>
+	<script>
+		@php
+			$a = 1;
+			$b = count($jumlah_t);
+			$colors = [ 1 => '#F25961','#2BB930','#FF9E27','#609dff'];
+		@endphp
+		@foreach ($jenis as $e)
+			@foreach ($jumlah_t as $t)
+				@if ($e->jenis_transaksi == $t->jenis)
+				Circles.create({
+					id:'circles-{{$t->jenis}}',
+					radius:60,
+					value:{{$t->jumlah}},
+					maxValue:100,
+					width:15,
+					text: {{$t->jumlah}},
+					colors:['#f1f1f1', '{{$colors[$b--]}}' ],
+					duration:400,
+					wrpClass:'circles-wrp',
+					textClass:'circles-text',
+					styleWrapper:true,
+					styleText:true
+				})
+				@endif
+			@endforeach
 
+		@endforeach
 	</script>
 	<script>	
 		$(document).ready(function(){

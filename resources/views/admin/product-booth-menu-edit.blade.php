@@ -82,39 +82,20 @@
 													@endif
 												</div>
 												<div class="row">
-													<div class="col-md-4">
-														<div class="form-group {{$errors->has('reguler') ? 'has-error' : null}}">
-															<label for="reguler">Harga Reguler</label>
-															<input type="text" class="form-control" id="reguler" name="reguler" value="{{$menu->harga_reguler}}" onkeypress="return NumberOnly(event)">
-															@if ($errors->has('reguler'))
-																<span class="help-block text-danger">
-																	{{$errors->first('reguler')}}
-																</span>
-															@endif
+													<div class="col-md-12">
+														<div class="form-group">
+															<label for="harga">Jenis Transaksi</label>
 														</div>
 													</div>
-													<div class="col-md-4">
-														<div class="form-group {{$errors->has('gojek') ? 'has-error' : null}}">
-															<label for="gojek">Harga Go-Food</label>
-															<input type="text" class="form-control" id="gojek" name="gojek" value="{{$menu->harga_gojek}}" onkeypress="return NumberOnly(event)">
-															@if ($errors->has('gojek'))
-																<span class="help-block text-danger">
-																	{{$errors->first('gojek')}}
-																</span>
-															@endif
+													@foreach ($harga as $h)
+													<div class="col-md-3 mt--4">
+														<div class="form-group">
+															<small style="text-transform: uppercase;">{{$h->jenis_transaksi}}</small>
+															<input type="text" class="form-control" id="harga" name="harga[]" value="{{$h->harga}}" onkeypress="return NumberOnly(event)">
+															<input type="hidden" name="id_harga[]" value="{{$h->id}}">
 														</div>
 													</div>
-													<div class="col-md-4">
-														<div class="form-group {{$errors->has('grab') ? 'has-error' : null}}">
-															<label for="grab">Harga Grab</label>
-															<input type="text" class="form-control" id="grab" name="grab" value="{{$menu->harga_grab}}" onkeypress="return NumberOnly(event)">
-															@if ($errors->has('grab'))
-																<span class="help-block text-danger">
-																	{{$errors->first('grab')}}
-																</span>
-															@endif
-														</div>
-													</div>
+													@endforeach
 												</div>
 												<div class="form-group">
 													<label for="kategori">Kategori</label>

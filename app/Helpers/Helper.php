@@ -1,10 +1,12 @@
 <?php
 use App\PL_Transaksi;
-use App\PL_Booth;
-use App\PL_Stok;
+use App\PL_Cabang;
+use App\PL_Produk_Stok;
+use App\PL_Produk_Harga;
 use App\Top_Product;
-use App\PL_JenisTransaksi;
+use App\PL_Transaksi_Jenis;
 use App\View_Transaksi;
+use App\View_Produk_Kasir;
 
 function Nominal($value)
 {
@@ -77,7 +79,7 @@ function GetSelected($jenis,$string)
 
 function PesananPending()
 {
-	$count = PL_Transaksi::where('jenis', 'Pesanan')
+	$count = View_Transaksi::where('jenis', 'Pesanan')
 							->where('status',2)
 							->count('id');
 	return $count;
@@ -85,29 +87,27 @@ function PesananPending()
 
 function PesananPendingB($id)
 {
-	$count = PL_Transaksi::where('jenis', 'Pesanan')
+	$count = View_Transaksi::where('jenis', 'Pesanan')
 							->where('status',2)
 							->where('id_booth',$id)
 							->count('id');
 	return $count;
 }
 
-function StatusBooth($id)
+
+function SessionCart()
 {
-	$booth = PL_Booth::where('id_booth',$id)->first();
+	if(session()->get('cart') != null){
+		if (Request::segment(2) != 'product' and Request::segment(2) != 'checkout' and Request::segment(2) != 'print-nota') {
+			$session = 'hapus';
+		}
+		else{
+			$session = null;
+		}
 
-	if($booth->status != 1){
-		$session = session()->forget('login');
+		return $session;
 	}
-	if(date('H:i') < date('H:i',strtotime($booth->jam_buka)) || date('H:i') > date('H:i',strtotime($booth->jam_tutup))){
-		$session = session()->forget('login');
-	}
-	else{
-		$session = null;
-	}
-	return $session;
 }
-
 function StringToInt($string)
 {
 	$convert = array_map('intval', $string);
@@ -256,7 +256,7 @@ function StokProduct($id,$param)
 	for($i=0; $i<=13; $i++){
 		$ts = date('Y-m-d');
         $tsp = date('Y-m-d', strtotime('- '.$i.' days', strtotime($ts)));
-        $produk[$i] =  PL_Stok::where('id_produk',$id)
+        $produk[$i] =  PL_Produk_Stok::where('id_produk',$id)
 				            ->whereDate('created_at', $tsp)
 				            ->pluck('sisa_stok');
 
@@ -276,7 +276,7 @@ function StokProductTerjual($id)
 	for($i=0; $i<=13; $i++){
 		$ts = date('Y-m-d');
         $tsp = date('Y-m-d', strtotime('- '.$i.' days', strtotime($ts)));
-        $produk[$i] =  PL_Stok::where('id_produk',$id)
+        $produk[$i] =  PL_Produk_Stok::where('id_produk',$id)
 				            ->whereDate('created_at', $tsp)
 				            ->select(DB::raw('(total_stok-sisa_stok) as terjual'))
 				            ->pluck('terjual');
@@ -287,7 +287,7 @@ function StokProductTerjual($id)
 
 function PajakTrans($jenis,$booth)
 {
-	$data = PL_JenisTransaksi::where('jenis_transaksi',$jenis)
+	$data = PL_Transaksi_Jenis::where('jenis_transaksi',$jenis)
 							->where('id_booth',$booth)
 							->first();
 	return $data;
@@ -323,5 +323,13 @@ function Rupiahd($number)
 {
 	$number = number_format($number,0,'','.');
 	return $number;
+}
+
+function GetHarga($id1,$id2)
+{
+	$a = View_Produk_Kasir::where('id_produk',$id1)
+						->where('jenis_transaksi',$id2)
+						->first();
+	return $a['harga'];
 }
 ?>

@@ -1,5 +1,11 @@
 <?php
-
+Route::get('/clear-cache', function() {
+    $exitCode = Artisan::call('config:clear');
+    $exitCode = Artisan::call('cache:clear');
+    $exitCode = Artisan::call('config:cache');
+    
+    return 'DONE';
+});
 //Dashboard
 Route::get('/', 'AdminDashboard@index');
 Route::get('/admin/', 'AdminDashboard@index');
@@ -10,7 +16,7 @@ Route::get('/admin/booth/add-booth/step1', 'AdminBooth@AddBooth')->name('admin.a
 Route::get('/admin/booth/add-booth/step2', 'AdminBooth@Step2')->name('admin.add-booth-step2');
 Route::get('/admin/booth/add-booth/step3', 'AdminBooth@Step3')->name('admin.add-booth-step3');
 Route::get('/admin/booth/add-booth/finish', 'AdminBooth@Step4')->name('admin.add-booth-step4');
-Route::get('/admin/booth/add-booth/setup-menu', 'AdminBooth@Step5')->name('admin.add-booth-step5');
+Route::get('/admin/booth/add-booth/setup-menu/{id}', 'AdminBooth@Step5')->name('admin.add-booth-step5');
 Route::post('/admin/booth/add-booth/save', 'AdminBooth@SaveStep')->name('admin.add-booth-save');
 
 //Booth Note
@@ -72,16 +78,18 @@ Route::get('/admin/report/excel', 'AdminReport@DownloadExcel')->name('admin.repo
 Route::get('/kasir/login', 'KasirLogin@index')->name('kasir.login');
 Route::post('/kasir/login', 'KasirLogin@Login')->name('kasir.login-kasir');
 Route::get('/kasir/logout', 'KasirLogin@Logout')->name('kasir.logout');
+//log out when update
+Route::get('/kasir/logout/update/{id_booth}','KasirDashboard@StatusBooth')->name('kasir.logout-update');
 
 //kasir-dashboard
 Route::get('/kasir', 'KasirDashboard@index')->name('kasir.dashboard');
-Route::get('/kasir/product', 'KasirDashboard@KasirProduct')->name('kasir.product');
+Route::get('/kasir/product/{id}/{jenis}', 'KasirDashboard@KasirProduct')->name('kasir.product');
 Route::post('/kasir/product/add', 'KasirDashboard@AddToCart')->name('kasir.product-add');
 Route::post('/kasir/product/update', 'KasirDashboard@UpdateCart')->name('kasir.product-update');
-Route::get('/kasir/product/remove/{id_product}', 'KasirDashboard@RemoveFromCart')->name('kasir.product-remove');
+Route::get('/product/remove/{id_product}', 'KasirDashboard@RemoveFromCart')->name('kasir.product-remove');
 Route::get('/kasir/product/reset', 'KasirDashboard@RemoveCart')->name('kasir.product-reset');
 Route::get('/kasir/product/reset-back', 'KasirDashboard@RemoveCartBack')->name('kasir.product-reset-back');
-Route::get('/kasir/checkout', 'KasirDashboard@Checkout')->name('kasir.checkout');
+Route::get('/kasir/checkout/{id}/{jenis}', 'KasirDashboard@Checkout')->name('kasir.checkout');
 Route::post('/kasir/checkout/save', 'KasirDashboard@SaveCheckout')->name('kasir.checkout-save');
 Route::get('/kasir/print-nota/{id}', 'KasirDashboard@PrintNota')->name('kasir.print-nota');
 Route::get('/kasir/nota/{id}', 'KasirDashboard@Nota')->name('kasir.nota');
@@ -96,12 +104,14 @@ Route::get('/kasir/transaksi/{id}', 'KasirSales@Detail')->name('kasir.transaksi-
 Route::post('/kasir/transaksi/batal', 'KasirSales@TransaksiBatal')->name('kasir.transaksi-batal');
 
 //kasir stok
-Route::get('/kasir/stok', 'KasirSales@StockProduct')->name('kasir.stok');
+Route::get('/kasir/stok', 'KasirDashboard@StockProduct')->name('kasir.stok');
 Route::post('/kasir/stok/update', 'KasirDashboard@StockUpdate')->name('kasir.stok-update');
 Route::get('/kasir/report', 'KasirReport@index')->name('kasir.report');
 
 //akun admin
 Route::get('/admin/akun', 'AdminDashboard@Akun')->name('admin.akun');
 Route::post('/admin/akun/update', 'AdminDashboard@UpdateAkun')->name('admin.akun-update');
+
+
 
 Auth::routes();

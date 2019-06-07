@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\PL_Transaksi;
-use App\PL_Stok;
-use App\PL_Detail;
-use App\PL_Note;
-use App\PL_Booth;
+use App\View_Transaksi;
+use App\PL_Produk_Stok;
+use App\PL_Transaksi_Detail;
+use App\PL_Transaksi_Jenis;
+use App\PL_Cabang;
 use App\Top_Product;
 use Illuminate\Support\Facades\DB;
 
@@ -21,15 +21,15 @@ class KasirReport extends Controller
     public function index()
     {
     	$id = session('login')['id_booth'];
-        $ts = PL_Transaksi::whereDate('created_at',date('Y-m-d'))
+        $ts = View_Transaksi::whereDate('created_at',date('Y-m-d'))
                                 ->where('id_booth', $id)
                                 ->where('status',1)
                                 ->count();
-        $tb = PL_Transaksi::whereDate('created_at',date('Y-m-d'))
+        $tb = View_Transaksi::whereDate('created_at',date('Y-m-d'))
                                 ->where('id_booth', $id)
                                 ->where('status',0)
                                 ->count();
-        $total = PL_Transaksi::whereDate('created_at',date('Y-m-d'))
+        $total = View_Transaksi::whereDate('created_at',date('Y-m-d'))
                                 ->where('id_booth', $id)
                                 ->where('status',1)
                                 ->sum('total');
@@ -42,11 +42,22 @@ class KasirReport extends Controller
                             ->orderBy('jumlah','desc')
                             ->get();
 
+        $jenis = PL_Transaksi_Jenis::groupBy('jenis_transaksi')->get();
+        $jt =  View_Transaksi::select(DB::raw('count(id) as jumlah, jenis'))
+                            ->whereDate('created_at',date('Y-m-d'))
+                            ->where('status',1)
+                            ->where('id_booth', $id)
+                            ->groupBy('jenis')
+                            ->get();
+
+
     	return view('kasir/report', [
     		'ts' => $ts,
             'tb' => $tb,
             'total' => $total,
-            'jh' => $jh
+            'jh' => $jh,
+            'jenis' => $jenis,
+            'jt' => $jt
     	]);
     }
 }

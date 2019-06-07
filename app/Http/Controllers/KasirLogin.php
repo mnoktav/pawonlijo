@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
-use App\PL_Booth;
+use App\PL_Cabang;
 use Validator;
 use Alert;
 
@@ -30,7 +30,7 @@ class KasirLogin extends Controller
 
     		if(!is_null($request->username_booth) and !is_null($request->password_booth)){
 
-    			$find = PL_Booth::where('username_booth',$request->username_booth)->first();
+    			$find = PL_Cabang::where('username_booth',$request->username_booth)->first();
 
     			if(!is_null($find)){
     				if( date('H:i') < date('H:i',strtotime($find->jam_buka)) || date('H:i') > date('H:i',strtotime($find->jam_tutup)) ){

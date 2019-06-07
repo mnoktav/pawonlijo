@@ -3,7 +3,10 @@
 	<style>
 		#table td, #table th{
 			border:1px solid grey !important;
-			height: 2.5rem !important;
+			height: 2.7rem !important;
+		}
+		#table th{
+			text-transform: uppercase;
 		}
 	</style>
 @endsection
@@ -41,25 +44,30 @@
 								<table class="table" id="table">
 									<thead class="bg-dark text-light">
 										<tr>
+											<th>No</th>
 											<th>Nama Makanan</th>
-											<th>Terjual</th>
+											<th>Stok Hari Ini</th>
 											<th>Sisa Stok</th>
 											<th>Update Stok</th>
 										</tr>
 									</thead>
+									@php
+										$i = 1;
+									@endphp
 									<tbody>
 										@foreach ($products as $product)
 												
 											
 											<tr>
+												<td>{{$i++}}</td>
 												<td>
 													{{$product->nama_makanan}}
 													<input type="hidden" name="id_produk[]" value="{{$product->id}}">
 													<input type="hidden" name="id_booth" value="{{session('login')['id_booth']}}">
 												</td>
 												<td>
-													@foreach ($terjual as $t)
-														{{$t->id_produk == $product->id ? $t->jumlah : null}}
+													@foreach ($stocks as $stock1)
+														{{$stock1->id_produk == $product->id ? $stock1->total_stok : null}}
 													@endforeach
 												</td>
 												<td>
@@ -96,7 +104,7 @@
 
 		  // Loop through all table rows, and hide those who don't match the search query
 		  for (i = 0; i < tr.length; i++) {
-		    td = tr[i].getElementsByTagName("td")[0];
+		    td = tr[i].getElementsByTagName("td")[1];
 		    if (td) {
 		      txtValue = td.textContent || td.innerText;
 		      if (txtValue.toUpperCase().indexOf(filter) > -1) {

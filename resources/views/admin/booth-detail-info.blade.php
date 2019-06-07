@@ -38,7 +38,7 @@
 					<div class="separator-solid"></div>
 				</div>
 				
-				<div class="col-md-2 mt-2">
+				<div class="col-md-3 mt-2">
 					<form action="" method="GET">
 						<select name="bulan" class="form-control" onchange="if(this.value != 0) { this.form.submit(); }" style="border-color: grey">
 							@php
@@ -93,10 +93,10 @@
 							<th colspan="4">PRODUK TERJUAL</th>
 						</tr>
 						<tr style="background-color: #e9ecef">
-							<th rowspan="{{count($pj)+1}}"></th>
+							
 							<th>Nama Produk</th>
 							<th>Jumlah</th>
-							<th rowspan="{{count($pj)+1}}"></th>
+							<th rowspan="{{count($pj)+1}}" colspan="2"></th>
 						</tr>
 						@foreach ($pj as $pj)
 							<tr>
@@ -127,7 +127,7 @@
 				labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"],
 				datasets : [
 					{
-						label: "Rp",
+						label: "Income",
 						pointBorderColor: "#FFF",
 						pointBackphpgroundColor: "#20b218",
 						pointBorderWidth: 2,
@@ -160,7 +160,7 @@
 				responsive: true, 
 				maintainAspectRatio: false,
 				legend: {
-					display: false,
+					display: top,
 				},
 				tooltips: {
 	                enabled: true,
@@ -199,7 +199,7 @@
 				labels: {!!json_encode(array_reverse($lb))!!},
 				datasets : [
 					{
-						label: "Rp",
+						label: "Income",
 						pointBorderColor: "#FFF",
 						pointBackphpgroundColor: "#20b218",
 						pointBorderWidth: 2,
@@ -232,7 +232,7 @@
 				responsive: true, 
 				maintainAspectRatio: false,
 				legend: {
-					display: false,
+					display: top,
 				},
 				tooltips: {
 	                enabled: true,

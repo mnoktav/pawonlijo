@@ -70,7 +70,7 @@
 								<a class="nav-link {{session()->get('msg') == 'akun' ? 'active' : null}}" id="pills-akun-tab-nobd" data-toggle="pill" href="#pills-akun-nobd" role="tab" aria-controls="pills-akun-nobd" aria-selected="false">Akun</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link {{session()->get('msg') == 'pegawai' ? 'active' : null}}" id="pills-kasir-tab-nobd" data-toggle="pill" href="#pills-kasir-nobd" role="tab" aria-controls="pills-kasir-nobd" aria-selected="false">Pegawai</a>
+								<a class="nav-link {{session()->get('msg') == 'pegawai' ? 'active' : null}}" id="pills-kasir-tab-nobd" data-toggle="pill" href="#pills-kasir-nobd" role="tab" aria-controls="pills-kasir-nobd" aria-selected="false">Kasir</a>
 							</li>
 						</ul>
 						<div class="row" style="margin-top: 1rem;">
@@ -90,7 +90,7 @@
 														</div>
 														<div class="form-group">
 															<label for="nama-booth">Nama Booth</label>
-															<input type="text" class="form-control" id="nama_booth" name="nama_booth" value="{{$booth->nama_booth}}" readonly="">
+															<input type="text" class="form-control" id="nama_booth" name="nama_booth" value="{{$booth->nama_booth}}">
 														</div>
 														<div class="form-group">
 															<label for="alamat-booth">Alamat Booth</label>
@@ -169,7 +169,7 @@
 														</div>
 														<div class="form-group {{$errors->has('password_booth') ? 'has-error' : null}}">
 															<label for="password_booth">Password Baru</label>
-															<input type="password" class="form-control" id="password_booth" name="password_booth">
+															<input type="password" class="form-control" id="password_booth" name="password_booth" required="">
 															@if ($errors->has('password_booth'))
 																<span class="help-block text-danger">
 																	{{$errors->first('password_booth')}}
@@ -178,7 +178,7 @@
 														</div>
 														<div class="form-group {{$errors->has('re_pass') ? 'has-error' : null}}">
 															<label for="repass">Ketik Ulang Password Baru</label>
-															<input type="password" class="form-control" id="re_pass" name="repass">
+															<input type="password" class="form-control" id="re_pass" name="repass" required="">
 															@if ($errors->has('re_pass'))
 																<span class="help-block text-danger">
 																	{{$errors->first('re_pass')}}
@@ -196,106 +196,34 @@
 									<div class="tab-pane fade show {{session()->get('msg') == 'pegawai' ? 'active' : null}}" id="pills-kasir-nobd" role="tabpanel" aria-labelledby="pills-kasir-tab-nobd">
 										<div class="card" style="border: 1px solid #dddddd;">
 											<div class="card-body">
-												<h4><b><span class="fas fa-info-circle text-warning"></span>&nbsp; INFORMASI BOOTH</b></h4>
+												<div class="row">
+													<div class="col-md-6">
+														<h4 class="mt-2"><b><span class="fas fa-info-circle text-warning"></span>&nbsp; INFORMASI KASIR</b></h4>
+													</div>
+													<div class="col-md-6 text-right">
+														<button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#myModal">Tambah Kasir</button>
+													</div>
+												</div>
+												
 												<div class="separator-solid"></div>
-												@if ($jumlah_kasir < 1)
-												<form action="{{ route('admin.update-booth') }}" method="POST">
-													@csrf
-													<div class="form col-md-8 col-12" style="padding: 0;">
-														<div class="form-group">
-															<label for="nama-kasir1">Nama Pegawai 1</label>
-															<input type="text" class="form-control" id="nama-kasir1" name="nama_kasir[]">
-															<input type="hidden" name="id_kasir[]" value="{{$max}}">
-															<input type="hidden" name="id_booth[]" value="{{$booth->id_booth}}">
-														</div>
-														<div class="form-group">
-															<label for="alamat-kasir1">Alamat Pegawai 1</label>
-															<textarea class="form-control" id="alamat-kasir1" name="alamat_kasir[]"></textarea>
-														</div>
-														<div class="form-group">
-															<label for="no-kasir1">Telephone Pegawai 1</label>
-															<input type="text" class="form-control" id="no-kasir1" name="telp_kasir[]" onkeypress="return NumberOnly(event)">
-														</div>
-														<div class="form-group">
-															<label for="nama-kasir2">Nama Pegawai 2</label>
-															<input type="text" class="form-control" id="nama-kasir2" name="nama_kasir[]">
-															<input type="hidden" name="id_kasir[]" value="{{$max+1}}">
-															<input type="hidden" name="id_booth[]" value="{{$booth->id_booth}}">
-														</div>
-														<div class="form-group">
-															<label for="alamat-kasir2">Alamat Pegawai 2</label>
-															<textarea class="form-control" id="alamat-kasir2" name="alamat_kasir[]"></textarea>
-														</div>
-														<div class="form-group">
-															<label for="no-kasir2">Telephone Pegawai 2</label>
-															<input type="text" class="form-control" id="no-kasir2" name="telp_kasir[]" onkeypress="return NumberOnly(event)">
-														</div>
-														<div class="text-right">
-															<input type="submit" name="update_kasir1" value="Update" class="btn btn-warning">
-														</div>
-													</div>
-												</form>
-												@elseif($jumlah_kasir == 1)
+												@if ($jumlah_kasir>=1)
 												<form action="{{ route('admin.update-booth') }}" method="POST">
 													@csrf
 													<div class="form col-md-8 col-12" style="padding: 0;">
 														@foreach ($kasirs as $kasir)
 															<div class="form-group">
-																<label for="nama-kasir1">Nama Pegawai 1</label>
-																<input type="text" class="form-control" id="nama-kasir1" name="nama_kasir[]" value="{{$kasir->nama_kasir}}">
-																<input type="hidden" name="id_kasir[]" value="{{$kasir->id}}">
-																<input type="hidden" name="id_booth[]" value="{{$booth->id_booth}}" >
-															</div>
-															<div class="form-group">
-																<label for="alamat-kasir1">Alamat Pegawai 1</label>
-																<textarea class="form-control" id="alamat-kasir1" name="alamat_kasir[]">{{$kasir->alamat_kasir}}</textarea>
-															</div>
-															<div class="form-group">
-																<label for="no-kasir1">Telephone Pegawai 1</label>
-																<input type="text" class="form-control" id="no-kasir1" name="telp_kasir[]" value="{{$kasir->telp_kasir}}" onkeypress="return NumberOnly(event)">
-															</div>
-															<a href="{{ route('admin.delete-kasir',$kasir->id) }}" class="btn btn-danger btn-sm hapus-kasir" data-id="{{$kasir->id}}">Hapus</a>
-															<div class="separator-solid"></div>
-														@endforeach
-														<div class="form-group">
-															<label for="nama-kasir2">Nama Pegawai 2</label>
-															<input type="text" class="form-control" id="nama-kasir2" name="nama_kasir[]">
-															<input type="hidden" name="id_booth[]" value="{{$booth->id_booth}}">
-															<input type="hidden" name="id_kasir[]" value="{{$max}}">
-
-														</div>
-														<div class="form-group">
-															<label for="alamat-kasir2">Alamat Pegawai 2</label>
-															<textarea class="form-control" id="alamat-kasir2" name="alamat_kasir[]"></textarea>
-														</div>
-														<div class="form-group">
-															<label for="no-kasir2">Telephone Pegawai 2</label>
-															<input type="text" class="form-control" id="no-kasir2" name="telp_kasir[]" onkeypress="return NumberOnly(event)">
-														</div>
-														<div class="text-right">
-															<input type="submit" name="update_kasir1" value="Update" class="btn btn-warning">
-														</div>
-													</div>
-												</form>
-											
-												@elseif($jumlah_kasir == 2)
-												<form action="{{ route('admin.update-booth') }}" method="POST">
-													@csrf
-													<div class="form col-md-8 col-12" style="padding: 0;">
-														@foreach ($kasirs as $kasir)
-															<div class="form-group">
-																<label for="nama-kasir1">Nama Pegawai</label>
+																<label for="nama-kasir1">Nama Kasir</label>
 																<input type="text" class="form-control" id="nama-kasir1" name="nama_kasir[]" value="{{$kasir->nama_kasir}}">
 																<input type="hidden" name="id_kasir[]" value="{{$kasir->id}}">
 																<input type="hidden" name="id_booth[]" value="{{$booth->id_booth}}">
 																
 															</div>
 															<div class="form-group">
-																<label for="alamat-kasir1">Alamat Pegawai</label>
+																<label for="alamat-kasir1">Alamat Kasir</label>
 																<textarea class="form-control" id="alamat-kasir1" name="alamat_kasir[]">{{$kasir->alamat_kasir}}</textarea>
 															</div>
 															<div class="form-group">
-																<label for="no-kasir1">Telephone Pegawai</label>
+																<label for="no-kasir1">Telephone Kasir</label>
 																<input type="text" class="form-control" id="no-kasir1" name="telp_kasir[]" value="{{$kasir->telp_kasir}}" onkeypress="return NumberOnly(event)">
 															</div>
 															<a href="{{ route('admin.delete-kasir',$kasir->id) }}" class="btn btn-danger btn-sm hapus-kasir" data-id="{{$kasir->id}}">Hapus</a>
@@ -305,8 +233,11 @@
 															<input type="submit" name="update_kasir1" value="Update" class="btn btn-warning">
 														</div>
 													</div>
-
 												</form>
+												@else
+													<div class="text-center m-4">
+														<h3>Belum Ada Informasi Kasir</h3>
+													</div>
 												@endif
 											</div>
 										</div>
@@ -318,6 +249,41 @@
 				</div>
 			</div>
 		</div>
+	</div>
+	<div class="modal" id="myModal">
+	  	<div class="modal-dialog">
+	    	<div class="modal-content">
+	      		<div class="modal-header">
+	        		<h4 class="modal-title">Tambah Data Kasir</h4>
+	        		<button type="button" class="close" data-dismiss="modal">&times;</button>
+	      		</div>
+	      		<form action="{{ route('admin.update-booth') }}" method="POST">
+		      		<div class="modal-body">
+						@csrf
+						<div class="form col-12" style="padding: 0;">
+							<div class="form-group">
+								<label for="nama-kasir1">Nama Kasir</label>
+								<input type="text" class="form-control" id="nama-kasir1" name="nama_kasir[]" value="">
+								<input type="hidden" name="id_booth[]" value="{{$booth->id_booth}}">
+								
+							</div>
+							<div class="form-group">
+								<label for="alamat-kasir1">Alamat Kasir</label>
+								<textarea class="form-control" id="alamat-kasir1" name="alamat_kasir[]"></textarea>
+							</div>
+							<div class="form-group">
+								<label for="no-kasir1">Telephone Kasir</label>
+								<input type="text" class="form-control" id="no-kasir1" name="telp_kasir[]" value="" onkeypress="return NumberOnly(event)">
+							</div>
+						</div>
+		      		</div>
+		      		<div class="modal-footer">
+		        		<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+		        		<input type="submit" name="update_kasir1" value="Tambah" class="btn btn-success">
+		      		</div>
+	      		</form>
+	    	</div>
+	  	</div>
 	</div>
 @endsection
 @section('js')
