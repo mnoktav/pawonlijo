@@ -92,10 +92,18 @@
 @endsection
 @section('js')
 	<script src="{{ asset('assets/atlantis/js/plugin/datatables/datatables.min.js') }}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+	<script src="https://cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
 	<script>
 		$(document).ready(function() {
+			$.fn.dataTable.moment( 'DD/MM/YYYY HH:mm' );
 			$('#basic-datatables').DataTable({
-				 aaSorting: [[1, 'desc']]
+				 aaSorting: [[0, 'desc']],
+				 columnDefs: [{
+				    target: 0,
+				    type: 'datetime-moment'
+				  }],
+				 "pageLength": 50
 			});
 		})
 	</script>

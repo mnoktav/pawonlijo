@@ -79,12 +79,12 @@
 									</div>
 									<div class="col-md-2">
 										<div class="text-right">
-											<a class="btn btn-secondary btn-sm mr-2" href="{{ asset('storage/'.$sale->id.'.pdf') }}" target="_blank">
+											<button class="btn btn-secondary btn-sm mr-2" onclick="window.open('{{ asset('storage/'.$sale->id.'.pdf') }}')">
 												<span class="btn-label">
 													<i class="fas fa-print"></i>
 												</span>
 												Nota
-											</a>
+											</button>
 										</div>
 									</div>
 								</div>

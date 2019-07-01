@@ -66,7 +66,7 @@
 							<div class="card-body">
 								<div class="row">
 									<div class="col-md-12">
-										<form action="/admin/sales#data-transaksi" method="GET">
+										<form action="../admin/sales#data-transaksi" method="GET">
 										<div class="row">
 											<div class="col-md-3">
 												<select name="id_booth" class="form-control" style="border-color: grey">
@@ -214,7 +214,7 @@
 	<script>
 		var ProdukTransaksiTahun = document.getElementById('ProdukTransaksiTahun').getContext('2d');
 		var myProdukTransaksiTahun = new Chart(ProdukTransaksiTahun, {
-			type: 'line',
+			type: 'bar',
 			data: {
 				labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"],
 				datasets : [
@@ -223,19 +223,18 @@
 					$s = 0;
 					$c = 0;
 					$d = 0;
-					$color = ['red','blue','green','purple','grey','orange','pink']
+					$color = ['green','blue','red','purple','grey','orange','pink','yellow','black']
 				@endphp
 				@foreach ($booths as $op)
 					{
 						label: "{{$op->nama_booth}}",
-						borderColor: "{{$color[$c++]}}",
 						pointBorderColor: "#FFF",
 						pointBackgroundColor: "{{$color[$s++]}}",
 						pointBorderWidth: 2,
 						pointHoverRadius: 4,
 						pointHoverBorderWidth: 1,
-						pointRadius: 4,
-						backgroundColor: 'transparent',
+						pointRadius: 6,
+						backgroundColor: '{{$color[$c++]}}',
 						fill: true,
 						borderWidth: 2,
 						data: [{{implode(',',$ct[$a++])}}]
@@ -255,8 +254,7 @@
 					}
 				},
 				tooltips: {
-					mode: 'index',
-					intersect: false,
+					intersect: true,
 					callbacks: {
 	                    label: function(tooltipItems, data) { 
 	                        return 'Income : Rp '+ tooltipItems.yLabel + ' K';
@@ -274,7 +272,11 @@
 		                    callback: function(label, index, labels) {
 		                        return label+' K';
 		                    }
-		                }
+		                },
+		                scaleLabel: {
+							display: true,
+							labelString: 'Pendapatan'
+						}
 			        }]
 			    }
 			}
@@ -283,7 +285,7 @@
 	<script>
 		var JumlahProduk = document.getElementById('JumlahProduk').getContext('2d');
 		var myJumlahProduk = new Chart(JumlahProduk, {
-			type: 'bar',
+			type: 'horizontalBar',
 			data: {
 				labels : {!!json_encode($top_n)!!},
 				@php
@@ -316,11 +318,16 @@
 					display: false,
 				},
 				scales: {
-					yAxes: [{
+					xAxes: [{
 						ticks: {
-							beginAtZero:true
+							beginAtZero:true,
+							ticks: {
+		                    	callback: function(label, index, labels) {
+		                        	return label+' Porsi';
+		                    	}
+		                	}
 						}
-					}]
+					}],
 				}
 			}
 		});

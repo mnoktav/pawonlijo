@@ -122,6 +122,10 @@
 					yAxes: [{
 						ticks: {
 							beginAtZero:true
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'Porsi'
 						}
 					}]
 				}

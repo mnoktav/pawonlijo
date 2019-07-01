@@ -113,7 +113,7 @@
 						</div>
 					</div>
 					<ul class="nav nav-warning">
-						<li class="nav-item {{Request::segment(1) === 'admin' && Request::segment(2) === null  ? 'active' : null}} {{Request::segment(1) === 'admin' && Request::segment(2) === 'dashboard'  ? 'active' : null}}">
+						<li class="nav-item {{Request::segment(1) === 'admin' && Request::segment(2) === null  ? 'active' : null}} {{Request::segment(1) === 'admin' && Request::segment(2) === 'dashboard'  ? 'active' : null}} {{Request::segment(1) === null ? 'active' : null}}">
 							<a href="{{ route('admin.dashboard') }}">
 								<i class="fas fa-home"></i>
 								<p>Dashboard</p>	

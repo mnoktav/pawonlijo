@@ -335,6 +335,7 @@ class AdminBooth extends Controller
 
             $validator = Validator::make($request->all(), [
                 'id_booth' => 'required|unique:PL_Cabang,id_booth',
+                'id_booth' => 'required|max:6',
                 'nama_booth' => 'required|unique:PL_Cabang,nama_booth'
             ], [
                 'id_booth.required' => 'ID booth harus diisi.',
@@ -452,13 +453,15 @@ class AdminBooth extends Controller
             return redirect()->route('admin.add-booth-step5',$request->id_booth);
         }
         elseif($request->selesai != null){
+
             if (!is_null($request->nama_makanan)) {
-                for ($i=0; $i < count($request->nama_makanan) ; $i++) { 
+                for ($i=0; $i < count($request->index) ; $i++) { 
                     if($request->nama_makanan != null){
                         $c = PL_Produk::max('id');
+
                         PL_Produk::create([
                             'id' => $c+1,
-                            'nama_makanan' => $request->nama_makanan[$i],
+                            'nama_makanan' => $request->nama_makanan[$request->index[$i]],
                             'kategori' => $request->kategori[$i],
                             'id_booth' => $request->id_booth,
                             'status' => 1
@@ -466,15 +469,15 @@ class AdminBooth extends Controller
                         $p = PL_Transaksi_Jenis::where('id_booth', $request->id_booth)
                                             ->orderBy('jenis_transaksi','desc')
                                             ->pluck('id');
-
+                        
                         for ($a=0; $a < count($p); $a++) { 
-                                PL_Produk_Harga::create([
-                                    'id_produk' => $c+1,
-                                    'id_jenis_transaksi' => $p[$a],
-                                    'harga' => $request->harga[$a]
-                                ]);
+                            PL_Produk_Harga::create([
+                                'id_produk' => $c+1,
+                                'id_jenis_transaksi' => $p[$a],
+                                'harga' => $request->harga[$request->index[$i]][$a]
+                            ]);
                         }
-
+                        
                     }
 
                 }

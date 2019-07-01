@@ -38,7 +38,7 @@
 						<h4 class="card-title" style="text-transform: uppercase;"><b>{{$j->jenis_transaksi}}</b></h4>
 					</div>
 					<div class="card-footer">
-						<a href="/kasir/product/{{$j->id}}/{{$j->jenis_transaksi}}" class="btn btn-primary btn-block btn-lg">Pesan</a>
+						<a href="kasir/product/{{$j->id}}/{{$j->jenis_transaksi}}" class="btn btn-primary btn-block btn-lg">Pesan</a>
 					</div>
 				</div>
 			</div>

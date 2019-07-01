@@ -9,7 +9,7 @@
 @endsection
 @section('content2')	
 
-	<div class="card" style="border: 1px solid #dddddd;">
+	<div class="card border shadow-none">
 		<div class="card-body">
 			<h4><b><span class="fas fa-clipboard-list text-warning"></span>&nbsp; INFO</b></h4>
 			<div class="separator-solid"></div>

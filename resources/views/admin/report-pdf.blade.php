@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<style>
+	{{-- <style>
 		.table{
 			border-collapse: collapse;
 		}
@@ -30,9 +30,9 @@
 			margin-top: 1%;
 			font-family: Arial,sans-serif;
 		}
-	</style>
+	</style> --}}
 </head>
-<body style="margin: 0;">
+<body>
 	@if ($id_booth == null)
 		<div class="col-md-11 mt--1">
 			<h3><b>LAPORAN PENJUALAN SEMUA BOOTH PAWON LIJO</b></h3>
@@ -46,7 +46,7 @@
 		</div>
 	@else
 		<div class="col-md-11 mt--1">
-			<h3 style="text-transform: uppercase;"><b>LAPORAN PENJUALAN {{$nb->nama_booth}}, {{$nb->kota_booth}} (#{{$id_booth}})</b></h3>
+			<h3><b>LAPORAN PENJUALAN {{$nb->nama_booth}}, {{$nb->kota_booth}} (#{{$id_booth}})</b></h3>
 			@if ($akhir == '' || $akhir==$awal)
 				<h4>TANGGAL : {{date('d/m/Y', strtotime($awal))}}</h4>
 				
@@ -57,7 +57,7 @@
 	@endif
 	<table class="table table-bordered transaksi border" width="100%">
 		<thead>
-			<tr style="background-color: orange;">
+			<tr>
 				<th>TANGGAL</th>
 				<th>ID TRANSAKSI</th>
 				<th>JENIS</th>
@@ -74,7 +74,7 @@
 			@endphp
 			@foreach ($sales as $sale)
 				
-				<tr style="background-color: #e0e0e0">
+				<tr>
 					<td>{{date('d/m/Y H:i',strtotime($sale->created_at))}}</td>
 					<td>{{$sale->id}}</td>
 					<td>{{$sale->jenis}}</td>
@@ -88,7 +88,7 @@
 					<td>Rp {{Rupiahd($sale->potongan)}}</td>
 					<td>Rp {{Rupiahd($sale->total_bersih)}}</td>
 				</tr>
-				<tr style="background-color: #f9f9f9;">
+				<tr>
 					<td>Detail : </td>
 					<td>Nama Makanan </td>
 					<td>Harga</td>
@@ -97,7 +97,7 @@
 				</tr>
 				@foreach ($detail as $d)
 					@if($sale->id == $d->id_transaksi)
-					<tr style="background-color: #f9f9f9;">
+					<tr>
 						<td></td>
 						<td>{{$d->nama_makanan}}</td>
 						<td>Rp {{Rupiahd($d->harga_satuan)}}</td>
@@ -115,11 +115,11 @@
 		</tbody>
 	</table>
 
-	<h4 style="margin-top: 4%; text-transform: uppercase;">Ringkasan</h4>
+	{{-- <h4>Ringkasan</h4>
 
-	<table class="table table-bordered border ringkasan" width="100%" style="margin-bottom: 2%">
-		<tr style="background-color: orange">
-			<th colspan="2" style="text-transform: uppercase; color: white;">Produk Terjual</th>
+	<table class="table table-bordered border ringkasan" width="100%">
+		<tr>
+			<th colspan="2">Produk Terjual</th>
 		</tr>
 		<tr>
 			<th>Nama Produk</th>
@@ -134,8 +134,8 @@
 	</table>
 
 	<table class="table table-bordered border ringkasan" width="100%">
-		<tr style="background-color: orange">
-			<th colspan="4" style="text-transform: uppercase; color: white;">total Pendapatan & pajak</th>
+		<tr>
+			<th colspan="4">total Pendapatan & pajak</th>
 		</tr>
 		<tr>
 			<th>Jenis</th>
@@ -163,15 +163,15 @@
 		<tr>
 			<th>Total</th>
 			<th>{{$t}}</th>
-			<th style="text-transform: capitalize;">
+			<th>
 				Rp {{Rupiah($pt)}}
 			</th>
-			<th style="text-transform: capitalize;">
+			<th>
 				Rp {{Rupiah($total_b)}}
 			</th>
 
 		</tr>									
-	</table>
+	</table> --}}
 </body>
 </html>
 

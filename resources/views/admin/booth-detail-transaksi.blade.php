@@ -10,7 +10,7 @@
 @endsection
 @section('content2')	
 	{{-- transaksi --}}
-	<div class="card" style="border: 1px solid #dddddd;">
+	<div class="card border shadow-none">
 		<div class="card-body">
 			<h4><b><span class="fas fa-list-ol text-warning"></span>&nbsp; Transaksi</b></h4>
 			<div class="separator-solid"></div>

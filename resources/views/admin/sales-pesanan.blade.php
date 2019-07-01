@@ -24,8 +24,7 @@
 							<tr>
 								<th>Tanggal</th>
 								<th>ID. Transaksi</th>
-								<th class="d-none d-sm-table-cell">Jenis</th>
-								<th class="d-none d-sm-table-cell">Kode</th>
+								<th class="d-none d-sm-table-cell">Booth</th>
 								<th class="d-none d-sm-table-cell">Subtotal</th>
 								<th class="d-none d-sm-table-cell">Discount</th>
 								<th class="d-none d-sm-table-cell">Total</th>
@@ -38,12 +37,7 @@
 							<tr>
 								<td>{{date('d/m/Y H:i',strtotime($sale->created_at))}}</td>
 								<td>{{$sale->id}}</td>
-								<td class="d-none d-sm-table-cell">{{$sale->jenis}}</td>
-								@if($sale->kode != null)
-								<td class="d-none d-sm-table-cell">{{$sale->kode}}</td>
-								@else
-								<td class="d-none d-sm-table-cell">-</td>
-								@endif
+								<td class="d-none d-sm-table-cell">{{$sale->nama_booth}}</td>
 								<td class="d-none d-sm-table-cell">Rp {{Rupiahd($sale->subtotal)}}</td>
 								<td class="d-none d-sm-table-cell">Rp {{Rupiahd($sale->potongan)}}</td>
 								<td class="d-none d-sm-table-cell">Rp {{Rupiahd($sale->total_bersih)}}</td>

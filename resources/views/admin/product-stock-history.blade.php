@@ -108,8 +108,25 @@
 					yPadding:10,
 					caretPadding:10
 				},
-				layout:{
-					padding:{left:15,right:15,top:15,bottom:15}
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero:true
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'Porsi'
+						}
+					}],
+					xAxes: [{
+						ticks: {
+							beginAtZero:true
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'Tanggal'
+						}
+					}]
 				}
 			}
 		});

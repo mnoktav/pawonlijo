@@ -7,7 +7,12 @@ Route::get('/clear-cache', function() {
     return 'DONE';
 });
 //Dashboard
-Route::get('/', 'AdminDashboard@index');
+Route::get('/', function () {
+    return view('admin/landing-page1');
+});
+Route::get('/lp', function () {
+    return view('admin/landing-page');
+});
 Route::get('/admin/', 'AdminDashboard@index');
 Route::get('/admin/dashboard', 'AdminDashboard@index')->name('admin.dashboard');
 

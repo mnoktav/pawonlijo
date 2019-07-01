@@ -36,12 +36,20 @@
 										
 									</tr>
 									<input type="hidden" name="id_booth" value="{{$booth}}">
+									@php
+											$i = 0;
+										@endphp
 									@foreach ($products as $p)
 									<tr>
-										<td width="5%"><input type="checkbox" class="checkitem" name="nama_makanan[]" value="{{$p->nama_makanan}}"></td>
+										@php
+											$b = $i++;
+										@endphp
+										<td width="5%"><input type="checkbox" class="checkitem" name="index[]" value="{{$b}}">
+											<input type="hidden" name="nama_makanan[]" value="{{$p->nama_makanan}}"></td>
 										<td width="15%">{{$p->nama_makanan}} <input type="hidden" name="kategori[]" value="{{$p->kategori}}"></td>
+										
 										@foreach ($jenis as $je)
-										<td><input type="text" class="form-control" name="harga[]" value="{{GetHarga($p->id,$je->jenis_transaksi)}}" onkeypress="return NumberOnly()"></td>
+										<td><input type="text" class="form-control" name="harga[{{$b}}][]" value="{{GetHarga($p->id,$je->jenis_transaksi)}}" onkeypress="return NumberOnly()"></td>
 										@endforeach
 									</tr>
 									@endforeach

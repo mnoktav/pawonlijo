@@ -40,7 +40,7 @@
 									<div class="card-body">
 										<h4><b>CETAK LAPORAN</b></h4>
 										<div class="separator-solid"></div>
-										<form action="" method="GET">
+										<form action="" method="GET" id="Cari">
 											<div class="form-group p-0 mb-1">
 												<label for="nama-booth" class="col-form-label">Booth : </label>
 												<select class="form-control" name="id_booth" id="nama-booth">
@@ -58,40 +58,97 @@
 												<label class="col-form-label">Tanggal Akhir</label>
 												<input type="date" class="form-control" name="akhir" value="{{$akhir}}">
 											</div>
-											<input type="submit" class="btn btn-primary btn-sm btn-block mt-3" value="Cari" name="cari">
+											<input type="submit" class="btn btn-primary btn-sm btn-block mt-3" value="Cari" name="cari" id="cari">
 											<p class="text-danger mt-3">* Catatan : untuk mencari data harian cukup isi tanggal awal saja</p>
 										</form>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-9">
-								<div class="card shadow-none" id="tabel-penjualan">
+								<div class="card border shadow-none" id="tabel-penjualan">
 									<div class="card-body">
+										
 										@if(is_null($sales))
-											<div class="text-center text-muted border mt--3">
-												<h4 style="text-transform: uppercase; padding: 28% 0"><b>Isi Terlebih Dahulu Form Disamping ...</b></h4>
+											<div class="text-center text-muted">
+												<h4 style="text-transform: uppercase; padding: 26% 0"><b>Isi Terlebih Dahulu Form Disamping ...</b></h4>
 											</div>
 										@elseif(count($sales) == null)
 											<div class="text-center text-muted">
 												<h4><b>Tidak Ada Transaksi</b></h4>
 											</div>
 										@else
+										<div class="laporan">
+											<h4><b>LAPORAN</b></h4>
+											<div class="separator-solid"></div>
 										
-										<div>
-											<a class="btn btn-default btn-sm pr-3 pl-3 mr-2" href="/admin/report/excel?awal={{$awal}}&akhir={{$akhir}}&id_booth={{$id_booth}}" target="_blank"><i class="fas fa-file-excel mr-2"></i>Export to Excel</a>
+											<table class="table table-borderless">
+												<tr>
+													<th>Booth</th>
+													<td>:</td>
+													<td>
+														@if (empty($id_booth))
+															Semua Booth Pawon Lijo
+														@else
+															{{$id_booth}}
+														@endif
+													</td>
+												</tr>
+												<tr>
+													<th>Tanggal</th>
+													<td>:</td>
+													@if (!empty($akhir))
+														<td>{{date('d F Y', strtotime($awal))}}  s/d  {{date('d F Y', strtotime($akhir))}}</td>
+													@else
+														<td>{{date('d F Y', strtotime($awal))}}</td>
+													@endif
+												</tr>
+											</table>
+											<div class="row mt-4">
+												<div class="col-md-6">
+													<div class="card card-pricing border shadow-none">
+														<div class="card-header">
+															<h4 class="card-title"><b>Download Excel</b></h4>
+															<div class="card-price mt-4">
+																<i class="fas fa-file-excel fa-5x" style="color: #3b8247 "></i>
+															</div>
+														</div>
+														<div class="card-footer">
+															<button onclick="window.open('../admin/report/excel?awal={{$awal}}&akhir={{$akhir}}&id_booth={{$id_booth}}')" class="btn btn-primary pr-3 pl-3 mr-2">Download</button>
+														</div>
+													</div>
+												</div>
+												<div class="col-md-6">
+													<div class="card card-pricing shadow-none border">
+														<div class="card-header">
+															<h4 class="card-title"><b>Download PDF</b></h4>
+															<div class="card-price mt-4">
+																<i class="fas fa-file-pdf fa-5x" style="color: #c62e23"></i>
+															</div>
+														</div>
+														<div class="card-footer">
+															<button onclick="window.open('../admin/report/pdf?awal={{$awal}}&akhir={{$akhir}}&id_booth={{$id_booth}}')" class="btn btn-primary pr-3 pl-3 mr-2">Download</button>
+														</div>
+													</div>
+												</div>
+											</div>
 										</div>
-							
-										<div class="print-content">
+										
+										{{-- <div>
+											
+										</div> --}}
+										
+										{{-- <div class="print-content">
 											
 											<div class="separator-solid"></div>
 											
-											<iframe src="/admin/report/pdf?awal={{$awal}}&akhir={{$akhir}}&id_booth={{$id_booth}}" style="height: 600px; width:100%">
+											<iframe src="" style="height: 600px; width:100%">
 											</iframe>
 
-											@endif
+											
 											
 
-										</div>
+										</div> --}}
+										@endif
 									</div>
 								</div>
 							</div>
@@ -105,22 +162,15 @@
 	</div>
 @endsection
 @section('js')
-	{{-- <script src="{{ asset('assets/atlantis/js/plugin/datatables/datatables.min.js') }}"></script>
-	<script src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
-	<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.flash.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-	<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
-	<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script>
 	<script>
-		$(document).ready(function() {
-			$('.transaksi').DataTable({
-				dom: 'Bfrtip',
-		        buttons: [
-		            'copy', 'csv', 'excel', 'pdf', 'print'
-		        ]
+		$(document).ready(function(){
+			$('.cari').click(function(){
+				swal({
+					title : "Loading",
+					timer : 10000,
+					showConfirmButton : false
+				});
 			});
-		})
-	</script> --}}
+		});
+	</script>
 @endsection

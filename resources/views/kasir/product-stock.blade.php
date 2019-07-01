@@ -3,7 +3,7 @@
 	<style>
 		#table td, #table th{
 			border:1px solid grey !important;
-			height: 2.7rem !important;
+			height: 2.7	rem !important;
 		}
 		#table th{
 			text-transform: uppercase;

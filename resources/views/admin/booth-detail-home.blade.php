@@ -1,7 +1,7 @@
 @extends('admin/booth-detail')
 @section('content2')	
 	{{-- home --}}
-	<div class="card" style="border: 1px solid #dddddd;">
+	<div class="card border shadow-none">
 		<div class="card-body">
 			<h4><b><span class="fas fa-info-circle text-warning"></span>&nbsp; INFORMASI BOOTH</b></h4>
 			<div class="separator-solid"></div>

@@ -347,7 +347,7 @@ class KasirDashboard extends Controller
 
     public function Nota($id)
     {
-        $file_path = '/storage/'.$id.'.pdf';
+        $file_path = '/public/storage/'.$id.'.pdf';
         return redirect($file_path);
 
     }

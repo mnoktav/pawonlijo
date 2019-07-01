@@ -85,11 +85,6 @@ class AdminReport extends Controller
             $pjk = $builder3->where('status',1)
                             ->groupBy('jenis')
                             ->get();           
-            if(count($sales) == null){
-                Alert::message('Tidak Ada Data Transaksi');
-                return redirect()->back();
-            }
-
            
     	}
     	

@@ -43,7 +43,9 @@
 								<div class="row mb-3">
 									<div class="col-md-6">
 										<h5><b>Nama Pembeli</b> : {{$sale->nama_pembeli}}</h5>
-										<h5><b>Jenis Transaksi</b> : {{$sale->jenis}} ({{$sale->kode}})</h5>
+										<h5><b>Jenis Transaksi</b> : {{$sale->jenis}} @if (!empty($sale->kode))
+											({{$sale->kode}})
+										@endif</h5>
 										<h5><b>Tanggal</b> : {{date('d/m/Y H:i',strtotime($sale->created_at))}}</h5>
 									</div>
 									<div class="col-md-6">
@@ -61,7 +63,7 @@
 										<p><b>Keterangan : </b> {{$sale->keterangan}}</p>
 										@endif
 										@if($sale->status == 1)
-										<a href="/storage/{{$sale->id}}.pdf" class="btn btn-xs btn-secondary" target="_blank">Cetak Nota</a>
+										<button onclick="window.open('{{ asset('storage').'/'.$sale->id.'.pdf' }}')" class="btn btn-xs btn-secondary">Cetak Nota</button>
 										@endif
 									</div>
 								</div>
