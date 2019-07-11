@@ -4,80 +4,77 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Nota</title>
-	<style>
-		@page{ 
-			size: 164pt {{(5*30)+(count($detail)*2*35)+(280)}}pt;
-			margin: 0;
-		}
-		@if (Request::segment(2) == 'nota')
-			a{
-				visibility: hidden;
-			}
-		@endif
-	</style>
+	<link rel="stylesheet" href="{{ asset('assets/atlantis/css/bootstrap.min.css') }} ">
 </head>
 <body>
-	<div class="container" style="padding: 1.5mm; width: 53mm;">
+	<div class="container" style="padding: 3% 15%;">
 		<div class="print">
 			<div class="header" style="text-align: center;">
 				<h3>Pawon Lijo</h3>
-				<p style="margin-top: -1%; padding-bottom: 20px; border-bottom: 2px dashed black; font-size: 13px;">
+				<p>
 					{{session('login')['nama_booth']}} <br>
 					{{$booth->alamat_booth}}, {{$booth->kota_booth}}
 				</p>
 			</div>
-
-			<table style="margin-bottom: 20px;">
+			<div class="row" style="margin-bottom: 2%">
+				<div class="col-md-4">
+					{{$nota->id}} <br>
+					{{date('d/m/Y H:i',strtotime($nota->created_at))}} 
+				</div>
+				<div class="col-md-4">
+					
+				</div>
+				<div class="col-md-4">
+					Jenis Transaksi : 
+					{{$nota->jenis}} <br>
+					{{$nota->kode != null ? '('.$nota->kode.')' : null}}
+				</div>
+			</div>
+			<table class="table table-bordered" style="margin-bottom: 20px;">
 				@foreach ($detail as $d)
-				<tr style="height: 20px">
+			
+				<tr>
 					@foreach ($produk as $p)
 						@if($d->id_produk == $p->id)
-							<td colspan="3">{{$p->nama_makanan}}</td>
+							<th>{{$p->nama_makanan}}</th>
 						@endif
 					@endforeach
-					
-				</tr>
-				<tr  style="height: 20">
-					<td width="70px">Rp {{Rupiahd($d->harga_satuan)}}</td>
-					<td width="40px" style="padding-bottom: 5px">x {{$d->jumlah}}</td>
-					<td>Rp {{Rupiahd($d->harga_satuan*$d->jumlah)}}</td>
+					<th width="">Rp {{Rupiahd($d->harga_satuan)}}</th>
+					<th width="" style="padding-bottom: 5px">x {{$d->jumlah}}</th>
+					<th>Rp {{Rupiahd($d->harga_satuan*$d->jumlah)}}</th>
 				</tr>
 				@endforeach
 				<tr>
-					<td width="60%" colspan="2" style="padding-top: 20px">Subtotal</td>
-					<td width="40%" style="padding-top: 20px">Rp {{Rupiahd($nota->subtotal)}}</td>
+					<td width="" colspan="3">Subtotal</td>
+					<td width="">Rp {{Rupiahd($nota->subtotal)}}</td>
 				</tr>
 				<tr>
-					<td width="60%" colspan="2">Potongan</td>
-					<td width="40%">Rp {{Rupiahd($nota->potongan)}}</td>
+					<td width="" colspan="3">Potongan</td>
+					<td width="">Rp {{Rupiahd($nota->potongan)}}</td>
 				</tr>
 				<tr >
-					<td width="60%" colspan="2">Total</td>
-					<td width="40%">Rp {{Rupiahd($nota->total)}}</td>
+					<td width="" colspan="3">Total</td>
+					<td width="">Rp {{Rupiahd($nota->total)}}</td>
 				</tr>
 				<tr>
-					<td colspan="2" style="padding-top: 20px">Bayar</td>
-					<td style="padding-top: 20px">Rp {{Rupiahd($nota->bayar)}}</td>
+					<td colspan="3" style="padding-top: 20px">Bayar</td>
+					<td style="">Rp {{Rupiahd($nota->bayar)}}</td>
 				</tr>
 				<tr>
-					<td colspan="2">Kembali</td>
+					<td colspan="3">Kembali</td>
 					<td>Rp {{Rupiahd($nota->kembali)}}</td>
 				</tr>
 			</table>
-			<div class="" style="padding-top: 20px; border-top: 2px dashed black; height: 40px;">
-				{{$nota->id}} <br>
-				{{date('d/m/Y H:i',strtotime($nota->created_at))}}<br>
-				{{$nota->jenis}} 
-				{{$nota->kode != null ? '('.$nota->kode.')' : null}}
+			<div class="row">
+				<div class="col-md-12 text-center">
+					<a class="btn btn-warning" href="{{ route('kasir.dashboard') }}">Kembali</a>
+					<a class="btn btn-primary" href="{{ route('kasir.nota',$nota->id) }}" target="_blank">Cetak</a>
+				</div>
 			</div>
-			<div align="center" style="height: 40px; margin-top: 30px;">
-				<p>Thank you {{$nota->nama_pembeli}}!</p>
-			</div>
-			<a href="{{ route('kasir.dashboard') }}"><button>Kembali</button></a>
-			<a href="{{ route('kasir.nota',$nota->id) }}" target="_blank"><button>Cetak</button></a>
 		</div>
 	</div>
-	
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	@include('sweet::alert')
 	
 </body>
 </html>

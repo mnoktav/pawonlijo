@@ -121,7 +121,7 @@
 													<div class="col-md-3">
 														<div class="image mr-3">
 															@if ($menu->gambar != null)
-																<img src="{!! asset($menu->gambar) !!}" class="w-100" alt="">
+																<img src="{{ asset('assets/img/daftar-menu/'.$menu->gambar) }}" class="w-100" alt="">
 															@else
 																<img src="{{ asset('assets/img/nf.png') }}" class="w-100" alt="">
 															@endif

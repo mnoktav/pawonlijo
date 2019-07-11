@@ -14,6 +14,9 @@
 @endsection
 @section('content')	
 	<div class="page-inner">
+		<div id="loading" style="display:none">
+			  Loading...
+		</div>
 		<div class="page-header">
 			<h4 class="page-title">Laporan Penjualan</h4>
 			<ul class="breadcrumbs">
@@ -46,17 +49,17 @@
 												<select class="form-control" name="id_booth" id="nama-booth">
 													<option value="">Semua</option>
 													@foreach ($booths as $booth)
-														<option value="{{$booth->id_booth}}" {{$id_booth == $booth->id_booth ? 'selected' : null}}>{{$booth->nama_booth}}, {{$booth->kota_booth}}</option>
+														<option value="{{$booth->id_booth}}" id="booth" {{$id_booth == $booth->id_booth ? 'selected' : null}}>{{$booth->nama_booth}}, {{$booth->kota_booth}}</option>
 													@endforeach
 												</select>
 											</div>
 											<div class="form-group p-0 mb-1">
 												<label class="col-form-label">Tanggal Awal</label>
-												<input type="date" class="form-control" required="" name="awal" value="{{$awal}}">
+												<input type="date" class="form-control" required="" name="awal" value="{{$awal}}" id="awal">
 											</div>
 											<div class="form-group p-0 mb-1">
 												<label class="col-form-label">Tanggal Akhir</label>
-												<input type="date" class="form-control" name="akhir" value="{{$akhir}}">
+												<input type="date" class="form-control" name="akhir" value="{{$akhir}}" id="akhir">
 											</div>
 											<input type="submit" class="btn btn-primary btn-sm btn-block mt-3" value="Cari" name="cari" id="cari">
 											<p class="text-danger mt-3">* Catatan : untuk mencari data harian cukup isi tanggal awal saja</p>
@@ -162,15 +165,18 @@
 	</div>
 @endsection
 @section('js')
-	<script>
-		$(document).ready(function(){
-			$('.cari').click(function(){
-				swal({
-					title : "Loading",
-					timer : 10000,
-					showConfirmButton : false
-				});
-			});
-		});
-	</script>
+@if (Session::has('sweet_alert.alert'))
+    <script>
+    $(document).ready(function(){
+        swal({
+            text: "{!! Session::get('sweet_alert.text') !!}",
+            title: "{!! Session::get('sweet_alert.title') !!}",
+            imageUrl: "{{ asset('assets/img/loading.gif') }}",
+            timer: 3000,
+            button : false,
+            closeOnClickOutside: false,
+        });
+    });
+    </script>
+@endif
 @endsection

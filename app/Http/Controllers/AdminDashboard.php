@@ -141,7 +141,6 @@ class AdminDashboard extends Controller
         $pie = View_Transaksi::select(DB::raw(' Round(sum(total_bersih)/(select sum(total_bersih) from view_transaksi where status = 1) * 100) 
 as persen, id_booth, nama_booth'))
                             ->where('status', 1)
-                            ->whereMonth('created_at',date('m'))
                             ->whereYear('created_at',date('Y'))
                             ->groupBy('id_booth')
                             ->get();

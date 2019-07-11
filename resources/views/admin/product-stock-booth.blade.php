@@ -66,7 +66,7 @@
 									</div>
 								</div>
 								<div class="col-md-2 offset-md-4 text-right">
-									<input type="submit" value="Update Stok" name="update" class="btn active btn-sm mt-2">
+									<input type="submit" value="Update Stok" name="update" class="btn btn-success">
 								</div>
 							</div>
 							<div class="table-responsive">
@@ -111,7 +111,7 @@
 												
 												<td><input type="number" name="update_stok[]" min="1" style="border-radius: 4px; border: 1px solid #aaaaaa; width: 4rem; padding-left: 0.5rem;"></td>
 
-												<td ><a href="/admin/stock-product/{{$booth->id_booth}}/{{$product->id}}" class="btn btn-primary btn-rounded btn-sm">Info</a></td>
+												<td ><a href="{{ url('/admin/stock-product/'.$booth->id_booth.'/'.$product->id) }}" class="btn btn-warning btn-sm">Info</a></td>
 											</tr>
 											
 										@endforeach

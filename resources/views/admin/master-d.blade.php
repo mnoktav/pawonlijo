@@ -67,7 +67,7 @@
 										<div class="user-box">
 											<div class="avatar-lg"><img src="{{ asset('assets/img/user.png') }}" alt="image profile" class="avatar-img rounded"></div>
 											<div class="u-text">
-												<h4 style="text-transform: uppercase;">{{Auth::user()->username}}</h4>
+												<h4 style="text-transform: capitalize;">{{Auth::user()->username}}</h4>
 												<p class="text-muted">{{Auth::user()->email}}</p>
 											</div>
 										</div>
@@ -105,7 +105,7 @@
 						<div class="info">
 							<a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
 								<span>
-									<span style="text-transform: uppercase;">{{Auth::user()->username}}</span>
+									<span style="text-transform: capitalize;">{{Auth::user()->username}}</span>
 									<span class="user-level mt-0">Administrator</span>
 								</span>
 							</a>

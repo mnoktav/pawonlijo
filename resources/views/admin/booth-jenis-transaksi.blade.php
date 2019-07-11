@@ -91,7 +91,7 @@
 													@endforeach
 													<td>{{$t->jenis}}</td>
 													<td>Rp {{Rupiahd($t->pajak)}}</td>
-													<td><a href="/admin/tax/{{date('Y-m-d', strtotime($t->tanggal))}}/{{$t->id_booth}}/{{$t->jenis}}" class="btn btn-primary btn-sm btn-rounded">Detail</a></td>
+													<td><a href="{{ url('/admin/tax/'.date('Y-m-d', strtotime($t->tanggal)).'/'.$t->id_booth.'/'.$t->jenis) }}" class="btn btn-primary btn-sm btn-rounded">Detail</a></td>
 												</tr>
 												@endforeach
 											</tbody>

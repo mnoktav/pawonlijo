@@ -162,11 +162,11 @@
 															</div>
 															<di class="card-footer">
 																<div class="button text-center">
-																	<a href="/admin/product/booth/{{$booth->id_booth.'/'.$menu1->id}}" class="btn btn-icon btn-round btn-primary btn-sm">
+																	<a href="{{ url('/admin/product/booth/'.$booth->id_booth.'/'.$menu1->id) }}" class="btn btn-icon btn-round btn-primary btn-sm">
 																		<i class="fas fa-info mt-2"></i>
 																	</a>
 
-																	<a href="/admin/product/booth/{{$booth->id_booth}}/edit/{{$menu1->id}}" class="btn btn-icon btn-round btn-warning btn-sm">
+																	<a href="{{ url('/admin/product/booth/'.$booth->id_booth.'/edit/'.$menu1->id) }}" class="btn btn-icon btn-round btn-warning btn-sm">
 																		<i class="fas fa-pen mt-2"></i>
 																	</a>
 

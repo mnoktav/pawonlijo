@@ -93,7 +93,7 @@ class AdminProduct extends Controller
                     $gambar = $request->gambar;
                     $ext = $gambar->getClientOriginalExtension();
                     $nama = date('dmYhis').'.'.$gambar->getClientOriginalExtension();
-                    $path = 'assets/img/daftar-menu/';
+                    $path = public_path('assets/img/daftar-menu/');
                     $gambar->move($path,$nama);
 
                     for ($i=0; $i < count($request->id_booth) ; $i++) { 
@@ -104,7 +104,7 @@ class AdminProduct extends Controller
                             'kategori' => $request->kategori,
                             'id_booth' => $request->id_booth[$i],
                             'status' => 1,
-                            'gambar' => $path.$nama
+                            'gambar' => $nama
                         ]);
                         $p[$i] = PL_Transaksi_Jenis::where('id_booth', $request->id_booth[$i])
                                             ->orderBy('jenis_transaksi','desc')
@@ -293,7 +293,7 @@ class AdminProduct extends Controller
                 $gambar = $request->gambar;
                 $ext = $gambar->getClientOriginalExtension();
                 $nama = date('dmYhis').'.'.$gambar->getClientOriginalExtension();
-                $path = 'assets/img/daftar-menu/';
+                $path = public_path('assets/img/daftar-menu/');
                 $gambar->move($path,$nama);
 
                 PL_Produk::where('id_booth',$request->id_booth)
@@ -301,7 +301,7 @@ class AdminProduct extends Controller
                         ->update([
                             'nama_makanan' => $request->nama_makanan,
                             'kategori' => $request->kategori,
-                            'gambar' => $path.$nama,
+                            'gambar' => $nama,
                             'status' => 1
                         ]);
 

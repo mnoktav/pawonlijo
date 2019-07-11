@@ -74,7 +74,7 @@
 				<div class="card border full-height">
 					<div class="card-header">
 						<div>
-							<h6 class="card-title">Booth Pawon Lijo Bulan {{BulanIndo(date('n')).' '.date('Y')}}</h6>
+							<h6 class="card-title">Booth Pawon Lijo Tahun {{date('Y')}}</h6>
 
 						</div>
 					</div>
@@ -319,7 +319,9 @@
 		                ticks: {
 		                    callback: function(label, index, labels) {
 		                        return label+' K';
-		                    }
+		                    },
+                			stepSize: 100,
+                			suggestedMax: 800
 		                }
 			        }]
 			    }

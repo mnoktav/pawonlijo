@@ -97,7 +97,12 @@
 				responsive: true, 
 				maintainAspectRatio: false,
 				legend: {
-					display: false
+					position: 'bottom',
+					labels : {
+						padding: 20,
+						fontColor: 'black',
+						fontSize: 12
+					}
 				},
 				tooltips: {
 					bodySpacing: 4,

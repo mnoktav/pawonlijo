@@ -30,7 +30,7 @@
 									<h4><b>CHECKOUT</b></h4>
 								</div>
 								<div class=" col-4 text-right">
-									<a href="/kasir/product/{{$id_jenis}}/{{$jenis}}" class="btn btn-primary btn-rounded btn-sm mb-3">
+									<a href="{{ url('/kasir/product/'.$id_jenis.'/'.$jenis) }}" class="btn btn-primary btn-rounded btn-sm mb-3">
 										<span class="btn-label">
 											<i class="fas fa-angle-left"></i>
 										</span>
@@ -158,7 +158,7 @@
 									<h4><b>CHECKOUT</b></h4>
 								</div>
 								<div class=" col-4 text-right">
-									<a href="/kasir/product/{{$id_jenis}}/{{$jenis}}" class="btn btn-primary btn-rounded btn-sm mb-3">
+									<a href="{{ url('/kasir/product/'.$id_jenis.'/'.$jenis) }}" class="btn btn-primary btn-rounded btn-sm mb-3">
 										<span class="btn-label">
 											<i class="fas fa-angle-left"></i>
 										</span>

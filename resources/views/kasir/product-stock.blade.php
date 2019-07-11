@@ -37,7 +37,7 @@
 									</div>
 								</div>
 								<div class="col-md-2 offset-md-4 text-right">
-									<input type="submit" value="Update Stok" name="update" class="btn active btn-sm mt-2">
+									<input type="submit" value="Update Stok" name="update" class="btn btn-success">
 								</div>
 							</div>
 							<div class="table-responsive">

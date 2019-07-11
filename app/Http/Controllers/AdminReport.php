@@ -85,7 +85,7 @@ class AdminReport extends Controller
             $pjk = $builder3->where('status',1)
                             ->groupBy('jenis')
                             ->get();           
-           
+            Alert::message('<img src="../public/assets/img/loading.gif">')->html();
     	}
     	
     	return view('admin/report', [

@@ -15,7 +15,7 @@
 					</div>
 					<div class="separator-solid"></div>
 					<div class="lihat-menu text-center">
-						<a href="{{ route('admin.product-booth-menu', $booth->id_booth) }}" class="btn btn-primary btn-sm btn-rounded" style="padding: 0.4rem 1rem;">Lihat Menu</a>
+						<a href="{{ route('admin.product-booth-menu', $booth->id_booth) }}" class="btn btn-primary  btn-rounded" style="padding: 0.4rem 1rem;">Lihat Menu</a>
 					</div>
 				</div>
 			</div>

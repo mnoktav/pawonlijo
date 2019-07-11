@@ -78,9 +78,14 @@
 						</div>
 					</div>
 				</div>
-				<div class="card ">
+				<div class="card border">
 					<div class="card-body">
 						<div class="row">
+							@if (count($jh) == null)
+								<div class="col-md-12 text-center">
+									<h4>Belum Ada Produk terjual</h4>
+								</div>
+							@else
 							<div class="col-md-6">
 								<h4><b>PRODUK TERJUAL</b></h4>
 								<div class="separator-solid"></div>
@@ -89,19 +94,15 @@
 										@php
 											$i = 1;
 										@endphp
-										@if (count($jh) == null)
-											<tr class="text-center">
-												<td colspan="3">Belum Ada Produk terjual</td>
+										
+										@foreach ($jh as $jh)
+											<tr>
+												<td width="5%">{{$i++}}.</td>
+												<td width="30%">{{$jh->nama_makanan}}</td>
+												<td>{{$jh->jumlah}} Porsi</td>
 											</tr>
-										@else
-											@foreach ($jh as $jh)
-												<tr>
-													<td width="5%">{{$i++}}.</td>
-													<td width="30%">{{$jh->nama_makanan}}</td>
-													<td>{{$jh->jumlah}} Porsi</td>
-												</tr>
-											@endforeach
-										@endif
+										@endforeach
+
 									</table>
 								</div>
 							</div>
@@ -119,6 +120,7 @@
 								</div>
 								
 							</div>
+							@endif
 						</div>
 					</div>
 				</div>

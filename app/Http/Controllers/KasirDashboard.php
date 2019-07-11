@@ -313,7 +313,7 @@ class KasirDashboard extends Controller
                 
 
                 session()->forget('cart');
-                
+                Alert::success('Transaksi Berhasil Disimpan', 'Berhasil');
                 return redirect()->route('kasir.print-nota', $id_transaksi);
             } 
         }
